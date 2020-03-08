@@ -1,0 +1,3 @@
+wta_reload.sh #每周初运行。根据 $APP/conf/calc 里面的当前已下载activity的截止日期，抽出掉分赛事记录，以及计算分数的赛事记录，生成到loaded_wta_s_year
+
+wta_calc.sh #实时运行。根据 $APP/conf/calc 里面的当前已下载activity的截止日期，以及计算即时排名的日期，计算未下载的activity的赛事记录，生成到unloaded_wta_s_year
