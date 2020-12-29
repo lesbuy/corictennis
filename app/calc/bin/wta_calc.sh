@@ -35,3 +35,6 @@ curr=`date -d "$curr_start" +%Y%m%d`
 live=`date -d "$wta_liveranking_end" +%Y%m%d`
 
 awk -F"\t" -v curr=$curr -v live=$live '$15 == "s" && $8 >= curr && $8 <= live' $DATA/activity_current/wta/* $DATA/calc/wta/s/mandatory0 > $DATA/calc/wta/s/year/unloaded
+awk -F"\t" -v curr=$curr -v live=$live '$15 == "d" && $8 >= curr && $8 <= live' $DATA/activity_current/wta/*  > $DATA/calc/wta/d/year/unloaded
+
+php ../src/wta_calc.php

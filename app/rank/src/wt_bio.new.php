@@ -37,7 +37,8 @@ class Bio {
 				$lasts[] = $ret['last'];
 
 				$ret['ioc'] = replace_ioc($a['natl']); if ($ret['ioc'] == "N/A") $ret['ioc'] = "";
-				$ret['birthday'] = date('Y-m-d', strtotime(join("-", array_reverse(explode("/", str_replace(")", "", preg_replace('/^.*\(/', '', $a['age'])))))));
+				$_birth = explode("/", str_replace(")", "", preg_replace('/^.*\(/', '', $a['age'])));
+				$ret['birthday'] = date('Y-m-d', strtotime(join("-", [$_birth[2], $_birth[0], $_birth[1]])));
 				if ($ret['birthday'] == "0000-00-00" || $ret['birthday'] == "1970-01-01" || $ret['birthday'] == "1753-01-01") $ret['birthday'] = "1970-01-01";
 				$ret['birthplace'] = $a['bcity'];
 				$ret['residence'] = $a['res'];
@@ -125,6 +126,7 @@ class Bio {
 				$ret['win_d_y'] = $b[0];
 				$ret['lose_d_y'] = $b[1];
 		
+				print_r($ret);
 				if ($redis) {
 					$redis->cmd('HMSET', $gender . '_profile_' . $pid, 
 						'first',  $ret['first'],

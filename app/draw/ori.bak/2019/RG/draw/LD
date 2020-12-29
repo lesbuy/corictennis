@@ -1,0 +1,44 @@
+{
+	"tournamentEvent": {
+		"oneColumn": {
+			"matches": [
+				{
+					"id": "DV008",
+					"teamA":{"players":[{"firstName":"James","lastName":"BLAKE","shortName":"J.BLAKE","ranking":null,"country":"USA","sex":"M","playerCardUrl":"/en-us/players/2709-j.blake","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Mark","lastName":"PHILIPPOUSSIS","shortName":"M.PHILIPPOUSSIS","ranking":null,"country":"AUS","sex":"M","playerCardUrl":"/en-us/players/130-m.philippoussis","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Arnaud","lastName":"CLEMENT","shortName":"A.CLEMENT","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/706-a.clement","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Nicolas","lastName":"ESCUDE","shortName":"N.ESCUDE","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/284-n.escude","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DV009",
+					"teamA":{"players":[{"firstName":"James","lastName":"BLAKE","shortName":"J.BLAKE","ranking":null,"country":"USA","sex":"M","playerCardUrl":"/en-us/players/2709-j.blake","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Mark","lastName":"PHILIPPOUSSIS","shortName":"M.PHILIPPOUSSIS","ranking":null,"country":"AUS","sex":"M","playerCardUrl":"/en-us/players/130-m.philippoussis","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Juan Carlos","lastName":"FERRERO","shortName":"JC.FERRERO","ranking":null,"country":"ESP","sex":"M","playerCardUrl":"/en-us/players/1845-jc.ferrero","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Andrei","lastName":"MEDVEDEV","shortName":"A.MEDVEDEV","ranking":null,"country":"UKR","sex":"M","playerCardUrl":"/en-us/players/115-a.medvedev","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DV010",
+					"teamA":{"players":[{"firstName":"Arnaud","lastName":"CLEMENT","shortName":"A.CLEMENT","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/706-a.clement","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Nicolas","lastName":"ESCUDE","shortName":"N.ESCUDE","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/284-n.escude","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Juan Carlos","lastName":"FERRERO","shortName":"JC.FERRERO","ranking":null,"country":"ESP","sex":"M","playerCardUrl":"/en-us/players/1845-jc.ferrero","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Andrei","lastName":"MEDVEDEV","shortName":"A.MEDVEDEV","ranking":null,"country":"UKR","sex":"M","playerCardUrl":"/en-us/players/115-a.medvedev","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DV011",
+					"teamA":{"players":[{"firstName":"Sebastien","lastName":"GROSJEAN","shortName":"S.GROSJEAN","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/936-s.grosjean","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Michael","lastName":"LLODRA","shortName":"","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/1754-m.llodra","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Yevgeny","lastName":"KAFELNIKOV","shortName":"Y.KAFELNIKOV","ranking":null,"country":"RUS","sex":"M","playerCardUrl":"/en-us/players/107-y.kafelnikov","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Marat","lastName":"SAFIN","shortName":"M.SAFIN","ranking":null,"country":"AUS","sex":"M","playerCardUrl":"/en-us/players/1785-m.safin","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DV012",
+					"teamA":{"players":[{"firstName":"Sebastien","lastName":"GROSJEAN","shortName":"S.GROSJEAN","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/936-s.grosjean","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Michael","lastName":"LLODRA","shortName":"","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/1754-m.llodra","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Tommy","lastName":"HAAS","shortName":"T.HAAS","ranking":null,"country":"GER","sex":"M","playerCardUrl":"/en-us/players/1673-t.haas","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Paul-Henri","lastName":"MATHIEU","shortName":"PH.MATHIEU","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/1798-ph.mathieu","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DV013",
+					"teamA":{"players":[{"firstName":"Yevgeny","lastName":"KAFELNIKOV","shortName":"Y.KAFELNIKOV","ranking":null,"country":"RUS","sex":"M","playerCardUrl":"/en-us/players/107-y.kafelnikov","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Marat","lastName":"SAFIN","shortName":"M.SAFIN","ranking":null,"country":"AUS","sex":"M","playerCardUrl":"/en-us/players/1785-m.safin","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Tommy","lastName":"HAAS","shortName":"T.HAAS","ranking":null,"country":"GER","sex":"M","playerCardUrl":"/en-us/players/1673-t.haas","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Paul-Henri","lastName":"MATHIEU","shortName":"PH.MATHIEU","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/1798-ph.mathieu","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DV001",
+					"teamA":{"players":[{"firstName":"Juan Carlos","lastName":"FERRERO","shortName":"JC.FERRERO","ranking":null,"country":"ESP","sex":"M","playerCardUrl":"/en-us/players/1845-jc.ferrero","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Andrei","lastName":"MEDVEDEV","shortName":"A.MEDVEDEV","ranking":null,"country":"UKR","sex":"M","playerCardUrl":"/en-us/players/115-a.medvedev","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Sebastien","lastName":"GROSJEAN","shortName":"S.GROSJEAN","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/936-s.grosjean","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Michael","lastName":"LLODRA","shortName":"","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/1754-m.llodra","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				}
+			]
+		}
+	},
+
+	"types": [
+		{"code":"DV","label":"Men's Legends under 45"}
+	],
+
+	"groupNum": 2,
+	"playersPerGroup": 3
+}

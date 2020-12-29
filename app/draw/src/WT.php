@@ -253,7 +253,7 @@ class Event extends Base{
 
 			$this->tourname = $Event->TournamentTitle . '';
 			$this->city = $Event->Location . '';
-			$this->city = preg_replace('/,.*$/', '', $this->city);
+			$this->city = preg_replace('/[,_].*$/', '', $this->city);
 			if (!$this->surface) {
 				$this->surface = $Event->Surface . '';
 				if ($this->surface != 'Clay' && $this->surface != 'Grass' && $this->surface != 'Carpet') $this->surface = 'Hard';
@@ -325,7 +325,8 @@ class Event extends Base{
 			foreach ($Event->Breakdown->Place as $place) {
 				$name = $place->Name . '';
 				$prize = $place->PrizeRound . '';
-				$point = intval($place->PointsRound . '');
+				$point = intval(str_replace(",", "", $place->PointsRound . ''));
+
 				$placeid = intval($place->attributes()->id . '');
 
 				if ($name == "Winner") $round = "W";
@@ -342,6 +343,23 @@ class Event extends Base{
 				else if ($name == "Round 4") $round = "Q4";
 				else if ($name == "Qualifiers") $round = "Qualify";
 				else if ($name == "Group Stage") $round = "RR";
+
+				if ($this->tour == "M009") {
+					if ($event == "WS") {
+						if ($round == "W") $point = 900;
+						else if ($round == "F") $point = 585;
+						else if ($round == "SF") $point = 350;
+						else if ($round == "QF") $point = 190;
+						else if ($round == "R3") $point = 105;
+						else if ($round == "R2") $point = 60;
+						else if ($round == "R1") $point = 1;
+					} else if ($event == "PS") {
+						if ($round == "Qualify") $point = 30;
+						else if ($round == "Q2") $point = 20;
+						else if ($round == "Q1") $point = 1;
+					}
+				}
+
 
 				$prize = intval(preg_replace('/[^0-9]/', '', $prize));
 
@@ -468,8 +486,13 @@ class Event extends Base{
 			if ($ko_type == "KO") {
 				// 遍历签位
 				$drawlines = [];
+				$pre_pos = 0;
 				foreach ($Event->Draw->DrawLine as $line) {
 					$pids = [];
+					$pos = $line->attributes()->Pos + 0;
+					for ($i = 0; $i < $pos - $pre_pos - 1; ++$i) {
+						$drawlines[] = $event . "QUAL";
+					}
 					foreach ($line->Players->Player as $p) {
 						$pid = trim($p->attributes()->id . "");
 						if (!$pid && strpos($p->PlayerDisplayLine, "Bye") !== false) {
@@ -482,6 +505,7 @@ class Event extends Base{
 					if ($pids[0] == "BYE") $pids = ['BYE'];
 					else if ($pids[0] == "QUAL") $pids = ['QUAL'];
 					$drawlines[] = $event . join("/", $pids);
+					$pre_pos = $pos;
 				}
 
 				// 组建首轮签表

@@ -8,12 +8,15 @@ $level = "";
 
 if (in_array($tour, ['AO', 'RG', 'WC', 'UO'])) {
 	$level = "GS";
+} else if (strlen($tour) > 6) {
+	$level = "ITF";
 } else {
 	$level = "WT";
 }
 
 if ($level == "GS") require_once($tour . '.php');
 else if ($level == "WT") require_once('WT.php');
+else if ($level == "ITF") require_once('ITF.php');
 
 $event = new Event($tour, $year);
 $event->process();

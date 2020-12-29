@@ -1,0 +1,16 @@
+tour=UO
+#资格赛第一场比赛的时间
+start_time="2020-8-24 23:00"
+qualifying_first_day="2020-8-24"
+main_first_day="2020-8-31"
+
+draw_url="https://www.usopen.org/en_US/scores/feeds/2020/draws/XXX.json"
+schedule_url="https://www.usopen.org/en_US/scores/feeds/2020/schedule/scheduleYYY.json"
+result_url="https://www.usopen.org/en_US/scores/feeds/2020/completed_matches/days/day_YYY.json"
+player_list_url="https://www.usopen.org/en_US/scores/feeds/2020/players/players.json"
+live_url="https://www.usopen.org/en_US/scores/feeds/2020/matches/live/scores.json"
+
+trans() {
+	echo $1
+}
+

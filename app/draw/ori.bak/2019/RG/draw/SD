@@ -1,0 +1,44 @@
+{
+	"tournamentEvent": {
+		"oneColumn": {
+			"matches": [
+				{
+					"id": "DW008",
+					"teamA":{"players":[{"firstName":"Mansour","lastName":"BAHRAMI","shortName":"M.BAHRAMI","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/1771-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Fabrice","lastName":"SANTORO","shortName":"F.SANTORO","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/219-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Sergi","lastName":"BRUGUERA","shortName":"S.BRUGUERA","ranking":null,"country":"ESP","sex":"M","playerCardUrl":"/en-us/players/111-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Goran","lastName":"IVANISEVIC","shortName":"G.IVANISEVIC","ranking":null,"country":"CRO","sex":"M","playerCardUrl":"/en-us/players/106-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DW009",
+					"teamA":{"players":[{"firstName":"Mansour","lastName":"BAHRAMI","shortName":"M.BAHRAMI","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/1771-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Fabrice","lastName":"SANTORO","shortName":"F.SANTORO","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/219-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Pat","lastName":"CASH","shortName":"P.CASH","ranking":null,"country":"AUS","sex":"M","playerCardUrl":"/en-us/players/1228-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Henri","lastName":"LECONTE","shortName":"H.LECONTE","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/334-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DW010",
+					"teamA":{"players":[{"firstName":"Sergi","lastName":"BRUGUERA","shortName":"S.BRUGUERA","ranking":null,"country":"ESP","sex":"M","playerCardUrl":"/en-us/players/111-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Goran","lastName":"IVANISEVIC","shortName":"G.IVANISEVIC","ranking":null,"country":"CRO","sex":"M","playerCardUrl":"/en-us/players/106-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Pat","lastName":"CASH","shortName":"P.CASH","ranking":null,"country":"AUS","sex":"M","playerCardUrl":"/en-us/players/1228-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Henri","lastName":"LECONTE","shortName":"H.LECONTE","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/334-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DW011",
+					"teamA":{"players":[{"firstName":"Mikael","lastName":"PERNFORS","shortName":"M.PERNFORS","ranking":null,"country":"SWE","sex":"M","playerCardUrl":"/en-us/players/755-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Mats","lastName":"WILANDER","shortName":"M.WILANDER","ranking":null,"country":"SWE","sex":"M","playerCardUrl":"/en-us/players/185-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Michael","lastName":"CHANG","shortName":"M.CHANG","ranking":null,"country":"USA","sex":"M","playerCardUrl":"/en-us/players/104-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"John","lastName":"MCENROE","shortName":"J.MCENROE","ranking":null,"country":"USA","sex":"M","playerCardUrl":"/en-us/players/7781-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DW012",
+					"teamA":{"players":[{"firstName":"Mikael","lastName":"PERNFORS","shortName":"M.PERNFORS","ranking":null,"country":"SWE","sex":"M","playerCardUrl":"/en-us/players/755-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Mats","lastName":"WILANDER","shortName":"M.WILANDER","ranking":null,"country":"SWE","sex":"M","playerCardUrl":"/en-us/players/185-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Younes","lastName":"EL AYNAOUI","shortName":"Y.EL AYNAOUI","ranking":null,"country":"MAR","sex":"M","playerCardUrl":"/en-us/players/153-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Cedric","lastName":"PIOLINE","shortName":"C.PIOLINE","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/126-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DW013",
+					"teamA":{"players":[{"firstName":"Michael","lastName":"CHANG","shortName":"M.CHANG","ranking":null,"country":"USA","sex":"M","playerCardUrl":"/en-us/players/104-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"John","lastName":"MCENROE","shortName":"J.MCENROE","ranking":null,"country":"USA","sex":"M","playerCardUrl":"/en-us/players/7781-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Younes","lastName":"EL AYNAOUI","shortName":"Y.EL AYNAOUI","ranking":null,"country":"MAR","sex":"M","playerCardUrl":"/en-us/players/153-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Cedric","lastName":"PIOLINE","shortName":"C.PIOLINE","ranking":null,"country":"FRA","sex":"M","playerCardUrl":"/en-us/players/126-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "DW001",
+					"teamA":{"players":[{"firstName":"Sergi","lastName":"BRUGUERA","shortName":"S.BRUGUERA","ranking":null,"country":"ESP","sex":"M","playerCardUrl":"/en-us/players/111-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Goran","lastName":"IVANISEVIC","shortName":"G.IVANISEVIC","ranking":null,"country":"CRO","sex":"M","playerCardUrl":"/en-us/players/106-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Mikael","lastName":"PERNFORS","shortName":"M.PERNFORS","ranking":null,"country":"SWE","sex":"M","playerCardUrl":"/en-us/players/755-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Mats","lastName":"WILANDER","shortName":"M.WILANDER","ranking":null,"country":"SWE","sex":"M","playerCardUrl":"/en-us/players/185-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				}
+			]
+		}
+	},
+
+	"types": [
+		{"code":"DW","label":"Men's Legends over 45"}
+	],
+
+	"groupNum": 2,
+	"playersPerGroup": 3
+}

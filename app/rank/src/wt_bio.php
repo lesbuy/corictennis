@@ -122,6 +122,8 @@ class Bio {
 				$ret['win_d_y'] = $b[0];
 				$ret['lose_d_y'] = $b[1];
 		
+				print_r($ret);
+
 				if ($redis) {
 					$redis->cmd('HMSET', $gender . '_profile_' . $pid, 
 						'first',  $ret['first'],

@@ -50,7 +50,23 @@ abstract class Base{
 			$arr = explode("\t", $r[0]);
 			$this->level = preg_replace('/^.*:/', '', $arr[0]);
 			if ($this->level == 'CH') {
-				$this->level .= ' ' . floor(intval(preg_replace('/[^0-9]/', '', $arr[11])) / 1000);
+				$this->level .= ' ' . ($arr[20] / 1000);
+			} else if (in_string($this->level, "CH")) {
+				// 不变
+			} else if ($this->level == 'ITF') {
+				if (strpos($arr[11], "+") !== false) {
+					$suffix = "+H";
+				} else {
+					$suffix = "";
+				}
+				$this->level .= ' ' . $arr[3] . ($arr[20] / 1000) . $suffix;
+			} else if (preg_match('/^[WM]\d{2,3}$/', $this->level)) {
+				if (strpos($arr[11], "+") !== false) {
+					$suffix = "+H";
+				} else {
+					$suffix = "";
+				}
+				$this->level = "ITF " . $this->level . $suffix;
 			}
 			$this->surface = $arr[8];
 			$this->first_day = $arr[5];
@@ -64,14 +80,21 @@ abstract class Base{
 				$this->wta_level = $ar[1];
 			} else {
 				$this->atp_level = $this->wta_level = $ar[0];
-				if ($ar[0] == "ITF") {
-					$this->atpprize = $this->wtaprize = $arr[20];
+
+				if (in_string($ar[0], "ITF")) {
+					$prize = $arr[20];
+					if (in_string($arr[11], "+")) $prize += 1;
+					if ($arr[3] == "M") {
+						$this->atpprize = $prize;
+					} else {
+						$this->wtaprize = $prize;
+					}
 				}
 			}
 			if (strpos($this->atp_level, 'CH') !== false) {
 				$this->atp_level = 'CH';
 			} else if (strpos($this->atp_level, 'ITF') !== false) {
-				$this->atp_level = 'FU';
+				$this->atp_level = 'ITF';
 			}
 		}
 	}
@@ -186,6 +209,7 @@ abstract class Base{
 		$date_string = $this->oop[$day]['date'];
 		foreach ($this->oop[$day]['courts'] as $courtId => $court) {
 			$courtName = $court['name'];
+			ksort($court['matches']);
 			foreach ($court['matches'] as $matchSeq => $match) {
 				$matchtime = $match['time'];
 				$matchid = $match['id'];
@@ -264,7 +288,7 @@ abstract class Base{
 					$this->city,
 					$this->surface,
 					$this->level,
-					$m['id'] == $m['uuid'] ? $m['id'] : $m['id'] . "/" . $m['uuid'],
+					$m['uuid'],
 					$courtId,
 					$courtName,
 					$matchSeq,
@@ -318,7 +342,7 @@ abstract class Base{
 			$tip_msg = isset($m['tipmsg']) ? $m['tipmsg'] : "";
 
 			echo join("\t", [
-				$matchid == $m['uuid'] ? $matchid : $matchid . "/" . $m['uuid'],
+				$m['uuid'],
 				$this->tour,
 				"",
 				"", 
@@ -354,18 +378,36 @@ abstract class Base{
 	}
 
 	public function outputPlayers() {
+		$this->redis = new redis_cli('127.0.0.1', 6379);
 		foreach ($this->teams as $uuid => $t) {
 			$event = substr($uuid, 0, 2);
 			foreach ($t['p'] as $p) {
 				$pid = $p['p'];
-				if (in_array($pid, ['LIVE', 'QUAL', 'TBD', 'COMEUP'])) continue;
-				$gender = $p['g'];
+				if (in_array($pid, ['BYE', 'LIVE', 'QUAL', 'TBD', 'COMEUP'])) continue;
 				$first = $p['f'];
 				$last = $p['l'];
 				$ioc = $p['i'];
-				echo join("\t", [$event, $gender, $ioc, $first, $last, $pid, $first . " " . $last]) . "\n";
+				$sex = "";
+				if (preg_match('/^[A-Z0-9]{4}$/', $pid)) {
+					$gender = "atp";
+					$sex = "M";
+				} else if (preg_match('/^[0-9]{5,6}$/', $pid)) {
+					$gender = "wta";
+					$sex = "W";
+				} else {
+					$gender = "itf";
+					if (in_array(substr($event, 0, 1), ['M', 'Q', 'B'])) {
+						$sex = "M";
+					} else {
+						$sex = "W";
+					}
+				}
+				$key = join("_", [$gender, 'profile', $pid]);
+				$arr = $this->redis->cmd('HMGET', $key, 's_en', 'l_en', 's_zh', 'l_zh', 's_ja', 'l_ja')->get();
+				echo join("\t", array_merge([$gender, $sex, $pid, $ioc, $first, $last], $arr)) . "\n";
 			}
 		}
+		unset($this->redis); $this->redis = null;
 	}
 
 	public function outputRounds() {
@@ -391,7 +433,9 @@ abstract class Base{
 	public function calaTeamFinal() {
 		foreach ($this->draws as $event => $anevent) {
 			if (isset($anevent['draw']['KO'][0])) {
+				ksort($anevent['draw']['KO'][0]);
 				foreach ($anevent['draw']['KO'][0] as $x => $around) {
+					ksort($around);
 					foreach ($around as $y => $matchid) {
 						$m = $this->matches[$matchid];
 						if (in_array($m['t1'], [$event, $event . 'BYE', $event . 'QUAL', $event . 'TBD', $event . 'LIVE', $event . 'COMEUP']) && 
@@ -619,6 +663,10 @@ abstract class Base{
 					$predict = array_reverse($predict);
 					$res['prediction'] = $predict;
 
+					$_lev = $this->{$gender . '_level'};
+					if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
+					if (strpos($_lev, "CH ") === 0) $_lev = "CH";
+
 					echo join("\t", [
 						$gender,
 						$sd,
@@ -627,7 +675,7 @@ abstract class Base{
 						date('Ymd', strtotime($this->first_day)),
 						$this->year,
 						$this->tour,
-						$this->{$gender . '_level'},
+						$_lev,
 						$this->loc,
 						$res['point'],
 						$res['win'],
@@ -830,11 +878,15 @@ abstract class Base{
 						$this_seed = $this_entry = "";
 					}
 
+					$_lev = $this->{$gender . '_level'};
+					if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
+					if (strpos($_lev, "CH ") === 0) $_lev = "CH";
+
 					echo join("\t", [
 						$gender,
 						$true_pid,
 						join("/", array_map(function ($d) use ($gender, $true_pid) {return $this->redis->cmd('HGET', join("_", [$gender, 'profile', $d]), 'ioc')->get();}, explode("/", $true_pid))), // ioc
-						$this->tour,
+						$this->{$gender . 'id'},
 						$this->tour,
 						$this->year,
 						date('Ymd', strtotime($this->first_day)),
@@ -842,7 +894,7 @@ abstract class Base{
 						$recordday,
 						strtoupper($this->city),
 						strtoupper($this->loc),
-						$this->{$gender . '_level'},
+						$_lev,
 						$this->surface,
 						$this->currency,
 						$this->{$gender . 'prize'},

@@ -1,0 +1,4 @@
+calc 文件
+周一时候修改。 xxx_activity_end 表示当前activity已经下载到哪一周了，就是下周一
+xxx_liveranking_end 表示下一个官方排名日
+xxx_this_weeks 表示本周持续几周，这个数关系到哪些赛事会写在排名表的“本周赛事”里，凡是在xxx_liveranking_end 往前推xxx_this_weeks的比赛，都会包含在本周赛事里

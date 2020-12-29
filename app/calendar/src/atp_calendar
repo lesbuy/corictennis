@@ -1,0 +1,2992 @@
+
+<!DOCTYPE html>
+<!-- START : /modules/global/head -->
+<!--[if lt IE 7]>
+    <html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7 ">
+<![endif]-->
+<!--[if IE 7]>
+    <html class="no-js lt-ie10 lt-ie9 lt-ie8 ">
+<![endif]-->
+<!--[if IE 8]>
+    <html class="no-js lt-ie10 lt-ie9 ">
+<![endif]-->
+<!--[if IE 9]>
+    <html class="no-js lt-ie10 ">
+<![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="no-js " translate="no">
+<!--<![endif]-->
+<head>
+    <!-- disable auto format for telephone numbers -->
+    <meta name="format-detection" content="telephone=no">
+    
+
+    <title>
+        Tournaments | ATP Tour | Tennis
+    </title>
+    <meta name="viewport" content="initial-scale=1.0, width=768, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.25">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="Official profiles of the 64 tennis tournaments in 31 countries that comprise the ATP Tour.  Featuring tournament information, live scores, results, draws, schedules, and more on the official site of men&#39;s professional tennis.">
+    <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+    <meta name="thumbnail" content="" />
+    <meta name="google" content="notranslate" />
+    <meta property="pageTransitionTitle" content="Tournaments" />
+    <meta property="fb:app_id" content="132901818553" />
+    <meta property="fb:pages" content="24410993700">
+    <meta property='og:locale' content='en' />
+    <meta property='og:type' content='article' />
+    <meta property='og:title' />
+    <meta property='og:description' content='Official profiles of the 64 tennis tournaments in 31 countries that comprise the ATP Tour.  Featuring tournament information, live scores, results, draws, schedules, and more on the official site of men&#39;s professional tennis.' />
+    <meta property='og:image' content='' />
+    <meta property='og:url' content='www.atptour.com/en/tournaments' />
+    <meta property='og:site_name' content='ATP Tour' />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" />
+    <meta name="twitter:creator" content="@atpworldtour" />
+    <meta name="twitter:description" content="Official profiles of the 64 tennis tournaments in 31 countries that comprise the ATP Tour.  Featuring tournament information, live scores, results, draws, schedules, and more on the official site of men&#39;s professional tennis." />
+    <meta name="twitter:image" content="" />
+
+
+    <!-- Google Ad Manager Header -->
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+<script>
+    window.googletag = window.googletag || { cmd: [] };
+
+
+    googletag.cmd.push(function () {
+
+            
+                googletag.defineSlot('/21840952109/Footer', [728,90], 'div-gpt-ad-Footer')
+                    .defineSizeMapping(googletag.sizeMapping().addSize([728, 0],  [728,90]).addSize([0, 0], [320,50] ).build())
+                    .setCollapseEmptyDiv(true)
+                    .setTargeting('Position', ['ATP Footer'])
+                    .addService(googletag.pubads());
+
+            
+            
+                googletag.defineSlot('/21840952109/Right-Rail-News', [300,250], 'div-gpt-ad-Right-Rail-News')
+                    .defineSizeMapping(googletag.sizeMapping().addSize([728, 0],  [300,250]).addSize([0, 0], []).build())
+                    .setCollapseEmptyDiv(true)
+                    .setTargeting('Position', ['ATP Right Rail News'])
+                    .addService(googletag.pubads());
+
+            
+            
+                googletag.defineSlot('/21840952109/Right-Rail-Scores', [300,250], 'div-gpt-ad-Right-Rail-Scores')
+                    .defineSizeMapping(googletag.sizeMapping().addSize([728, 0],  [300,250]).addSize([0, 0], []).build())
+                    .setCollapseEmptyDiv(true)
+                    .setTargeting('Position', ['ATP Right Rail Scores'])
+                    .addService(googletag.pubads());
+
+            
+
+    googletag.pubads().enableSingleRequest();
+    googletag.pubads().collapseEmptyDivs();
+
+        googletag.pubads().
+            setTargeting('Language',['English']).
+            setTargeting('Site',['ATP Tour']).
+            setTargeting('Device',['Desktop']).
+            setTargeting('Site-Section',['ATP Tournaments Calendar']);
+
+    googletag.enableServices();
+    });
+</script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                                                  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M4P6L56');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google Tag Manager -->
+    
+
+    
+
+
+    <script>
+        var cacheBuster = 637436659015655529
+    </script>
+    <link rel="stylesheet" href="/Assets/atpwt/styles/desktop.css?bust=637436659015655529"/>
+    <script src="/assets/atpwt/scripts/vendor/require.js"></script>
+    <script src="/assets/atpwt/scripts/desktop.js?bust=637436659015655529"></script>
+
+
+    <link rel="icon" href="/assets/atpwt/images/global/favicon.ico">
+
+    <!-- RUM's Header 1.3.3.0 -->
+
+
+
+
+
+<script async src='/cdn-cgi/bm/cv/669835187/api.js'></script></head>
+<!-- END : /modules/global/head -->
+
+
+
+<body class="is-desktop" data-signalr-url="https://push.atptour.com/signalr/signalr" >
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M4P6L56"
+            height="0" width="0" style="display: none; visibility: hidden">
+    </iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<!-- START : /modules/global/header -->
+
+
+<div id="header" class="header empty-subnav">
+
+    
+
+<div class="sub-header">
+    <div class="container">
+            <div class="sub-header-sponsor-logo">
+                
+                <img src="/-/media/images/logo-lockups/infosys_digital_innovation_partner_ondark.svg?iar=0&amp;hash=33020F6F849C772285028554C77B6358" alt="" />
+                
+            </div>
+        <ul class="sub-header-links">
+
+                    <li class="watch-link">
+                        <a href="/en/video/watch-live" data-ga-label="WATCH" data-ga-category="Outbound" data-ga-action="Click"> 
+                        WATCH
+                        </a>
+                    </li>
+                    <li class="listen-link">
+                        <a href="/en/news/tennis-radio" data-ga-label="LISTEN" data-ga-category="Outbound" data-ga-action="Click"> 
+                        LISTEN
+                        </a>
+                    </li>
+                    <li class="shop-link">
+                        <a href="https://www.tennis-warehouse.com/?from=atp" target="_blank" data-ga-label="SHOP" data-ga-category="Outbound" data-ga-action="Click"> 
+                        SHOP
+                        </a>
+                    </li>
+
+
+
+
+                <li class="login-link">
+
+                    <a href="https://www.atptour.com/en/newsletters/subscribe" data-ga-label="REGISTER"
+                       data-ga-category="Main Navigation" data-ga-action="Click">
+                        REGISTER
+                    </a>
+                    <span class="icon icon-myatp"></span>
+                </li>
+
+            <li class="sub-header-language-selector">
+                <!-- START LANGUAGE SELECTOR-->
+                <div id="languageSelector" class="language-selector">
+                    <div class="language-flag">
+EN
+                        <span class="icon icon-arrow-down"></span>
+                    </div>
+                    <ul id="languageDropdown" class="language-dropdown">
+                            <li>
+                                <a class="languageLink" data-language-code="es">
+                                    Spanish
+                                </a>
+                            </li> 
+                            <li>
+                                <a class="languageLink" data-language-code="en">
+                                    English
+                                </a>
+                            </li> 
+                    </ul>
+                </div>
+                <!-- END LANGUAGE SELECTOR-->
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    require(["modules/global/languageSwitcher"],
+        function (LanguageSwitcher) {
+            return new LanguageSwitcher({
+                elementId : "#languageDropdown"
+            });
+        });
+</script>
+
+<div id="mainHeader" class="main-header">
+    <div class="container atp-header-container">
+        <div id="controlMenu" class="atp-menu">
+            <div class="atp-menu-icon">
+                <div class="atp-menu-icon-top"></div>
+                <div class="atp-menu-icon-center"></div>
+                <div class="atp-menu-icon-bottom"></div>
+            </div>
+            <div class="atp-menu-label">
+                Menu
+            </div>
+        </div>
+        <h1 class="atp-logo">
+            <a href="/en/" data-ga-label="Main Navigation"
+               data-ga-category="Main Navigation" data-ga-action="Click"
+               data-use-ga="true" class="atp-logo-link">
+                <span class="atp-logo-name">
+                    ATP Tour
+                </span>
+                <img src="/-/media/images/site-logos/atp-logo-neg.svg?h=80&amp;iar=0&amp;hash=F3C8C78258D508AC13BA07C1E2E57390" class="atp-logo-image" alt="" height="80" />
+            </a>
+        </h1>
+
+        <div class="atp-nav-wrap">
+            <div class="atp-nav-wrap-inner">
+                <nav class="atp-nav">
+                    <ul class="atp-nav-list">
+                            <li class="atp-nav-item  ">
+    <a href="/en/scores/results-archive" data-ga-label="Scores"
+       data-ga-category="Main Navigation"
+       data-ga-action="Click">
+        Scores
+    </a>
+<ul class="atp-sub-nav">    <li class="atp-sub-nav-item ">
+        <a href="/en/scores/results-archive" data-ga-label="Results Archive" data-ga-category="Main Navigation" data-ga-action="Click">Results Archive</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/apps" data-ga-label="App" data-ga-category="Main Navigation" data-ga-action="Click">App</a>
+    </li>
+</ul></li>    <li class="atp-nav-item  ">
+    <a href="/en/stats" data-ga-label="Stats"
+       data-ga-category="Main Navigation"
+       data-ga-action="Click">
+        Stats
+    </a>
+<ul class="atp-sub-nav">    <li class="atp-sub-nav-item ">
+        <a href="/en/stats" data-ga-label="Landing" data-ga-category="Main Navigation" data-ga-action="Click">Landing</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/stats/leaderboard" data-ga-label="Leaderboards" data-ga-category="Main Navigation" data-ga-action="Click">Leaderboards</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/stats/player-tendencies" data-ga-label="Serve Tracker" data-ga-category="Main Navigation" data-ga-action="Click">Serve Tracker</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/stats/performance-zone" data-ga-label="Performance Zone" data-ga-category="Main Navigation" data-ga-action="Click">Performance Zone</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/stats/win-loss-index" data-ga-label="Win/Loss" data-ga-category="Main Navigation" data-ga-action="Click">Win/Loss</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/stats/service-games-won" data-ga-label="Stats" data-ga-category="Main Navigation" data-ga-action="Click">Stats</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/stats/year-end-no1s" data-ga-label="#1s" data-ga-category="Main Navigation" data-ga-action="Click">#1s</a>
+    </li>
+</ul></li>    <li class="atp-nav-item  ">
+    <a href="/en/rankings" data-ga-label="Rankings"
+       data-ga-category="Main Navigation"
+       data-ga-action="Click">
+        Rankings
+    </a>
+<ul class="atp-sub-nav">    <li class="atp-sub-nav-item ">
+        <a href="/en/rankings" data-ga-label="Landing" data-ga-category="Main Navigation" data-ga-action="Click">Landing</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/rankings/singles" data-ga-label="Singles" data-ga-category="Main Navigation" data-ga-action="Click">Singles</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/rankings/doubles" data-ga-label="Doubles" data-ga-category="Main Navigation" data-ga-action="Click">Doubles</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/rankings/atp-cup-standings" data-ga-label="ATP Cup Standings" data-ga-category="Main Navigation" data-ga-action="Click">ATP Cup Standings</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/rankings/doubles-race-to-london" data-ga-label="Doubles Race" data-ga-category="Main Navigation" data-ga-action="Click">Doubles Race</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/rankings/former-no-1s" data-ga-label="#1s" data-ga-category="Main Navigation" data-ga-action="Click">#1s</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/rankings/rankings-faq" data-ga-label="FAQ" data-ga-category="Main Navigation" data-ga-action="Click">FAQ</a>
+    </li>
+</ul></li>    <li class="atp-nav-item  ">
+    <a href="/en/players" data-ga-label="Players"
+       data-ga-category="Main Navigation"
+       data-ga-action="Click">
+        Players
+    </a>
+<ul class="atp-sub-nav">    <li class="atp-sub-nav-item ">
+        <a href="/en/players" data-ga-label="Landing" data-ga-category="Main Navigation" data-ga-action="Click">Landing</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/news-filter-results/all/features/my-point/all/all" data-ga-label="My Point" data-ga-category="Main Navigation" data-ga-action="Click">My Point</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/news-filter-results/all/features/all/five-things-to-know/all/all/" data-ga-label="Five Things To Know" data-ga-category="Main Navigation" data-ga-action="Click">Five Things To Know</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/players/coaches" data-ga-label="ATP Coach Members" data-ga-category="Main Navigation" data-ga-action="Click">ATP Coach Members</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/news-filter-results/all/features/coach/all/all/" data-ga-label="Coaches' Corner" data-ga-category="Main Navigation" data-ga-action="Click">Coaches' Corner</a>
+    </li>
+</ul></li>    <li class="atp-nav-item  ">
+    <a href="/en/tournaments" data-ga-label="Tournaments"
+       data-ga-category="Main Navigation"
+       data-ga-action="Click">
+        Tournaments
+    </a>
+<ul class="atp-sub-nav">    <li class="atp-sub-nav-item ">
+        <a href="/en/tournaments" data-ga-label="Calendar" data-ga-category="Main Navigation" data-ga-action="Click">Calendar</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="http://www.atpcup.com" target="_blank" data-ga-label="ATP Cup" data-ga-category="Main Navigation" data-ga-action="Click">ATP Cup</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="http://www.nittoatpfinals.com/en" target="_blank" data-ga-label="Nitto ATP Finals" data-ga-category="Main Navigation" data-ga-action="Click">Nitto ATP Finals</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="http://www.nextgenatpfinals.com/" target="_blank" data-ga-label="Next Gen ATP Finals" data-ga-category="Main Navigation" data-ga-action="Click">Next Gen ATP Finals</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/tournaments/masters-1000" data-ga-label="ATP Masters 1000" data-ga-category="Main Navigation" data-ga-action="Click">ATP Masters 1000</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/atp-challenger-tour" data-ga-label="Challenger" data-ga-category="Main Navigation" data-ga-action="Click">Challenger</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/tournaments/tv-schedule" data-ga-label="TV Schedule" data-ga-category="Main Navigation" data-ga-action="Click">TV Schedule</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/tournaments/tickets" data-ga-label="Tickets" data-ga-category="Main Navigation" data-ga-action="Click">Tickets</a>
+    </li>
+</ul></li>    <li class="atp-nav-item  ">
+    <a href="/en/news" data-ga-label="News"
+       data-ga-category="Main Navigation"
+       data-ga-action="Click">
+        News
+    </a>
+<ul class="atp-sub-nav">    <li class="atp-sub-nav-item ">
+        <a href="/en/news" data-ga-label="Landing" data-ga-category="Main Navigation" data-ga-action="Click">Landing</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/news-filter-results/all/all/all/all/all/" data-ga-label="Latest" data-ga-category="Main Navigation" data-ga-action="Click">Latest</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/story-of-the-season" data-ga-label="Story of the Season" data-ga-category="Main Navigation" data-ga-action="Click">Story of the Season</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/atp-heritage" data-ga-label="ATP Heritage" data-ga-category="Main Navigation" data-ga-action="Click">ATP Heritage</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/atp-awards" data-ga-label="ATP Awards" data-ga-category="Main Navigation" data-ga-action="Click">ATP Awards</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/on-the-road" data-ga-label="On The Road" data-ga-category="Main Navigation" data-ga-action="Click">On The Road</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/news/tennis-radio" data-ga-label="Tennis Radio" data-ga-category="Main Navigation" data-ga-action="Click">Tennis Radio</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/corporate/atp-aces-for-charity" data-ga-label="ATP ACES For Charity" data-ga-category="Main Navigation" data-ga-action="Click">ATP ACES For Charity</a>
+    </li>
+</ul></li>    <li class="atp-nav-item  ">
+    <a href="/en/video" data-ga-label="Video"
+       data-ga-category="Main Navigation"
+       data-ga-action="Click">
+        Video
+    </a>
+<ul class="atp-sub-nav">    <li class="atp-sub-nav-item ">
+        <a href="/en/video" data-ga-label="Landing" data-ga-category="Main Navigation" data-ga-action="Click">Landing</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/video/video-search-results/all/all/all/all/all/all" data-ga-label="Latest" data-ga-category="Main Navigation" data-ga-action="Click">Latest</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/video/video-search-results/all/hot-shot/all/all/all/all" data-ga-label="Hot Shots" data-ga-category="Main Navigation" data-ga-action="Click">Hot Shots</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/video/video-search-results/all/highlights/all/all/all/all" data-ga-label="Highlights" data-ga-category="Main Navigation" data-ga-action="Click">Highlights</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/video/video-search-results/all/interviews/all/all/all/all" data-ga-label="Interviews" data-ga-category="Main Navigation" data-ga-action="Click">Interviews</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/video/video-search-results/all/my-story/all/all/all/all" data-ga-label="My Story" data-ga-category="Main Navigation" data-ga-action="Click">My Story</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="/en/video/video-search-results/all/uncovered/all/all/all/all" data-ga-label="Uncovered" data-ga-category="Main Navigation" data-ga-action="Click">Uncovered</a>
+    </li>
+    <li class="atp-sub-nav-item ">
+        <a href="https://www.tennistv.com/" target="_blank" data-ga-label="Watch Live" data-ga-category="Main Navigation" data-ga-action="Click">Watch Live</a>
+    </li>
+</ul></li>
+                    </ul>
+                </nav>
+                <div class="atp-nav-icon">
+
+                    <div id="controlSearch" class="atp-search">
+                        <div class="atp-search-label"></div>
+                        <div class="atp-search-label-text">
+                            Search
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="atp-nav-sponsor">
+                <a href="http://www.emirates.com" target="_blank" data-ga-label="Emirates Header Logo"
+                   data-ga-action="Click"
+                   data-ga-category="Outbound">
+                    <img src="/-/media/images/sponsors/emirates-premier-partner-redbox-mobile-2019-v2.svg?h=80&amp;iar=0&amp;hash=8D7708B913E0E2BC05B8CD142974F744" class="atp-nav-sponsor-image" alt="" height="80" />
+                </a>
+            </div>
+    </div>
+</div>
+
+<script>
+
+    const shopLinks = [].slice.call(document.querySelectorAll('.atp-shop-link'));
+    shopLinks.forEach(function (el) {
+        el.addEventListener('click',
+            function () {
+                const link = el.querySelector('a');
+                link.click();
+            });
+    });
+
+    require(["modules/global/fixedHeader"],
+        function (FixedHeader) {
+            return new FixedHeader({
+                moreText : "More"
+            });
+        });
+
+    require(["modules/global/headerNav"],
+        function (HeaderNav) {
+            return HeaderNav.get();
+        });
+</script>
+<script id="tabletMenuTemplate" type="text/html">
+    <div id="navigation" class="navigation">
+        <div id="mainNav" class="main-nav">
+            <div class="nav-section">
+                <span class="nav-section-title">Menu</span>
+                <ul class="nav-list">
+                        <li data-sub-navigation-json="{
+  &quot;Title&quot;: &quot;Scores&quot;,
+  &quot;SponsorLink&quot;: &quot;&quot;,
+  &quot;SponsorLogo&quot;: &quot;&quot;,
+  &quot;AdvertLink&quot;: &quot;&quot;,
+  &quot;AdvertImage&quot;: &quot;&quot;,
+  &quot;AdvertSize&quot;: &quot;&quot;,
+  &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+  &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+  &quot;AnalyticsLabel&quot;: &quot;Scores&quot;,
+  &quot;MenuItems&quot;: [
+    {
+      &quot;Title&quot;: &quot;&quot;,
+      &quot;Link&quot;: &quot;/en/scores/current&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;&quot;,
+      &quot;Link&quot;: &quot;/en/scores/current-challenger&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;&quot;,
+      &quot;Link&quot;: &quot;/en/scores/current/&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Results Archive&quot;,
+      &quot;Link&quot;: &quot;/en/scores/results-archive&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Results Archive&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;App&quot;,
+      &quot;Link&quot;: &quot;/en/apps&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;App&quot;
+    }
+  ]
+}">
+            <a href="/en/scores" data-ga-label="Scores"
+               data-ga-category="Main Navigation"
+               data-ga-action="Click" class="nav-push">
+                Scores
+            </a>
+    </li>
+    <li data-sub-navigation-json="{
+  &quot;Title&quot;: &quot;Stats&quot;,
+  &quot;SponsorLink&quot;: &quot;&quot;,
+  &quot;SponsorLogo&quot;: &quot;&quot;,
+  &quot;AdvertLink&quot;: &quot;&quot;,
+  &quot;AdvertImage&quot;: &quot;&quot;,
+  &quot;AdvertSize&quot;: &quot;&quot;,
+  &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+  &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+  &quot;AnalyticsLabel&quot;: &quot;Stats&quot;,
+  &quot;MenuItems&quot;: [
+    {
+      &quot;Title&quot;: &quot;Landing&quot;,
+      &quot;Link&quot;: &quot;/en/stats&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Landing&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Leaderboards&quot;,
+      &quot;Link&quot;: &quot;/en/stats/leaderboard&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Leaderboards&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Serve Tracker&quot;,
+      &quot;Link&quot;: &quot;/en/stats/player-tendencies&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Serve Tracker&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Performance Zone&quot;,
+      &quot;Link&quot;: &quot;/en/stats/performance-zone&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Performance Zone&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Win/Loss&quot;,
+      &quot;Link&quot;: &quot;/en/stats/win-loss-index&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Win/Loss&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Stats&quot;,
+      &quot;Link&quot;: &quot;/en/stats/service-games-won&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Stats&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;#1s&quot;,
+      &quot;Link&quot;: &quot;/en/stats/year-end-no1s&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;#1s&quot;
+    }
+  ]
+}">
+            <a href="/en/stats" data-ga-label="Stats"
+               data-ga-category="Main Navigation"
+               data-ga-action="Click" class="nav-push">
+                Stats
+            </a>
+    </li>
+    <li data-sub-navigation-json="{
+  &quot;Title&quot;: &quot;Rankings&quot;,
+  &quot;SponsorLink&quot;: &quot;&quot;,
+  &quot;SponsorLogo&quot;: &quot;&quot;,
+  &quot;AdvertLink&quot;: &quot;&quot;,
+  &quot;AdvertImage&quot;: &quot;&quot;,
+  &quot;AdvertSize&quot;: &quot;&quot;,
+  &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+  &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+  &quot;AnalyticsLabel&quot;: &quot;Rankings&quot;,
+  &quot;MenuItems&quot;: [
+    {
+      &quot;Title&quot;: &quot;Landing&quot;,
+      &quot;Link&quot;: &quot;/en/rankings&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Landing&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Singles&quot;,
+      &quot;Link&quot;: &quot;/en/rankings/singles&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Singles&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Doubles&quot;,
+      &quot;Link&quot;: &quot;/en/rankings/doubles&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Doubles&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;ATP Cup Standings&quot;,
+      &quot;Link&quot;: &quot;/en/rankings/atp-cup-standings&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;ATP Cup Standings&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Doubles Race&quot;,
+      &quot;Link&quot;: &quot;/en/rankings/doubles-race-to-london&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Doubles Race&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;#1s&quot;,
+      &quot;Link&quot;: &quot;/en/rankings/former-no-1s&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;#1s&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;FAQ&quot;,
+      &quot;Link&quot;: &quot;/en/rankings/rankings-faq&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;FAQ&quot;
+    }
+  ]
+}">
+            <a href="/en/rankings" data-ga-label="Rankings"
+               data-ga-category="Main Navigation"
+               data-ga-action="Click" class="nav-push">
+                Rankings
+            </a>
+    </li>
+    <li data-sub-navigation-json="{
+  &quot;Title&quot;: &quot;Players&quot;,
+  &quot;SponsorLink&quot;: &quot;&quot;,
+  &quot;SponsorLogo&quot;: &quot;&quot;,
+  &quot;AdvertLink&quot;: &quot;&quot;,
+  &quot;AdvertImage&quot;: &quot;&quot;,
+  &quot;AdvertSize&quot;: &quot;&quot;,
+  &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+  &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+  &quot;AnalyticsLabel&quot;: &quot;Players&quot;,
+  &quot;MenuItems&quot;: [
+    {
+      &quot;Title&quot;: &quot;Landing&quot;,
+      &quot;Link&quot;: &quot;/en/players&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Landing&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;My Point&quot;,
+      &quot;Link&quot;: &quot;/en/news/news-filter-results/all/features/my-point/all/all&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;My Point&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Five Things To Know&quot;,
+      &quot;Link&quot;: &quot;/en/news/news-filter-results/all/features/all/five-things-to-know/all/all/&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Five Things To Know&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;ATP Coach Members&quot;,
+      &quot;Link&quot;: &quot;/en/players/coaches&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;ATP Coach Members&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Coaches&#39; Corner&quot;,
+      &quot;Link&quot;: &quot;/en/news/news-filter-results/all/features/coach/all/all/&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Coaches&#39; Corner&quot;
+    }
+  ]
+}">
+            <a href="/en/players" data-ga-label="Players"
+               data-ga-category="Main Navigation"
+               data-ga-action="Click" class="nav-push">
+                Players
+            </a>
+    </li>
+    <li data-sub-navigation-json="{
+  &quot;Title&quot;: &quot;Tournaments&quot;,
+  &quot;SponsorLink&quot;: &quot;&quot;,
+  &quot;SponsorLogo&quot;: &quot;&quot;,
+  &quot;AdvertLink&quot;: &quot;&quot;,
+  &quot;AdvertImage&quot;: &quot;&quot;,
+  &quot;AdvertSize&quot;: &quot;&quot;,
+  &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+  &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+  &quot;AnalyticsLabel&quot;: &quot;Tournaments&quot;,
+  &quot;MenuItems&quot;: [
+    {
+      &quot;Title&quot;: &quot;Calendar&quot;,
+      &quot;Link&quot;: &quot;/en/tournaments&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Calendar&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;ATP Cup&quot;,
+      &quot;Link&quot;: &quot;http://www.atpcup.com&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;ATP Cup&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Nitto ATP Finals&quot;,
+      &quot;Link&quot;: &quot;http://www.nittoatpfinals.com/en&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Nitto ATP Finals&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Next Gen ATP Finals&quot;,
+      &quot;Link&quot;: &quot;http://www.nextgenatpfinals.com/&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Next Gen ATP Finals&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;ATP Masters 1000&quot;,
+      &quot;Link&quot;: &quot;/en/tournaments/masters-1000&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;ATP Masters 1000&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Challenger&quot;,
+      &quot;Link&quot;: &quot;/en/atp-challenger-tour&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Challenger&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;TV Schedule&quot;,
+      &quot;Link&quot;: &quot;/en/tournaments/tv-schedule&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;TV Schedule&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Tickets&quot;,
+      &quot;Link&quot;: &quot;/en/tournaments/tickets&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Tickets&quot;
+    }
+  ]
+}">
+            <a href="/en/tournaments" data-ga-label="Tournaments"
+               data-ga-category="Main Navigation"
+               data-ga-action="Click" class="nav-push">
+                Tournaments
+            </a>
+    </li>
+    <li data-sub-navigation-json="{
+  &quot;Title&quot;: &quot;News&quot;,
+  &quot;SponsorLink&quot;: &quot;&quot;,
+  &quot;SponsorLogo&quot;: &quot;&quot;,
+  &quot;AdvertLink&quot;: &quot;&quot;,
+  &quot;AdvertImage&quot;: &quot;&quot;,
+  &quot;AdvertSize&quot;: &quot;&quot;,
+  &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+  &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+  &quot;AnalyticsLabel&quot;: &quot;News&quot;,
+  &quot;MenuItems&quot;: [
+    {
+      &quot;Title&quot;: &quot;Landing&quot;,
+      &quot;Link&quot;: &quot;/en/news&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Landing&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Latest&quot;,
+      &quot;Link&quot;: &quot;/en/news/news-filter-results/all/all/all/all/all/&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Latest&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Story of the Season&quot;,
+      &quot;Link&quot;: &quot;/en/news/story-of-the-season&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Story of the Season&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;ATP Heritage&quot;,
+      &quot;Link&quot;: &quot;/en/news/atp-heritage&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;ATP Heritage&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;ATP Awards&quot;,
+      &quot;Link&quot;: &quot;/en/news/atp-awards&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;ATP Awards&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;On The Road&quot;,
+      &quot;Link&quot;: &quot;/en/news/on-the-road&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;On The Road&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Tennis Radio&quot;,
+      &quot;Link&quot;: &quot;/en/news/tennis-radio&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Tennis Radio&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;ATP ACES For Charity&quot;,
+      &quot;Link&quot;: &quot;/en/corporate/atp-aces-for-charity&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;ATP ACES For Charity&quot;
+    }
+  ]
+}">
+            <a href="/en/news" data-ga-label="News"
+               data-ga-category="Main Navigation"
+               data-ga-action="Click" class="nav-push">
+                News
+            </a>
+    </li>
+    <li data-sub-navigation-json="{
+  &quot;Title&quot;: &quot;Video&quot;,
+  &quot;SponsorLink&quot;: &quot;&quot;,
+  &quot;SponsorLogo&quot;: &quot;&quot;,
+  &quot;AdvertLink&quot;: &quot;&quot;,
+  &quot;AdvertImage&quot;: &quot;&quot;,
+  &quot;AdvertSize&quot;: &quot;&quot;,
+  &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+  &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+  &quot;AnalyticsLabel&quot;: &quot;Video&quot;,
+  &quot;MenuItems&quot;: [
+    {
+      &quot;Title&quot;: &quot;Landing&quot;,
+      &quot;Link&quot;: &quot;/en/video&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Landing&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Latest&quot;,
+      &quot;Link&quot;: &quot;/en/video/video-search-results/all/all/all/all/all/all&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Latest&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Hot Shots&quot;,
+      &quot;Link&quot;: &quot;/en/video/video-search-results/all/hot-shot/all/all/all/all&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Hot Shots&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Highlights&quot;,
+      &quot;Link&quot;: &quot;/en/video/video-search-results/all/highlights/all/all/all/all&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Highlights&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Interviews&quot;,
+      &quot;Link&quot;: &quot;/en/video/video-search-results/all/interviews/all/all/all/all&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Interviews&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;My Story&quot;,
+      &quot;Link&quot;: &quot;/en/video/video-search-results/all/my-story/all/all/all/all&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;My Story&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Uncovered&quot;,
+      &quot;Link&quot;: &quot;/en/video/video-search-results/all/uncovered/all/all/all/all&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Uncovered&quot;
+    },
+    {
+      &quot;Title&quot;: &quot;Watch Live&quot;,
+      &quot;Link&quot;: &quot;https://www.tennistv.com/&quot;,
+      &quot;AnalyticsCategory&quot;: &quot;Main Navigation&quot;,
+      &quot;AnalyticsAction&quot;: &quot;Click&quot;,
+      &quot;AnalyticsLabel&quot;: &quot;Watch Live&quot;
+    }
+  ]
+}">
+            <a href="/en/video" data-ga-label="Video"
+               data-ga-category="Main Navigation"
+               data-ga-action="Click" class="nav-push">
+                Video
+            </a>
+    </li>
+
+                </ul>
+            </div>
+            <div class="nav-section">
+                <span class="nav-section-title">Other Tours</span>
+
+                    <ul class="nav-list secondary">
+                            <li>
+                                <a class="external" target="_blank" href="/en/news/tennis-radio"> 
+                                LISTEN
+                                </a>
+                            </li>
+                            <li>
+                                <a class="external" target="_blank" href="https://www.tennis-warehouse.com/?from=atp"> 
+                                SHOP
+                                </a>
+                            </li>
+                    </ul>
+
+                    <div class="nav-section change-language">
+                        <span class="nav-section-title">Change Language</span>
+                        <div class="language-flags">
+                                <a href="/en/tournaments" ><img src="/-/media/images/flags/esp.svg?h=32&amp;iar=0&amp;w=44&amp;hash=8551A726138A1EF828794408742F58C5" alt="zh" width="44" height="32" /></a>
+                                <a href="/en/tournaments" class=current><img src="/-/media/images/flags/gbr.svg?h=32&amp;iar=0&amp;w=44&amp;hash=278C0EF514ED1A4C121847AA22897F4E" alt="USA" width="44" height="32" /></a>
+                        </div>
+                    </div>
+                <button id="closeNav" class="close-nav">
+                    <span>
+                        Close
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div id="subNav" class="sub-nav"></div>
+    </div>
+</script>
+
+<script id="subNavTemplate" type="text/template">
+    <span class="sub-nav-title"><%- rc.Title %></span>
+    <a href="<%- rc.SponsorLink %>" target="_blank" class="sponsor-logo" data-ga-label="<%- rc.AnalyticsLabel %>" dada-ga-category="<%- rc.AnalyticsCategory %>" data-ga-action="<%- rc.AnalyticsAction %>"><img alt="Sponsor Logo" src="<%- rc.SponsorLogo %>" /></a>
+    <div class="nav-section">
+        <ul class="nav-list">
+            <% _.each( rc.MenuItems, function( menuItem ) { %>
+            <li><a href="<%- menuItem.Link %>" data-ga-label="<%- menuItem.AnalyticsLabel %>" data-ga-category="<%- menuItem.AnalyticsCategory %>" data-ga-action="<%- menuItem.AnalyticsAction %>"><%- menuItem.Title %></a></li>
+            <% }); %>
+        </ul>
+    </div>
+    <div class="iab-wrapper"><a href="<%- rc.AdvertLink %>"><img alt="Advert" src="<%- rc.AdvertImage %><%- rc.AdvertSize %>" /></a></div>
+</script>
+
+
+
+
+
+
+
+
+
+    <div id="pageHeader" class="page-header ">
+        <!-- START: PAGEHEADER -->
+        <div data-outside-element="pageHeader" class="page-header-holder is-empty">
+            <div id="filterHolder" class="filter-holder exposed">
+	<div class="dropdown-layout-wrapper">
+		<div class="dropdown-wrapper">
+			<div class="dropdown-holder-wrapper">
+				<div class="dropdown-holder">
+					<div class="dropdown-label">
+						Find a Tournament
+					</div>
+					<ul class="dropdown">
+								<li class=" has-link no-padding">
+									<a href="/en/tournaments/antalya/9426/overview">
+										Antalya
+									</a>
+								</li>
+								<li class=" has-link no-padding">
+									<a href="/en/tournaments/atp-cup/8888/overview">
+										ATP Cup
+									</a>
+								</li>
+								<li class=" has-link no-padding">
+									<a href="/en/tournaments/australian-open/580/overview">
+										Australian Open
+									</a>
+								</li>
+								<li class=" has-link no-padding">
+									<a href="/en/tournaments/delray-beach/499/overview">
+										Delray Beach
+									</a>
+								</li>
+								<li class=" has-link no-padding">
+									<a href="/en/tournaments/melbourne/8998/overview">
+										Melbourne 1 / Adelaide
+									</a>
+								</li>
+								<li class=" has-link no-padding">
+									<a href="/en/tournaments/melbourne/9428/overview">
+										Melbourne 2
+									</a>
+								</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+	require(["modules/page/filter"], function (Filter) {
+		setTimeout(function () {
+			var filter = new Filter({
+				analytics: {
+					gaCategory: "Tournament Profiles - ",
+					gaSelectAction: "Select"
+				}
+			});
+
+			return filter;
+		}, 500);
+	});
+</script>        <h1 class="page-title">
+            Tournaments
+        </h1>
+        <div id="Tournaments_subNav" class="sub-navigation-wrap ">
+            <ul class="sub-navigation">
+                        <li data-title="Calendar" id="tournaments_SectionLink"
+                            class="current">
+                            <a href="/en/tournaments" data-ga-label="Calendar" data-ga-category=" - Tournaments" data-ga-action="Click">Calendar</a>
+                        </li>
+                        <li data-title="" id="calendar_SectionLink"
+                            class="">
+                            
+                        </li>
+                        <li data-title="ATP Cup" id="atp-cup_SectionLink"
+                            class="">
+                            <a href="http://www.atpcup.com" target="_blank" data-ga-label="ATP Cup" data-ga-category=" - Tournaments" data-ga-action="Click">ATP Cup</a>
+                        </li>
+                        <li data-title="Nitto ATP Finals" id="barclays-atp-world-tour-finals_SectionLink"
+                            class="">
+                            <a href="http://www.nittoatpfinals.com/en" target="_blank" data-ga-label="Nitto ATP Finals" data-ga-category=" - Tournaments" data-ga-action="Click">Nitto ATP Finals</a>
+                        </li>
+                        <li data-title="Next Gen ATP Finals" id="next-gen-atp-finals_SectionLink"
+                            class="">
+                            <a href="http://www.nextgenatpfinals.com/" target="_blank" data-ga-label="Next Gen ATP Finals" data-ga-category=" - Tournaments" data-ga-action="Click">Next Gen ATP Finals</a>
+                        </li>
+                        <li data-title="ATP Masters 1000" id="masters-1000_SectionLink"
+                            class="">
+                            <a href="/en/tournaments/masters-1000" data-ga-label="ATP Masters 1000" data-ga-category=" - Tournaments" data-ga-action="Click">ATP Masters 1000</a>
+                        </li>
+                        <li data-title="Challenger" id="atp-challenger-tour_SectionLink"
+                            class="">
+                            <a href="/en/atp-challenger-tour" data-ga-label="Challenger" data-ga-category=" - Tournaments" data-ga-action="Click">Challenger</a>
+                        </li>
+                        <li data-title="TV Schedule" id="tv-schedule_SectionLink"
+                            class="">
+                            <a href="/en/tournaments/tv-schedule" data-ga-label="TV Schedule" data-ga-category=" - Tournaments" data-ga-action="Click">TV Schedule</a>
+                        </li>
+                        <li data-title="Tickets" id="tickets_SectionLink"
+                            class="">
+                            <a href="/en/tournaments/tickets" data-ga-label="Tickets" data-ga-category=" - Tournaments" data-ga-action="Click">Tickets</a>
+                        </li>
+            </ul>
+        </div>
+        <script id="pageHeaderMoreLinks" type="text/template">
+            <li class="page-header-more-link">
+                <a>More</a>
+                <ul id="SectionMoreLinks" class="page-header-sub-nav">
+                    <li data-title="Calendar" id="tournaments_SectionMoreLink"
+                        class="current">
+                        <a href="/en/tournaments" data-ga-label="Calendar" data-ga-category=" - Tournaments" data-ga-action="Click">Calendar</a>
+                    </li>
+                    <li data-title="" id="calendar_SectionMoreLink"
+                        class="">
+                        
+                    </li>
+                    <li data-title="ATP Cup" id="atp-cup_SectionMoreLink"
+                        class="">
+                        <a href="http://www.atpcup.com" target="_blank" data-ga-label="ATP Cup" data-ga-category=" - Tournaments" data-ga-action="Click">ATP Cup</a>
+                    </li>
+                    <li data-title="Nitto ATP Finals" id="barclays-atp-world-tour-finals_SectionMoreLink"
+                        class="">
+                        <a href="http://www.nittoatpfinals.com/en" target="_blank" data-ga-label="Nitto ATP Finals" data-ga-category=" - Tournaments" data-ga-action="Click">Nitto ATP Finals</a>
+                    </li>
+                    <li data-title="Next Gen ATP Finals" id="next-gen-atp-finals_SectionMoreLink"
+                        class="">
+                        <a href="http://www.nextgenatpfinals.com/" target="_blank" data-ga-label="Next Gen ATP Finals" data-ga-category=" - Tournaments" data-ga-action="Click">Next Gen ATP Finals</a>
+                    </li>
+                    <li data-title="ATP Masters 1000" id="masters-1000_SectionMoreLink"
+                        class="">
+                        <a href="/en/tournaments/masters-1000" data-ga-label="ATP Masters 1000" data-ga-category=" - Tournaments" data-ga-action="Click">ATP Masters 1000</a>
+                    </li>
+                    <li data-title="Challenger" id="atp-challenger-tour_SectionMoreLink"
+                        class="">
+                        <a href="/en/atp-challenger-tour" data-ga-label="Challenger" data-ga-category=" - Tournaments" data-ga-action="Click">Challenger</a>
+                    </li>
+                    <li data-title="TV Schedule" id="tv-schedule_SectionMoreLink"
+                        class="">
+                        <a href="/en/tournaments/tv-schedule" data-ga-label="TV Schedule" data-ga-category=" - Tournaments" data-ga-action="Click">TV Schedule</a>
+                    </li>
+                    <li data-title="Tickets" id="tickets_SectionMoreLink"
+                        class="">
+                        <a href="/en/tournaments/tickets" data-ga-label="Tickets" data-ga-category=" - Tournaments" data-ga-action="Click">Tickets</a>
+                    </li>
+                </ul>
+            </li>
+        </script>
+
+        </div>
+        <!-- END: PAGEHEADER -->
+    </div>
+</div>
+<div class="search-container">
+	<div class="container">
+		<form id="siteSearch" class="site-search">
+			<input type="search" maxlength="30" placeholder="Search Players and Tournaments" class="search">
+			<button id="closeSearch" type="button" class="close-search"></button>
+            <div class="search-partner">
+            </div>
+		</form>
+        <div id="predictiveResults" style="display: none;" class="predictive-results-wrapper">
+            <div id="tournamentListing" style="display: none;" class="predictive-results-section predictive-tournaments">
+                <h3 class="section-title">Tournament Results</h3>
+                <div id="tournamentsWrapper" class="predictive-results"></div>
+            </div>
+            <div id="playerListing" style="display: none;" class="predictive-results-section predictive-players">
+                <h3 class="section-title">Player Results</h3>
+                <div id="playersWrapper" class="predictive-results"></div>
+            </div>
+        </div>
+	</div>
+</div>
+<script>
+	require(["modules/search/search"], function (Search) {
+		return new Search({
+			searchTermKey: "searchTerm",
+			tournamentsUrl: "/en/-/ajax/PredictiveContentSearch/GetTournamentResults/",
+			playersUrl: "/en/-/ajax/PredictiveContentSearch/GetPlayerResults/",
+			analytics: {
+				gaCategory: "Main Navigation",
+				gaAction: "Click",
+				gaLabel: "Search"
+			},
+			profilePhrase: "Profile",
+			newsPhrase: "News",
+			videosPhrase: "Videos"
+		});
+	});
+</script>
+
+<!-- END : /modules/global/header -->
+<!-- START : WRAPPER-->
+<div class="wrapper" id="mainLayoutWrapper">
+    <div data-outside-element="largeDropin">
+        
+    </div>
+    <div class="container" id="backbonePlaceholder">
+
+        <!-- START : MAIN CONTAINER-->
+        <div data-page="tournaments" id="mainContainer" class="main-container">
+            <!-- START : BODY CONTENT -->
+
+            <div id="mainContent" class="main-content" >
+
+                <div class="centered-content">
+	<div class="article-copy">
+<p><a href="https://www.atptour.com/en/scores/results-archive">Click here</a> for a full tournament directory</p>	</div>
+</div>
+
+
+<!-- START : /modules/accordion/tournaments-accordion-->
+<div id="contentAccordionWrapper" class="content-accordion-wrapper tourney-accordion-wrapper">
+    <div class="intro-content">
+        <a id="toggleAll" href="#" data-toggle="Open All" class="button-border"></a>
+            <a href="/-/media/files/2021-atp-challenger-calendar-as-of-22-12-2020-v4.pdf?sc=0&amp;hash=5167A75F0259CC8CD083D844F46CDF71" target="_blank" download class="button-border">
+                2021 Calendar PDF
+            </a>
+    </div>
+<div class="content-accordion expand">    <div class="accordion-label">
+January 2021    </div>
+<div class="centered-content-wrapper"><table class="tourney-results-wrapper"><tr class="tourney-result">
+    <td class="tourney-badge-wrapper">
+            <img alt="tournament badge" src="/assets/atpwt/images/tournament/badges/categorystamps_250.png" />
+    </td>
+
+        <td class="title-content">
+
+                <a href="/en/tournaments/delray-beach/499/overview" class="tourney-title" data-ga-action="Click"
+                   data-ga-label="Delray Beach Open by VITACOST.com"
+                   data-ga-category="Tournaments - Tournaments" data-use-ga="true">
+                    Delray Beach Open by VITACOST.com
+                </a>
+
+            <span class="tourney-location">
+                Delray Beach, FL, U.S.A.
+            </span>
+            <span class="tourney-dates">
+
+
+                2021.01.07 - 2021.01.13
+            </span>
+        </td>
+
+        <!--structured data -->
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "SportsEvent",
+            "name": "Delray Beach",
+            "sport": "Tennis",
+            "endDate": "1/13/2021 12:00:00 AM",
+            "startDate":" 1/7/2021 12:00:00 AM",
+            "location": {
+            "@type":"Place",
+            "name": "Delray Beach",
+            "address":{
+            "@type": "PostalAddress",
+            "addressLocality": "Delray Beach",
+            "addressCountry": "FL, U.S.A."
+            }
+            },
+            "image":[
+            "/assets/atpwt/images/tournament/badges/categorystamps_250.png"
+            ],
+            "organizer": {
+            "@type": "Organization",
+            "name": "Delray Beach Open by VITACOST.com",
+            "url": "/en/tournaments/delray-beach/499/overview"
+            }
+            }
+        </script>
+        <!--END: structured data -->
+
+    <td class="tourney-details-table-wrapper">
+        <table>
+            <tbody>
+                <tr>
+
+                        <td class="tourney-details">
+
+                                <div class="info-area">
+                                    <div class="item-details">
+                                        SGL
+                                        <a href="/en/scores/archive/delray-beach/499/2020/draws?matchtype=singles">
+                                            <span class="item-value">
+                                                28
+                                            </span>
+                                        </a>
+                                        DBL
+                                        <a href="/en/scores/archive/delray-beach/499/2020/draws?matchtype=doubles">
+                                            <span class="item-value">
+                                                16
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                        </td>
+
+
+                    <td class="tourney-details">
+                        <div class="info-area">
+                            <div class="item-details">
+                                Outdoor
+                                <span class="item-value">
+                                    Hard
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td class="tourney-details fin-commit">
+Total Financial Commitment                            <div class="info-area">
+                                <div class="item-details">
+                                    <span class="item-value">
+                                        $418,195
+                                    </span>
+                                </div>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+
+
+    <td class="tourney-details action-buttons">
+            <!-- 1/13/2021 12:00:00 AM -->
+                <!-- 1/13/2021 12:00:00 AM -->
+                <a href="http://YellowTennisBall.com" target="_blank" class="button-border" ga-label="Tickets Info"
+                   ga-category="Tournaments" ga-action="Click">
+                    Tickets Info
+                </a>
+                <div class="info-area">
+                    <div class="info-item">
+                        <div class="item-details  is-one-line">
+                            1-561/330-6000
+                        </div>
+                    </div>
+                </div>
+
+    </td>
+
+</tr>
+<tr class="tourney-result">
+    <td class="tourney-badge-wrapper">
+            <img alt="tournament badge" src="/assets/atpwt/images/tournament/badges/categorystamps_250.png" />
+    </td>
+
+        <td class="title-content">
+
+                <a href="/en/tournaments/antalya/9426/overview" class="tourney-title" data-ga-action="Click"
+                   data-ga-label="Antalya Open"
+                   data-ga-category="Tournaments - Tournaments" data-use-ga="true">
+                    Antalya Open
+                </a>
+
+            <span class="tourney-location">
+                Antalya, Turkey
+            </span>
+            <span class="tourney-dates">
+
+
+                2021.01.07 - 2021.01.13
+            </span>
+        </td>
+
+        <!--structured data -->
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "SportsEvent",
+            "name": "Antalya",
+            "sport": "Tennis",
+            "endDate": "1/13/2021 12:00:00 AM",
+            "startDate":" 1/7/2021 12:00:00 AM",
+            "location": {
+            "@type":"Place",
+            "name": "Antalya",
+            "address":{
+            "@type": "PostalAddress",
+            "addressLocality": "Antalya",
+            "addressCountry": "Turkey"
+            }
+            },
+            "image":[
+            "/assets/atpwt/images/tournament/badges/categorystamps_250.png"
+            ],
+            "organizer": {
+            "@type": "Organization",
+            "name": "Antalya Open",
+            "url": "/en/tournaments/antalya/9426/overview"
+            }
+            }
+        </script>
+        <!--END: structured data -->
+
+    <td class="tourney-details-table-wrapper">
+        <table>
+            <tbody>
+                <tr>
+
+                        <td class="tourney-details">
+
+                                <div class="info-area">
+                                    <div class="item-details">
+                                        SGL
+                                        <a class="not-in-system">
+                                            <span class="item-value">
+                                                32
+                                            </span>
+                                        </a>
+                                        DBL
+                                        <a class="not-in-system">
+                                            <span class="item-value">
+                                                16
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                        </td>
+
+
+                    <td class="tourney-details">
+                        <div class="info-area">
+                            <div class="item-details">
+                                Outdoor
+                                <span class="item-value">
+                                    Hard
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td class="tourney-details fin-commit">
+Total Financial Commitment                            <div class="info-area">
+                                <div class="item-details">
+                                    <span class="item-value">
+                                        €361,800
+                                    </span>
+                                </div>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+
+
+    <td class="tourney-details action-buttons">
+            <!-- 1/13/2021 12:00:00 AM -->
+                <!-- 1/13/2021 12:00:00 AM -->
+                <a href="http://" target="_blank" class="button-border" ga-label="Tickets Info"
+                   ga-category="Tournaments" ga-action="Click">
+                    Tickets Info
+                </a>
+                <div class="info-area">
+                    <div class="info-item">
+                        <div class="item-details  is-one-line">
+                            
+                        </div>
+                    </div>
+                </div>
+
+    </td>
+
+</tr>
+<tr class="tourney-result">
+    <td class="tourney-badge-wrapper">
+            <img alt="tournament badge" src="/assets/atpwt/images/tournament/badges/categorystamps_250.png" />
+    </td>
+
+        <td class="title-content">
+
+                <a href="/en/tournaments/melbourne/8998/overview" class="tourney-title" data-ga-action="Click"
+                   data-ga-label="Melbourne 1 / Adelaide"
+                   data-ga-category="Tournaments - Tournaments" data-use-ga="true">
+                    Melbourne 1 / Adelaide
+                </a>
+
+            <span class="tourney-location">
+                Melbourne, Australia
+            </span>
+            <span class="tourney-dates">
+
+
+                2021.01.31 - 2021.02.06
+            </span>
+        </td>
+
+        <!--structured data -->
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "SportsEvent",
+            "name": "Melbourne 1 / Adelaide",
+            "sport": "Tennis",
+            "endDate": "2/6/2021 12:00:00 AM",
+            "startDate":" 1/31/2021 12:00:00 AM",
+            "location": {
+            "@type":"Place",
+            "name": "Melbourne",
+            "address":{
+            "@type": "PostalAddress",
+            "addressLocality": "Melbourne",
+            "addressCountry": "Australia"
+            }
+            },
+            "image":[
+            "/assets/atpwt/images/tournament/badges/categorystamps_250.png"
+            ],
+            "organizer": {
+            "@type": "Organization",
+            "name": "Melbourne 1 / Adelaide",
+            "url": "/en/tournaments/melbourne/8998/overview"
+            }
+            }
+        </script>
+        <!--END: structured data -->
+
+    <td class="tourney-details-table-wrapper">
+        <table>
+            <tbody>
+                <tr>
+
+                        <td class="tourney-details">
+
+                                <div class="info-area">
+                                    <div class="item-details">
+                                        SGL
+                                        <a href="/en/scores/archive/melbourne/8998/2020/draws?matchtype=singles">
+                                            <span class="item-value">
+                                                48
+                                            </span>
+                                        </a>
+                                        DBL
+                                        <a href="/en/scores/archive/melbourne/8998/2020/draws?matchtype=doubles">
+                                            <span class="item-value">
+                                                24
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                        </td>
+
+
+                    <td class="tourney-details">
+                        <div class="info-area">
+                            <div class="item-details">
+                                Outdoor
+                                <span class="item-value">
+                                    Hard
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td class="tourney-details fin-commit">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+
+
+    <td class="tourney-details action-buttons">
+            <!-- 2/6/2021 12:00:00 AM -->
+                <!-- 2/6/2021 12:00:00 AM -->
+                <a href="http://https://adelaideinternational.com.au/" target="_blank" class="button-border" ga-label="Tickets Info"
+                   ga-category="Tournaments" ga-action="Click">
+                    Tickets Info
+                </a>
+                <div class="info-area">
+                    <div class="info-item">
+                        <div class="item-details  is-one-line">
+                            
+                        </div>
+                    </div>
+                </div>
+
+    </td>
+
+</tr>
+<tr class="tourney-result">
+    <td class="tourney-badge-wrapper">
+            <img alt="tournament badge" src="/assets/atpwt/images/tournament/badges/categorystamps_250.png" />
+    </td>
+
+        <td class="title-content">
+
+                <a href="/en/tournaments/melbourne/9428/overview" class="tourney-title" data-ga-action="Click"
+                   data-ga-label="Melbourne 2"
+                   data-ga-category="Tournaments - Tournaments" data-use-ga="true">
+                    Melbourne 2
+                </a>
+
+            <span class="tourney-location">
+                Melbourne, Australia
+            </span>
+            <span class="tourney-dates">
+
+
+                2021.01.31 - 2021.02.06
+            </span>
+        </td>
+
+        <!--structured data -->
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "SportsEvent",
+            "name": "Melbourne 2",
+            "sport": "Tennis",
+            "endDate": "2/6/2021 12:00:00 AM",
+            "startDate":" 1/31/2021 12:00:00 AM",
+            "location": {
+            "@type":"Place",
+            "name": "Melbourne",
+            "address":{
+            "@type": "PostalAddress",
+            "addressLocality": "Melbourne",
+            "addressCountry": "Australia"
+            }
+            },
+            "image":[
+            "/assets/atpwt/images/tournament/badges/categorystamps_250.png"
+            ],
+            "organizer": {
+            "@type": "Organization",
+            "name": "Melbourne 2",
+            "url": "/en/tournaments/melbourne/9428/overview"
+            }
+            }
+        </script>
+        <!--END: structured data -->
+
+    <td class="tourney-details-table-wrapper">
+        <table>
+            <tbody>
+                <tr>
+
+                        <td class="tourney-details">
+
+                                <div class="info-area">
+                                    <div class="item-details">
+                                        SGL
+                                        <a class="not-in-system">
+                                            <span class="item-value">
+                                                48
+                                            </span>
+                                        </a>
+                                        DBL
+                                        <a class="not-in-system">
+                                            <span class="item-value">
+                                                24
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                        </td>
+
+
+                    <td class="tourney-details">
+                        <div class="info-area">
+                            <div class="item-details">
+                                Outdoor
+                                <span class="item-value">
+                                    Hard
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td class="tourney-details fin-commit">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+
+
+    <td class="tourney-details action-buttons">
+            <!-- 2/6/2021 12:00:00 AM -->
+                <!-- 2/6/2021 12:00:00 AM -->
+                <a href="http://" target="_blank" class="button-border" ga-label="Tickets Info"
+                   ga-category="Tournaments" ga-action="Click">
+                    Tickets Info
+                </a>
+                <div class="info-area">
+                    <div class="info-item">
+                        <div class="item-details  is-one-line">
+                            
+                        </div>
+                    </div>
+                </div>
+
+    </td>
+
+</tr>
+</table>
+                </div>
+            </div><div class="content-accordion expand">    <div class="accordion-label">
+February 2021    </div>
+<div class="centered-content-wrapper"><table class="tourney-results-wrapper"><tr class="tourney-result">
+    <td class="tourney-badge-wrapper">
+            <img alt="tournament badge" src="/assets/atpwt/images/tournament/badges/categorystamps_atpcup.svg" />
+    </td>
+
+        <td class="title-content">
+
+                <a href="/en/tournaments/atp-cup/8888/overview" class="tourney-title" data-ga-action="Click"
+                   data-ga-label="ATP Cup"
+                   data-ga-category="Tournaments - Tournaments" data-use-ga="true">
+                    ATP Cup
+                </a>
+
+            <span class="tourney-location">
+                Melbourne, Australia
+            </span>
+            <span class="tourney-dates">
+
+
+                2021.02.01 - 2021.02.05
+            </span>
+        </td>
+
+        <!--structured data -->
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "SportsEvent",
+            "name": "ATP Cup",
+            "sport": "Tennis",
+            "endDate": "2/5/2021 12:00:00 AM",
+            "startDate":" 2/1/2021 12:00:00 AM",
+            "location": {
+            "@type":"Place",
+            "name": "Melbourne",
+            "address":{
+            "@type": "PostalAddress",
+            "addressLocality": "Melbourne",
+            "addressCountry": "Australia"
+            }
+            },
+            "image":[
+            "/assets/atpwt/images/tournament/badges/categorystamps_atpcup.svg"
+            ],
+            "organizer": {
+            "@type": "Organization",
+            "name": "ATP Cup",
+            "url": "/en/tournaments/atp-cup/8888/overview"
+            }
+            }
+        </script>
+        <!--END: structured data -->
+
+    <td class="tourney-details-table-wrapper">
+        <table>
+            <tbody>
+                <tr>
+
+                        <td class="tourney-details">
+
+                                <div class="info-area">
+                                    <div class="item-details">
+                                        Teams
+                                        <a href="/en/scores/archive/atp-cup/8888/2020/draws?matchtype=singles">
+                                            <span class="item-value">
+                                                12
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                        </td>
+
+
+                    <td class="tourney-details">
+                        <div class="info-area">
+                            <div class="item-details">
+                                Outdoor
+                                <span class="item-value">
+                                    Hard
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td class="tourney-details fin-commit">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+
+
+    <td class="tourney-details action-buttons">
+            <!-- 2/5/2021 12:00:00 AM -->
+                <!-- 2/5/2021 12:00:00 AM -->
+                <a href="http://www.atpcup.com" target="_blank" class="button-border" ga-label="Tickets Info"
+                   ga-category="Tournaments" ga-action="Click">
+                    Tickets Info
+                </a>
+                <div class="info-area">
+                    <div class="info-item">
+                        <div class="item-details  is-one-line">
+                            
+                        </div>
+                    </div>
+                </div>
+
+    </td>
+
+</tr>
+<tr class="tourney-result">
+    <td class="tourney-badge-wrapper">
+            <img alt="tournament badge" src="/assets/atpwt/images/tournament/badges/categorystamps_grandslam.png" />
+    </td>
+
+        <td class="title-content">
+
+                <a href="/en/tournaments/australian-open/580/overview" class="tourney-title" data-ga-action="Click"
+                   data-ga-label="Australian Open"
+                   data-ga-category="Tournaments - Tournaments" data-use-ga="true">
+                    Australian Open
+                </a>
+
+            <span class="tourney-location">
+                Melbourne, Australia
+            </span>
+            <span class="tourney-dates">
+
+
+                2021.02.08 - 2021.02.21
+            </span>
+        </td>
+
+        <!--structured data -->
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "SportsEvent",
+            "name": "Australian Open",
+            "sport": "Tennis",
+            "endDate": "2/21/2021 12:00:00 AM",
+            "startDate":" 2/8/2021 12:00:00 AM",
+            "location": {
+            "@type":"Place",
+            "name": "Melbourne",
+            "address":{
+            "@type": "PostalAddress",
+            "addressLocality": "Melbourne",
+            "addressCountry": "Australia"
+            }
+            },
+            "image":[
+            "/assets/atpwt/images/tournament/badges/categorystamps_grandslam.png"
+            ],
+            "organizer": {
+            "@type": "Organization",
+            "name": "Australian Open",
+            "url": "/en/tournaments/australian-open/580/overview"
+            }
+            }
+        </script>
+        <!--END: structured data -->
+
+    <td class="tourney-details-table-wrapper">
+        <table>
+            <tbody>
+                <tr>
+
+                        <td class="tourney-details">
+
+                                <div class="info-area">
+                                    <div class="item-details">
+                                        SGL
+                                        <a href="/en/scores/archive/australian-open/580/2020/draws?matchtype=singles">
+                                            <span class="item-value">
+                                                128
+                                            </span>
+                                        </a>
+                                        DBL
+                                        <a href="/en/scores/archive/australian-open/580/2020/draws?matchtype=doubles">
+                                            <span class="item-value">
+                                                64
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                        </td>
+
+
+                    <td class="tourney-details">
+                        <div class="info-area">
+                            <div class="item-details">
+                                Outdoor
+                                <span class="item-value">
+                                    Hard
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td class="tourney-details fin-commit">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+
+
+    <td class="tourney-details action-buttons">
+            <!-- 2/21/2021 12:00:00 AM -->
+                <!-- 2/21/2021 12:00:00 AM -->
+                <a href="http://www.ausopen.com" target="_blank" class="button-border" ga-label="Tickets Info"
+                   ga-category="Tournaments" ga-action="Click">
+                    Tickets Info
+                </a>
+                <div class="info-area">
+                    <div class="info-item">
+                        <div class="item-details  is-one-line">
+                            (61) 3 9299 9116
+                        </div>
+                    </div>
+                </div>
+
+    </td>
+
+</tr>
+</table>
+                </div>
+            </div><div class="secondary-download-buttons">
+
+        <a href="/en/scores/results-archive" class="button-border"
+           ga-label="Past Calendars" ga-action="Click"
+           ga-category="Tournaments - Tournaments" ga-use="true" target="_blank">
+            Past Calendars
+        </a>
+
+</div>
+</div>
+
+<script>
+    require(["modules/content/contentAccordion"],
+        function (ContentAccordion) {
+            return new ContentAccordion({
+                openText : "Open All",
+                closeText : "Close All"
+            });
+        });
+</script>
+<!-- END : /modules/accordion/tournaments-accordion-->
+
+
+<div class="centered-content">
+	<div class="article-copy">
+<p>Prize money levels for upcoming tournaments are subject to a reduction based on local restrictions to on-site attendance due to Covid-19</p>	</div>
+</div>
+
+
+    <div class="iab-wrapper">
+        <div class="adtech-wrapper">
+            <div id='div-gpt-ad-Footer'>
+                <script>
+                    googletag.cmd.push(function () { googletag.display('div-gpt-ad-Footer'); });
+                </script>
+            </div>
+        </div>
+    </div>
+<!-- START : /modules/featured/full-width-iframe-->
+<div id="fullWidthIframe" class="full-width-iframe">
+	<script type='text/javascript'>
+// Conversion Name: Tournaments
+var ebRand = Math.random()+'';
+ebRand = ebRand * 1000000;
+//<![CDATA[ 
+//document.write('<scr'+'ipt src="HTTPS://bs.serving-sys.com/Serving/ActivityServer.bs?cn=as&amp;ActivityID=632715&amp;rnd=' + ebRand + '"></scr' + 'ipt>');
+//]]>
+</script>
+<noscript>
+<img width="1" height="1" style="border:0" src="HTTPS://bs.serving-sys.com/Serving/ActivityServer.bs?cn=as&amp;ActivityID=632715&amp;ns=1"/>
+</noscript>
+</div>
+<!-- END : /modules/featured/full-width-iframe-->
+
+                <!-- Partners -->
+                <!-- START : /modules/global/partners -->
+<!-- START : /modules/global/partners -->
+
+        <div id="footerPartners" class="footer-partners">
+            <div class="partners">
+                    <div class="premier">
+                        <span class="partner-section-title">
+                            Premier Partner
+                        </span>
+
+                            <a href="http://www.emirates.com" data-ga-action="Click" data-ga-label="Emirates Premier Partner Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/images/sponsors/logo_emirates-01.svg?iar=0&amp;hash=FBAC8D490DC60A4C5AD371C81362517D" alt="" />
+    </a>
+
+                    </div>
+
+                    <div class="other-partners">
+                        <div class="other-partners-wrap">
+                                <div id="sponsor-block-0" class="sponsor-block">
+                                    <span class="partner-section-title">
+                                        Platinum Partners
+                                    </span>
+                                    <div class="partner-list">
+                                        <div class="partner-list-wrapper">
+    <a href="https://www.fedex.com/en-gb/sponsorship/tennis.html" data-ga-action="Click" data-ga-label="FedEx Partner 174x174 Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/sites/finals/images/partner-logos/fedex.svg?iar=0&amp;hash=FF504631F8AEBC839344546258FEA73B" alt="" />
+    </a>
+    <a href="http://www.infosys.com" data-ga-action="Click" data-ga-label="Infosys Sponsor Page Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/sites/finals/images/partner-logos/infosys.svg?iar=0&amp;hash=9EAF165A8C03A7CBC4F71942795A8BC2" alt="" />
+    </a>
+    <a href="http://www.peugeot.com/en" data-ga-action="Click" data-ga-label="Peugeot Footer Partner Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/sites/finals/images/partner-logos/peugeot.svg?iar=0&amp;hash=01D85EFF80623CEBC7EF06D81D2A7981" alt="" />
+    </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="sponsor-block-1" class="sponsor-block">
+                                    <span class="partner-section-title">
+                                        Gold Partners
+                                    </span>
+                                    <div class="partner-list">
+                                        <div class="partner-list-wrapper">
+    <a href="https://www.rolex.com" data-ga-action="Click" data-ga-label="Rolex Partner 174x174 Footer" data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/sites/finals/images/partner-logos/rolex.svg?iar=0&amp;hash=B625A033CB36DE8F22BACAF2A07405AA" alt="" />
+    </a>
+    <a href="https://www.nitto.com/NittoATPFinals/" data-ga-action="Click" data-ga-label="Nitto Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/sites/finals/images/partner-logos/nitto.svg?iar=0&amp;hash=98F275E268867351720A6B2AC275DE28" alt="" />
+    </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="sponsor-block-2" class="sponsor-block">
+                                    <span class="partner-section-title">
+                                        Silver Partners
+                                    </span>
+                                    <div class="partner-list">
+                                        <div class="partner-list-wrapper">
+    <a href="http://www.tecnifibre.com" data-ga-action="Click" data-ga-label="Tecnifibre Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/images/sponsors/logo_tecnifibre-03.svg?iar=0&amp;hash=9417CE8E6819C511D63BA614922D8917" alt="Tecnifibre" />
+    </a>
+    <a href="https://dunlopsports.com/tennis/" data-ga-action="Click" data-ga-label="Dunlop Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/sites/finals/images/partner-logos/dunlop.svg?iar=0&amp;hash=248198962D0ACF6002EAD09178B27B62" alt="" />
+    </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="sponsor-block-3" class="sponsor-block">
+                                    <span class="partner-section-title">
+                                        Official Suppliers
+                                    </span>
+                                    <div class="partner-list">
+                                        <div class="partner-list-wrapper">
+    <a href="http://www.lacoste.com/" data-ga-action="Click" data-ga-label="Lacoste Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/sites/finals/images/partner-logos/lacoste.svg?iar=0&amp;hash=5BB0172540533496C2BB458B24FCA1D0" alt="" />
+    </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="sponsor-block-4" class="sponsor-block">
+                                    <span class="partner-section-title">
+                                        Official Tennis Clubs
+                                    </span>
+                                    <div class="partner-list">
+                                        <div class="partner-list-wrapper">
+    <a href="/en/partnerships/official-atp-tennis-club" data-ga-action="Click" data-ga-label="ATP Tennis Club Footer"
+       data-ga-category="Outbound" data-use-ga="true">
+        <img src="/-/media/images/sponsors/offtennisclub_partner_174x174.png?h=350&amp;iar=0&amp;w=350&amp;hash=548D4EABF9CCA488F9F4854B2742418B" alt="Skins Compression wear" width="350" height="350" />
+    </a>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+
+
+<!-- END : /modules/global/partners -->
+
+            </div>
+            <!-- END : BODY CONTENT -->
+            
+        </div>
+        <!-- END : MAIN CONTAINER-->
+        <!-- Right Rail -->
+        <div id="railFixer" class="rail-fixer">
+    <div id="rail" class="rail">
+        <div id="railContainerTabs" class="rail-container-tabs">
+            <ul class="rail-container-tabs-row">
+                <li id="railScoresTab" data-container="#railScoresContainer" class="">
+                    <span class="rail-scores-icon">
+                        Scores
+                        <span class="rail-scores-icon__item"></span>
+                    </span>
+                </li>
+                <li id="railLatestTab" data-container="#railLatestContainer" class="current">
+                    <span class="rail-latest-icon">
+                        Latest
+                        <span class="rail-latest-icon__box"></span>
+                        <span class="rail-latest-icon__lines"></span>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <div id="railScoresContainer" class="rail-container ">
+            <div class="rail-proud">
+                <h5 class="rail-proud-title" id="scoresPresentedBy">
+                    <img src="/-/media/images/logo-lockups/atp_scores.svg?iar=0&amp;hash=678C914CB990E2466830117F9012AA03" alt="" />
+                </h5>
+
+                <div id="railScoresTabs" class="button-group">
+                    <a id="railTourScoresTab" data-container="#tourScoresData" data-category="scores" class="button__first  current">
+                        ATP Tour Scores
+                    </a>
+                    <a id="railChallengerScoresTab" data-container="#challengerScoresData" data-category="scores" class="button__last  ">
+                        Challenger Tour Scores
+                    </a>
+                </div>
+            </div>
+            <div id="railScoresContent" class="rail-content">
+
+    <div id="railScoresContainerData" class="rail-tournaments">
+        <tournaments v-bind:tournaments="tournaments"></tournaments>
+    </div>
+
+                <!-- Right Rail Scores Ad -->
+
+
+    <div class="iab-wrapper">
+        <div class="adtech-wrapper">
+            <div id='div-gpt-ad-Right-Rail-Scores'>
+                <script>
+                    googletag.cmd.push(function () { googletag.display('div-gpt-ad-Right-Rail-Scores'); });
+                </script>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+
+        <div id="railLatestContainer" class="rail-container current">
+            <div class="rail-proud">
+                <div id="railLatestTabs" class="button-group">
+                    <a id="railNewsTab" data-container="#newsLatestItems" data-category="news" class="button__first current">
+                        News
+                    </a>
+                    <a id="railVideoTab" data-container="#videosLatestItems" data-category="videos" class="button__last">
+                        Videos
+                    </a>
+                </div>
+            </div>
+            <div id="railLatestContent" class="rail-content">
+                <div class="listing-wrapper">
+                    <ul class="listing-items">
+                            <li class="listing-item " >
+        <a href="/en/news/season-portrait-rafael-nadal" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/22/36/nadal-wonder.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=804F24952EB04F1A69D6097B516955CA" data-type="image" alt="Season Portrait: Rafael Nadal"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/season-portrait-rafael-nadal">Season Portrait: Rafael Nadal</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Season Portrait 2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/roger-federer-2020-atp-awards-fan-favourite-message" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/20/22/atp-awards-2020-federer-fans-favourite-1920x1080.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=467A8302C877E8AD163E16AD9D8829FA" data-type="image" alt="Fans&#39; Favourite Federer&#39;s Message: ‘Thank You For Believing In Me’"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/roger-federer-2020-atp-awards-fan-favourite-message">Fans&#39; Favourite Federer&#39;s Message: ‘Thank You For Believing In Me’</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Awards</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/delray-beach-2021-field-announcement" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/23/14/30/raonic-delray-beach-2021-announcement.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=301D81BD508D1484BBF9547815B5E781" data-type="image" alt="Raonic, Nishikori Lead Delray Beach Field"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/delray-beach-2021-field-announcement">Raonic, Nishikori Lead Delray Beach Field</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Delray Beach</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/antalya-2021-field-announcement" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/22/21/52/berrettini-antalya-2021-acceptance-list.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=23118E7C2CBF38DF1E898FCD7C9AE3FE" data-type="image" alt="Berrettini, Sinner Headline Antalya Field"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/antalya-2021-field-announcement">Berrettini, Sinner Headline Antalya Field</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Antalya</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item single" >
+        <a href="/en/news/australian-open-2020-ticket-sales-starting-at-25-percent-capacity" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/22/21/10/australian-open-2020-tickets-starting-25-percent-capacity.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=F680C8FAB937EA20CCBD534EF2169EFC" data-type="image" alt="3 Australian Open Stadia To Be At Least 25% Capacity"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/australian-open-2020-ticket-sales-starting-at-25-percent-capacity">3 Australian Open Stadia To Be At Least 25% Capacity</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Tournament News</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/rafael-nadal-2020-atp-awards-stefan-edberg-sportsmanship-message" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/21/03/awards_sportsmanship_1920x1080.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=E9DCE95596CAFF22CFD24CC55A006581" data-type="image" alt="Nadal Honoured With Sportsmanship Award: ‘This Trophy Means A Lot’"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/rafael-nadal-2020-atp-awards-stefan-edberg-sportsmanship-message">Nadal Honoured With Sportsmanship Award: ‘This Trophy Means A Lot’</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Awards</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/dominic-thiem-season-portrait-2020" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/08/19/04/thiem-wonder.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=EC6962E825A6D85E4B3685E6F997A298" data-type="image" alt="Season Portrait: Dominic Thiem"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/dominic-thiem-season-portrait-2020">Season Portrait: Dominic Thiem</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Season Portrait 2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/infosys-atp-insights-december-2020-returns-in-play" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/18/14/nadal-infosys-insights-december-2020.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=747AE9232558C9BF943391EA74B96910" data-type="image" alt="When Returns Are Back In Play, Rafa Reigns Supreme"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/infosys-atp-insights-december-2020-returns-in-play">When Returns Are Back In Play, Rafa Reigns Supreme</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Infosys ATP Insights</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item single" >
+        <a href="/en/news/atp-awards-2020-winners-announced" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/19/23/10/atp-awards-2020-winners-1920x1080.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=43FF85E1294A100D0780781CC73A6A71" data-type="image" alt="2020 ATP Awards: And The Winners Are..."/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/atp-awards-2020-winners-announced">2020 ATP Awards: And The Winners Are...</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Awards</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/daniil-medvedev-2020-season-portrait" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/10/21/10/medvedev-wonder.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=0AB0C2FAE9AC059B251FD6A00B50A1A1" data-type="image" alt="Season Portrait: Daniil Medvedev"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/daniil-medvedev-2020-season-portrait">Season Portrait: Daniil Medvedev</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Season Portrait 2020</span>
+            </div>
+        </div>
+    </li>
+
+
+                    </ul>
+                </div>
+
+                <!-- Right Rail News Ad -->
+
+
+    <div class="iab-wrapper">
+        <div class="adtech-wrapper">
+            <div id='div-gpt-ad-Right-Rail-News'>
+                <script>
+                    googletag.cmd.push(function () { googletag.display('div-gpt-ad-Right-Rail-News'); });
+                </script>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    window.DefaultRightRailTab ="raillatestcontainer";
+    require(["modules/global/rightrail"], function (RightRail) {
+        return new RightRail({
+            railDefaultTab: "railLatestContainer"
+        });
+    });
+</script>
+
+<script id="tourScoresData" type="text/x-template">
+        <div id="railScoresContainerData" class="rail-tournaments">
+        <tournaments v-bind:tournaments="tournaments"></tournaments>
+    </div>
+
+</script>
+
+<script id="challengerScoresData" type="text/x-template">
+        <div id="railChallengerScoresContainerData" class="rail-tournaments">
+        <tournaments v-bind:tournaments="tournaments"></tournaments>
+    </div>
+
+</script>
+
+<script id="newsLatestItems" type="text/x-template">
+        <li class="listing-item " >
+        <a href="/en/news/season-portrait-rafael-nadal" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/22/36/nadal-wonder.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=804F24952EB04F1A69D6097B516955CA" data-type="image" alt="Season Portrait: Rafael Nadal"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/season-portrait-rafael-nadal">Season Portrait: Rafael Nadal</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Season Portrait 2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/roger-federer-2020-atp-awards-fan-favourite-message" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/20/22/atp-awards-2020-federer-fans-favourite-1920x1080.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=467A8302C877E8AD163E16AD9D8829FA" data-type="image" alt="Fans&#39; Favourite Federer&#39;s Message: ‘Thank You For Believing In Me’"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/roger-federer-2020-atp-awards-fan-favourite-message">Fans&#39; Favourite Federer&#39;s Message: ‘Thank You For Believing In Me’</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Awards</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/delray-beach-2021-field-announcement" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/23/14/30/raonic-delray-beach-2021-announcement.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=301D81BD508D1484BBF9547815B5E781" data-type="image" alt="Raonic, Nishikori Lead Delray Beach Field"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/delray-beach-2021-field-announcement">Raonic, Nishikori Lead Delray Beach Field</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Delray Beach</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/antalya-2021-field-announcement" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/22/21/52/berrettini-antalya-2021-acceptance-list.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=23118E7C2CBF38DF1E898FCD7C9AE3FE" data-type="image" alt="Berrettini, Sinner Headline Antalya Field"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/antalya-2021-field-announcement">Berrettini, Sinner Headline Antalya Field</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Antalya</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item single" >
+        <a href="/en/news/australian-open-2020-ticket-sales-starting-at-25-percent-capacity" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/22/21/10/australian-open-2020-tickets-starting-25-percent-capacity.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=F680C8FAB937EA20CCBD534EF2169EFC" data-type="image" alt="3 Australian Open Stadia To Be At Least 25% Capacity"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/australian-open-2020-ticket-sales-starting-at-25-percent-capacity">3 Australian Open Stadia To Be At Least 25% Capacity</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Tournament News</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/rafael-nadal-2020-atp-awards-stefan-edberg-sportsmanship-message" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/21/03/awards_sportsmanship_1920x1080.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=E9DCE95596CAFF22CFD24CC55A006581" data-type="image" alt="Nadal Honoured With Sportsmanship Award: ‘This Trophy Means A Lot’"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/rafael-nadal-2020-atp-awards-stefan-edberg-sportsmanship-message">Nadal Honoured With Sportsmanship Award: ‘This Trophy Means A Lot’</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Awards</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/dominic-thiem-season-portrait-2020" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/08/19/04/thiem-wonder.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=EC6962E825A6D85E4B3685E6F997A298" data-type="image" alt="Season Portrait: Dominic Thiem"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/dominic-thiem-season-portrait-2020">Season Portrait: Dominic Thiem</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Season Portrait 2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/infosys-atp-insights-december-2020-returns-in-play" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/21/18/14/nadal-infosys-insights-december-2020.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=747AE9232558C9BF943391EA74B96910" data-type="image" alt="When Returns Are Back In Play, Rafa Reigns Supreme"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/infosys-atp-insights-december-2020-returns-in-play">When Returns Are Back In Play, Rafa Reigns Supreme</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Infosys ATP Insights</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item single" >
+        <a href="/en/news/atp-awards-2020-winners-announced" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/19/23/10/atp-awards-2020-winners-1920x1080.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=43FF85E1294A100D0780781CC73A6A71" data-type="image" alt="2020 ATP Awards: And The Winners Are..."/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/atp-awards-2020-winners-announced">2020 ATP Awards: And The Winners Are...</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Awards</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/news/daniil-medvedev-2020-season-portrait" class="listing-item-thumb">
+            <img src="/-/media/images/news/2020/12/10/21/10/medvedev-wonder.jpg?h=300&amp;sc=0&amp;w=519&amp;hash=0AB0C2FAE9AC059B251FD6A00B50A1A1" data-type="image" alt="Season Portrait: Daniil Medvedev"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/news/daniil-medvedev-2020-season-portrait">Season Portrait: Daniil Medvedev</a></h3>
+            <div class="listing-category news">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Season Portrait 2020</span>
+            </div>
+        </div>
+    </li>
+
+</script>
+
+<script id="videosLatestItems" type="text/x-template">
+        <li class="listing-item " >
+        <a href="/en/video/video-search-results/stefanos-tsitsipas-this-is-tennis" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/6b342703-445d-47cd-8bd2-7aa18e3a53f1/482dc7e2-7bb1-4eef-a656-c473c6bd2a01/250x150/match/image.jpg" data-type="image" alt="Stefanos Tsitsipas: This Is Tennis"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/stefanos-tsitsipas-this-is-tennis">Stefanos Tsitsipas: This Is Tennis</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">This Is Tennis</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/video/video-search-results/watch-the-top-10-hot-shots-of-2020" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/9741ce77-f180-45c8-9b1f-8c7420dde12a/24e61bd2-8bb2-45ad-9cdb-63e5c7bf67df/250x150/match/image.jpg" data-type="image" alt="Watch The Top 10 Hot Shots Of 2020"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/watch-the-top-10-hot-shots-of-2020">Watch The Top 10 Hot Shots Of 2020</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Best Of 2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/video/video-search-results/carlos-alcaraz-best-moments-of-2020" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/296e6b74-436a-4d90-ab8e-91cc7e2eb5ad/c3a2162a-f4ab-4ce9-8a1e-69d88d44cbd5/250x150/match/image.jpg" data-type="image" alt="Carlos Alcaraz: Best Moments Of 2020"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/carlos-alcaraz-best-moments-of-2020">Carlos Alcaraz: Best Moments Of 2020</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Challenger</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/video/video-search-results/watch-nadals-offseason-training-with-ruusuvuori" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/f67f239c-0071-474f-b24a-b6b7b40fc900/773ec537-bc79-4f60-8175-f6c7db4ac7d1/250x150/match/image.jpg" data-type="image" alt="Watch Nadal&#39;s Off-season Training With Ruusuvuori "/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/watch-nadals-offseason-training-with-ruusuvuori">Watch Nadal&#39;s Off-season Training With Ruusuvuori </a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Caught On Court</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item single" >
+        <a href="/en/video/video-search-results/rublev-honoured-as-2020-most-improved-player-of-the-year" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/f4561c94-175f-4290-98c1-444dbce958da/8b4770dd-63e6-4bfc-94f6-d8ec82161cf7/250x150/match/image.jpg" data-type="image" alt="Rublev Honoured As 2020 Most Improved Player of The Year"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/rublev-honoured-as-2020-most-improved-player-of-the-year">Rublev Honoured As 2020 Most Improved Player of The Year</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/video/video-search-results/nadal-honoured-with-2020-stefan-edberg-sportsmanship-award" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/fed2c02c-9412-4870-ad97-870dfe474cf0/ab2bf17a-b71d-42c0-87e2-c39c54db3068/250x150/match/image.jpg" data-type="image" alt="Nadal Honoured With 2020 Stefan Edberg Sportsmanship Award"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/nadal-honoured-with-2020-stefan-edberg-sportsmanship-award">Nadal Honoured With 2020 Stefan Edberg Sportsmanship Award</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/video/video-search-results/federer-voted-fans-favourite-singles-player-in-2020-atp-awards" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/908a903b-0580-44ea-a6c7-6d4210cfac2b/bb0d85e0-fd99-4e23-ad6f-2a31a87e40e8/250x150/match/image.jpg" data-type="image" alt="Federer Voted Fans&#39; Favourite Singles Player In 2020 ATP Awards"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/federer-voted-fans-favourite-singles-player-in-2020-atp-awards">Federer Voted Fans&#39; Favourite Singles Player In 2020 ATP Awards</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/video/video-search-results/murray--skupski-win-fans-favourite-doubles-team-in-2020-atp-awards" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/b4c349b2-48e6-43e6-a571-f09e36e238dc/8d5d97d7-f88f-4697-9b66-01850ec2a6ad/250x150/match/image.jpg" data-type="image" alt="Murray &amp; Skupski Win Fans&#39; Favourite Doubles Team In 2020 ATP Awards"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/murray--skupski-win-fans-favourite-doubles-team-in-2020-atp-awards">Murray &amp; Skupski Win Fans&#39; Favourite Doubles Team In 2020 ATP Awards</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item single" >
+        <a href="/en/video/video-search-results/watch-the-top-10-points-of-2020" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/1469d9d3-6190-4140-bdf5-df459cf28c65/21ce4612-1f79-459d-a7f2-ab4398ede4c3/250x150/match/image.jpg" data-type="image" alt="Watch The Top 10 Points Of 2020"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/watch-the-top-10-points-of-2020">Watch The Top 10 Points Of 2020</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">Best Of 2020</span>
+            </div>
+        </div>
+    </li>
+    <li class="listing-item " >
+        <a href="/en/video/video-search-results/atp--wta-share-united-message-in-new-short-film-tennis-is-life" class="listing-item-thumb">
+            <img src="https://cf-images.us-east-1.prod.boltdns.net/v1/static/6057277721001/5fc5dcdf-64bd-4284-9f94-8681e8ae7f9e/307964cb-0f65-4c65-83e5-074717deec2a/250x150/match/image.jpg" data-type="image" alt="ATP &amp; WTA Share United Message In New Short Film &#39;Tennis Is Life&#39;"/>
+        </a>
+        <div class="listing-item-info">
+           
+            <h3 class="listing-title"><a href="/en/video/video-search-results/atp--wta-share-united-message-in-new-short-film-tennis-is-life">ATP &amp; WTA Share United Message In New Short Film &#39;Tennis Is Life&#39;</a></h3>
+            <div class="listing-category videos">
+                <span class="icon icon-circle-video"></span><span class="listing-category-title">2020</span>
+            </div>
+        </div>
+    </li>
+
+</script>
+<!-- END : /global/global/rail -->
+
+
+
+
+
+
+<script id="tournamentTemplate" type="text/x-template">
+    <div class="rail-scores-content">
+        <div v-for="(tournament, index) in tournaments" v-if="tournament.TournamentPosition!==null" class="scoring-wrapper" v-bind:id="tournament.EventId" v-bind:style="{order: tournament.TournamentPosition}">
+            <div class="scoring-header">
+                <div class="tourney-details">
+                    <div class="tourney-title-area">
+                        <a v-bind:href="tournament.TournamentLink" class="tourney-badge"><img alt="Logo Badge" v-bind:src="tournament.TournamentBadgeImage"></a>
+                        <div class="title-content"><a v-bind:href="tournament.TournamentLink" class="tourney-title">{{tournament.Name}}</a><span class="tourney-location">{{tournament.Location}}</span></div>
+                    </div>
+                    <div class="button-row-holder">
+                        <div class="button-group">
+                            <a v-bind:href="tournament.LiveScoresLink" v-bind:class="tournament.IsLaverCup?' no-draw button__first': 'button__first'">{{tournament.LiveScoresLinkText}}</a>
+                            <a v-bind:href="tournament.DrawLink" v-if="!tournament.IsLaverCup" class="button__middle">{{tournament.DrawLinkText}}</a>
+                            <a v-bind:href="tournament.ScheduleLink" class="button__last">{{tournament.ScheduleLinkText}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scoring-content" v-for="(match, index) in tournament.Matches" v-if="match.RailPosition!==null" v-bind:style="{order: match.RailPosition}">
+                <div class="scoring-section" v-bind:class="match.MatchType">
+                    <table border="0" cellspacing="0" cellpadding="0" class="scores-table">
+                        <thead>
+                            <tr v-if="match.TeamTieResults.HasTeamTieStats">
+                                <td v-bind:colspan="match.NumberOfSets === 5 ? 7 : 5" class="title-area">
+                                    <div class="score-box-tie">
+                                        <div class="info">
+                                            <div class="team-flag">
+                                                <h2 v-bind:class="match.TeamTieResults.TeamTieMatchWins < match.TeamTieResults.OpponentTeamTieMatchWins ? 'team-country-code loosing' :'team-country-code'">{{match.TeamTieResults.TeamCountryCode}}</h2>
+                                                <div class="team-flag-container">
+                                                    <img alt="Country Flag" v-bind:src="'/-/media/alias/nation-icon/' + match.TeamTieResults.TeamCountryCode" />
+                                                </div>
+                                            </div>
+                                            <div class="tie-score">
+                                                    <a v-bind:href="match.TeamTieStatsLink">
+                                                    <h2>{{match.TeamTieResults.TeamTieMatchWins}} - {{match.TeamTieResults.OpponentTeamTieMatchWins}}</h2>
+                                                    <div class="rr-location" v-if="!tournament.IsLaverCup">
+                                                        <img class="rr-location-icon" src="/assets/atpwt/icons/svg/baseline-location_on-24px.svg" height="16" width="11" alt="location icon" />
+                                                            <h2 v-if="match.TeamTieResults.RoundRobinGroupName !== ''" class="rr-city-name">{{match.TeamTieResults.RoundRobinCityName}} - Group {{match.TeamTieResults.RoundRobinGroupName}}</h2>
+                                                            <h2 v-if="match.TeamTieResults.RoundRobinGroupName === ''" class="rr-city-name">{{match.TeamTieResults.RoundRobinCityName}}</h2>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="opponent-flag">
+                                                <div class="opponent-flag-container">
+                                                    <img alt="Country Flag" v-bind:src="'/-/media/alias/nation-icon/'+ match.TeamTieResults.OpponentTeamCountryCode" />
+                                                </div>
+                                                <h2 v-bind:class="match.TeamTieResults.TeamTieMatchWins > match.TeamTieResults.OpponentTeamTieMatchWins ? 'opponent-country-code loosing' : 'opponent-country-code'">{{match.TeamTieResults.OpponentTeamCountryCode}}</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            <tr>
+                                <td v-bind:colspan="match.NumberOfSets === 5 ? 7 : 5" class="title-area">
+                                    <h5>
+                                        <span class="title" v-html="match.RoundTitle.toLowerCase()"></span><span class="time">{{match.MatchTime}}</span>
+                                    </h5>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td v-bind:class="match.TeamOne.TeamStatus">
+                                    <div class="scoring-players">
+                                        <div class="team">
+                                            <div class="scoring-player">
+                                                <a v-bind:href="match.TeamOne.PlayerOneLink" class="scoring-player-flag">
+                                                    <img alt="Country Flag" v-bind:src="match.TeamOne.PlayerOneFlag">
+                                                </a>
+                                                <a v-bind:href="match.TeamOne.PlayerOneLink" class="scoring-player-name">{{match.TeamOne.PlayerOneName}}</a>
+                                            </div>
+                                            <div v-if="match.MatchType === 'doubles'" class="scoring-player">
+                                                <a v-bind:href="match.TeamOne.PlayerTwoLink" class="scoring-player-flag">
+                                                    <img alt="Country Flag" v-bind:src="match.TeamOne.PlayerTwoFlag">
+                                                </a>
+                                                <a v-bind:href="match.TeamOne.PlayerTwoLink" class="scoring-player-name">{{match.TeamOne.PlayerTwoName}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td v-html="match.TeamOne.Scores.CurrentScore" class="current-score"></td>
+                                <td>
+                                    <span v-html="match.TeamOne.Scores.SetOne"></span>
+                                    <sup v-html="match.TeamOne.Scores.SetOneTiebreak"></sup>
+                                </td>
+                                <td>
+                                    <span v-html="match.TeamOne.Scores.SetTwo"></span>
+                                    <sup v-html="match.TeamOne.Scores.SetTwoTiebreak"></sup>
+                                </td>
+                                <td>
+                                    <span v-html="match.TeamOne.Scores.SetThree"></span>
+                                    <sup v-html="match.TeamOne.Scores.SetThreeTiebreak"></sup>
+                                </td>
+                                <template v-if="match.NumberOfSets === 5">
+                                    <td>
+                                        <span v-html="match.TeamOne.Scores.SetFour"></span>
+                                        <sup v-html="match.TeamOne.Scores.SetFourTiebreak"></sup>
+                                    </td>
+                                    <td>
+                                        <span v-html="match.TeamOne.Scores.SetFive"></span>
+                                        <sup v-html="match.TeamOne.Scores.SetFiveTiebreak"></sup>
+                                    </td>
+                                </template>
+                            </tr>
+                            <tr>
+                                <td v-bind:class="match.TeamTwo.TeamStatus">
+                                    <div class="scoring-players">
+                                        <div class="team">
+                                            <div class="scoring-player">
+                                                <a v-bind:href="match.TeamTwo.PlayerOneLink" class="scoring-player-flag">
+                                                    <img alt="Country Flag" v-bind:src="match.TeamTwo.PlayerOneFlag">
+                                                </a>
+                                                <a v-bind:href="match.TeamTwo.PlayerOneLink" class="scoring-player-name">{{match.TeamTwo.PlayerOneName}}</a>
+                                            </div>
+                                            <div v-if="match.MatchType === 'doubles'" class="scoring-player">
+                                                <a v-bind:href="match.TeamTwo.PlayerTwoLink" class="scoring-player-flag">
+                                                    <img alt="Country Flag" v-bind:src="match.TeamTwo.PlayerTwoFlag">
+                                                </a>
+                                                <a v-bind:href="match.TeamTwo.PlayerTwoLink" class="scoring-player-name">{{match.TeamTwo.PlayerTwoName}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td v-html="match.TeamTwo.Scores.CurrentScore" class="current-score"></td>
+                                <td>
+                                    <span v-html="match.TeamTwo.Scores.SetOne"></span>
+                                    <sup v-html="match.TeamTwo.Scores.SetOneTiebreak"></sup>
+                                </td>
+                                <td>
+                                    <span v-html="match.TeamTwo.Scores.SetTwo"></span>
+                                    <sup v-html="match.TeamTwo.Scores.SetTwoTiebreak"></sup>
+                                </td>
+                                <td>
+                                    <span v-html="match.TeamTwo.Scores.SetThree"></span>
+                                    <sup v-html="match.TeamTwo.Scores.SetThreeTiebreak"></sup>
+                                </td>
+                                <template v-if="match.NumberOfSets === 5">
+                                    <td>
+                                        <span v-html="match.TeamTwo.Scores.SetFour"></span>
+                                        <sup v-html="match.TeamTwo.Scores.SetFourTiebreak"></sup>
+                                    </td>
+                                    <td>
+                                        <span v-html="match.TeamTwo.Scores.SetFive"></span>
+                                        <sup v-html="match.TeamTwo.Scores.SetFiveTiebreak"></sup>
+                                    </td>
+                                </template>
+                            </tr>
+                            <tr class="match-info-row">
+                                <td v-bind:colspan="match.NumberOfSets === 5 ? 7 : 5 ">{{match.MatchInfo}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+    </div>
+    <!-- START : /modules/global/footer -->
+
+    
+
+<!-- START : /modules/global/footer -->
+<div id="footer" class="container footer">
+        <div id="footerLinksHolder" class="footer-holder">
+                <div class="footer-links-column">
+                    <h6 class="footer-links-title">Corporate</h6>
+                    <ul class="footer-links">
+                            <li>
+                                <a href="/en/corporate/about" data-ga-label="About" data-ga-category="Outbound" data-ga-action="Click">About</a>
+                            </li>
+                            <li>
+                                <a href="/en/corporate/careers" data-ga-label="Careers" data-ga-category="Outbound" data-ga-action="Click">Careers</a>
+                            </li>
+                            <li>
+                                <a href="/en/corporate/structure" data-ga-label="Structure" data-ga-category="Outbound" data-ga-action="Click">Structure</a>
+                            </li>
+                            <li>
+                                <a href="/en/corporate/management" data-ga-label="Senior Leadership Team" data-ga-category="Outbound" data-ga-action="Click">Senior Leadership Team</a>
+                            </li>
+                            <li>
+                                <a href="/en/corporate/board-of-directors" data-ga-label="Board of Directors" data-ga-category="Outbound" data-ga-action="Click">Board of Directors</a>
+                            </li>
+                            <li>
+                                <a href="/en/corporate/rulebook" data-ga-label="Rulebook" data-ga-category="Outbound" data-ga-action="Click">Rulebook</a>
+                            </li>
+                            <li>
+                                <a href="/en/corporate/atp-aces-for-charity" data-ga-label="ATP Aces for Charity" data-ga-category="Outbound" data-ga-action="Click">ATP Aces for Charity</a>
+                            </li>
+                            <li>
+                                <a href="/en/corporate/history" data-ga-label="History" data-ga-category="Outbound" data-ga-action="Click">History</a>
+                            </li>
+                    </ul>
+                </div>
+                <div class="footer-links-column">
+                    <h6 class="footer-links-title">Media</h6>
+                    <ul class="footer-links">
+                            <li>
+                                <a href="/en/media/rss-feed" data-ga-label="RSS Feed" data-ga-category="Outbound" data-ga-action="Click">RSS Feed</a>
+                            </li>
+                            <li>
+                                <a href="/en/newsletters/subscribe" data-ga-label="Newsletters" data-ga-category="Outbound" data-ga-action="Click">Newsletters</a>
+                            </li>
+                            <li>
+                                <a href="/en/media/rankings-and-stats" data-ga-label="Rankings and Info Reports" data-ga-category="Outbound" data-ga-action="Click">Rankings and Info Reports</a>
+                            </li>
+                            <li>
+                                <a href="/en/media/mediaguide" data-ga-label="Media Guide" data-ga-category="Outbound" data-ga-action="Click">Media Guide</a>
+                            </li>
+                            <li>
+                                <a href="/en/media/media-releases" data-ga-label="News Releases" data-ga-category="Outbound" data-ga-action="Click">News Releases</a>
+                            </li>
+                            <li>
+                                <a href="https://www.atptour.com/en/media/daily-media-notes?year=2020" data-ga-label="Daily Media Notes" data-ga-category="Outbound" class="external" data-ga-action="Click">Daily Media Notes</a>
+                            </li>
+                            <li>
+                                <a href="https://www.atptourarchive.com/" target="_blank" data-ga-label="ATP Tour Archive" data-ga-category="Outbound" class="external" data-ga-action="Click">ATP Tour Archive</a>
+                            </li>
+                    </ul>
+                </div>
+                <div class="footer-links-column">
+                    <h6 class="footer-links-title">Partnerships</h6>
+                    <ul class="footer-links">
+                            <li>
+                                <a href="/en/partnership-opportunities" data-ga-label="Partnership Opportunities" data-ga-category="Outbound" data-ga-action="Click">Partnership Opportunities</a>
+                            </li>
+                            <li>
+                                <a href="/en/partnerships/official-atp-tennis-club" data-ga-label="Official ATP Tennis Club" data-ga-category="Outbound" data-ga-action="Click">Official ATP Tennis Club</a>
+                            </li>
+                            <li>
+                                <a href="/en/partnerships/atp-partners" data-ga-label="ATP Partners" data-ga-category="Outbound" data-ga-action="Click">ATP Partners</a>
+                            </li>
+                    </ul>
+                </div>
+                <div class="footer-links-column">
+                    <h6 class="footer-links-title">Affiliates</h6>
+                    <ul class="footer-links">
+                            <li>
+                                <a href="http://www.gptcatennis.org" target="_blank" data-ga-label="GPTCA" data-ga-category="Outbound" class="external" data-ga-action="Click">GPTCA</a>
+                            </li>
+                            <li>
+                                <a href="http://www.wtatennis.com" target="_blank" data-ga-label="Women's Tennis Association" data-ga-category="Outbound" class="external" data-ga-action="Click">Women's Tennis Association</a>
+                            </li>
+                            <li>
+                                <a href="http://www.itftennis.com" target="_blank" data-ga-label="Intl. Tennis Federation" data-ga-category="Outbound" class="external" data-ga-action="Click">Intl. Tennis Federation</a>
+                            </li>
+                            <li>
+                                <a href="http://www.tennisfame.com" target="_blank" data-ga-label="Intl. Tennis Hall of Fame" data-ga-category="Outbound" class="external" data-ga-action="Click">Intl. Tennis Hall of Fame</a>
+                            </li>
+                    </ul>
+                </div>
+        </div>
+
+    <div class="footer-foot">
+        <div class="copyright">
+            <p>
+                <style>
+    .summary-tbody td[data-type*='Rating'] {
+    background: none;
+    }
+    .is-mobile .scores-daily-schedule-content td.day-table-seed, .scores-results-content td.day-table-seed {
+    padding-left: 0px;
+    width: 32px;
+    }
+    .tourney-details.action-buttons a[href*="watch-live"] {
+    display: none !important;
+    }
+    .tourney-details.action-buttons a[href*="560/live-scores"] {
+    border-left: 2px solid;
+    }
+    a[href*="/australian-open/580/draws?matchType=qualifierSingles"]{display:none !important}
+</style>
+<p>&copy; Copyright 1994 - 2020 ATP Tour, Inc. All Rights Reserved. No part of this site may be reproduced, stored in a retrieval system or transmitted in any way or by any means (including photocopying, recording or storing it in any medium by electronic means), without the written permission of ATP Tour, Inc..</p>
+            </p>
+            <ul class="copyright-links">
+                <li>
+                    <a href="/en/terms-and-conditions">
+                        Terms & Conditions
+                    </a>
+                </li>
+                <li>
+                    <a href="/en/privacy-policy">
+                        Privacy
+                    </a>
+                </li>
+                <li>
+                    <a href="/en/corporate/modern-slavery-statement">
+                        Modern Slavery Statement
+                    </a>
+                </li>
+                <li>
+                    <a href="/en/contact-us">
+                        Feedback
+                    </a>
+                </li>
+            </ul>
+        </div>
+            <ul class="footer-social">
+                <li>
+                    <a href="https://www.facebook.com/ATPTour" class="icon-facebook-circleless" 
+                       ga-label="Facebook" ga-action="Click" ga-category="Outbound" ga-use="true" target="_blank"></a>
+                </li>
+                <li>
+                    <a href="https://twitter.com/atptour" class="icon-twitter-circleless" 
+                       ga-label="Twitter" ga-action="Click" ga-category="Outbound" ga-use="true" target="_blank"></a>
+                </li>
+                <li>
+                    <a href="https://instagram.com/atptour" class="icon-instagram-circleless" ga-label="Instagram" ga-action="Click" ga-category="Outbound" ga-use="true" target="_blank"></a>
+                </li>
+                <li>
+                    <a href="https://www.youtube.com/ATPWorldTour" class="icon-youtube-circleless" ga-label="Youtube" ga-action="Click" ga-category="Outbound" ga-use="true" target="_blank"></a>
+                </li>
+            </ul>
+    </div>
+</div>
+    <!-- END : /modules/global/footer -->
+</div>
+
+<!-- END : WRAPPER-->
+<!-- END : /modules/global/footer -->
+
+
+<script type="text/javascript">
+    function openLSHDWindow(year, wkno, eventid, tour, lang, ref_file, width, height, hasScrollBars){
+        // ADD NAME FIELD and make sure it get's focus!!!
+        var theWidth = width;
+        var theHeight = height;
+        var scrollBars = "scrollbars";
+        if (hasScrollBars == false) {
+            scrollBars = "scrollbars=0";
+        }
+        if ((theWidth == "") || (theWidth == null)) {
+            theWidth = 1042;
+        }
+        if ((theHeight == "") || (theHeight == null)) {
+            theHeight = 631;
+        }
+        const theLeft = (screen.availWidth - theWidth) / 2;
+        const theTop = (screen.availHeight - theHeight) / 2;
+        const strCheckRef = escape(ref_file);
+
+        const lsURL =
+            `https://www.protennislive.com/LSHD/main.html?year=${year}&wkno=${wkno}&eventid=${eventid}&tour=${tour
+                }&lang=${lang}&ref=${strCheckRef}`;
+
+        const popupWin = window.open(lsURL,
+            `_${Math.round(Math.random() * 1000000)}`,
+            `top=${theTop},left=${theLeft},menubar=0,toolbar=0,location=0,directories=0,status=0,${scrollBars
+            },width=${theWidth}, height=${theHeight}`);
+    }
+
+    function openLSBTFWindow(year, wkno, eventid, tour, lang, ref_file, width, height, hasScrollBars){
+        // ADD NAME FIELD and make sure it get's focus!!!
+        var theWidth = width;
+        var theHeight = height;
+        var scrollBars = "scrollbars";
+        if (hasScrollBars == false) {
+            scrollBars = "scrollbars=0";
+        }
+        if ((theWidth == "") || (theWidth == null)) {
+            theWidth = 1042;
+        }
+        if ((theHeight == "") || (theHeight == null)) {
+            theHeight = 631;
+        }
+        const theLeft = (screen.availWidth - theWidth) / 2;
+        const theTop = (screen.availHeight - theHeight) / 2;
+        const strCheckRef = escape(ref_file);
+
+        lsURL =
+            `https://www.protennislive.com/lsbtf/main.html?year=${year}&wkno=${wkno}&eventid=${eventid}&tour=${tour
+            }&lang=${lang}&ref=${strCheckRef}`;
+
+        const popupWin = window.open(lsURL,
+            `_${Math.round(Math.random() * 1000000)}`,
+            `top=${theTop},left=${theLeft},menubar=0,toolbar=0,location=0,directories=0,status=0,${scrollBars
+            },width=${theWidth}, height=${theHeight}`);
+    }
+</script>
+
+
+
+<script type="text/javascript">(function(){window['__CF$cv$params']={r:'6087e88438310e6e',m:'d5c3867f9fb9ec77e4d7de40bcc7dcf3329c91fd-1609123139-1800-AaGKrNqPUz9WJM+aXra3XKhIYz5Bf/TejCau1JMn1tSDsxW18bnSbIEkl+/dkXdFh2yTAsdCQFpxhIYyf8SPPVu6klS5FcUMeuJaHKUlzokknsg2O8EHg+yJUIH3vHYUBg==',s:[0x9a308fe84d,0xe4228c512d],}})();</script></body>
+
+
+<!-- RUM's Footer 1.3.3.0 -->
+
+</html>
+

@@ -4,15 +4,47 @@ if (!defined('ROOT')) {$dir_arr = explode('/', __DIR__); define('ROOT', join('/'
 require_once(APP . '/tool/medoo.php');
 require_once(APP . '/tool/redis.php');
 
+function new_db($str){
+	if (!in_array($str, ["atp", "wta", "general", "dcpk_rank_day", "dcpk_sign_week", "dcpk", "dc", "dcpk_fill", "test"])) return null;
+	return new medoo(
+		array(
+			// 必须配置项
+			'database_type' => 'mysql',
+			'database_name' => $str,
+			'server' => 'localhost',
+			'username' => 'root',
+			'password' => 'Coric518@@',
+			'charset' => 'utf8',
+			'port' => 3306,
+		)
+	);
+}
+
+function new_redis() {
+	$redis = new redis_cli('127.0.0.1', 6379);
+	return $redis;
+}
+
 function in_string($string, $str) {
 	return strpos($string, $str) !== false;
 }
 
-function http($url, $post = NULL, $cookie = NULL){
+function ceil_power($draw) {
+	if ($draw == 0) return 0;
+	return exp(ceil(log($draw, 2)) * log(2));
+}
+
+function http($url, $post = NULL, $cookie = NULL, $headers = NULL){
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	curl_setopt($ch, CURLOPT_HEADER, 0); 
+	if ($headers != NULL) {
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	}
+	if(!empty($cookie)){
+        curl_setopt($ch, CURLOPT_COOKIE, $cookie);
+    }
 	if ($post != NULL){
 		curl_setopt($ch, CURLOPT_POST, 1);
 		if (is_array($post)) {
@@ -24,6 +56,43 @@ function http($url, $post = NULL, $cookie = NULL){
 	$output = curl_exec($ch);
 	curl_close($ch);
 	return $output;
+}
+
+function print_err() {
+	$argv = func_get_args();
+	fputs(STDERR, join("\t", $argv) . "\n");
+}
+
+function print_line() {
+	$argv = func_get_args();
+	echo join("\t", $argv) . "\n";
+}
+
+function set_var_field($post) {
+	if (!is_array($post)) {
+		return $post;
+	} else {
+		$params = array();
+		foreach ($post as $k => $v) {
+			$params[] = urlencode($k)."=".urlencode($v);
+		}
+		$param = join("&", $params);
+		return $param;
+	}
+}
+
+function get_var_field($params) {
+	$ret = [];
+	$arr = explode("&", $params);
+	foreach ($arr as $item) {
+		$ar = explode('=', $item);
+		if (count($ar) == 1) {
+			$ret[$ar[0]] = "";
+		} else if (count($ar) >= 2) {
+			$ret[$ar[0]] = $ar[1];
+		}
+	}
+	return $ret;
 }
 
 function get_param($ARR, $param, $default, $param_str = null){
@@ -118,4 +187,11 @@ function get_resp($info) {
             return http($info['base_url'], $info['params']);
         }   
     }   
+}
+
+// 获取该日期最近一个星期一。如果是周六、日算到下周一
+function get_monday($date) {
+	$date = date('Y-m-d', strtotime($date . " +3 days"));
+	$date = date('Y-m-d', strtotime($date . " last Monday"));
+	return $date;
 }

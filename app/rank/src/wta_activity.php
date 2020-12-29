@@ -1,9 +1,8 @@
 <?php
 
 if (!defined('ROOT')) {$dir_arr = explode('/', __DIR__); define('ROOT', join('/', [$dir_arr[0], $dir_arr[1], $dir_arr[2]]));} require_once(ROOT . '/global.php'); require_once(APP . '/conf/func.php'); 
-require_once(APP . '/tool/decrypt.php');
 require_once(APP . '/tool/simple_html_dom.php');
-require_once('wt_bio.php');
+require_once(APP . '/conf/wt_bio.php');
 
 class Activity {
 
@@ -65,7 +64,7 @@ class Activity {
 		$final_round = "";
 		foreach ($this->matches as $amatch) {
 			$final_round = $amatch[1];
-			if ($amatch[3] != "" && $amatch[3] != "W/O") {
+			if ($amatch[3] != "" && $amatch[3] != "W/O" && $amatch[3] != "UNP") {
 				if ($amatch[2] == "W") {
 					++$win;
 					if ($streak < 0) $streak = 0;
@@ -171,6 +170,7 @@ class Activity {
 				if ($response !== false) break;
 				sleep(3);
 			}
+			file_put_contents(join("/", [TEMP, 'activity', $this->gender, $this->sd, join('_', [$this->pid, $this->year, $i])]), $response);
 			if ($response === false || strpos($response, "Error while rendering the view [Player Activity]") !== false) {
 				fputs(STDERR, join("\t", ["ERROR_DOWNLOAD", $this->pid, $this->sd, "PAGE" . $i]) . "\n");
 				continue;
@@ -390,6 +390,7 @@ class Activity {
 					$td = $tr->find('td', 2)->find('.day-table-flag a', 0);
 					if (isset($td->href)) {
 						$oppo_id = strtoupper(explode("/", $td->href)[4]);
+						if (substr($oppo_id, 0, 3) == "AAA") $oppo_id = 0;
 						if (!$this->redis->cmd('KEYS', join("_", [$this->gender, 'profile', $oppo_id]))->get()) {
 							$this->bio->down_bio($oppo_id, $this->gender, $this->redis);
 						}
@@ -400,6 +401,7 @@ class Activity {
 						$td = $tr->find('td', 2)->find('.day-table-flag a', 1);
 						if (isset($td->href)) {
 							$oppo_partner_id = strtoupper(explode("/", $td->href)[4]);
+							if (substr($oppo_partner_id, 0, 3) == "AAA") $oppo_partner_id = 0;
 							if (!$this->redis->cmd('KEYS', join("_", [$this->gender, 'profile', $oppo_partner_id]))->get()) {
 								$this->bio->down_bio($oppo_partner_id, $this->gender, $this->redis);
 							}
@@ -419,6 +421,8 @@ class Activity {
 						$games = trim($tr->find('td', 4)->find('a', 0)->innertext);
 						$games = self::process_atp_score($games, $wl);
 					}
+
+					if ($games == "UNP") $wl = "";
 
 					if (in_array($oppo_rank, ['', '0', '9999', '-'])) $oppo_rank = '';
 
@@ -506,7 +510,11 @@ class Activity {
 					} else if ($tlevel == "ITF") {
 						$this->level = "ITF";
 					} else if ($tlevel == "CH") {
-						$this->level = "YEC";
+						if ($this->eid == "0808") {
+							$this->level = "YEC";
+						} else {
+							$this->level = "XXI";
+						}
 					} else if (strpos($this->city, "OLYMPICS") !== false) {
 						$this->level = "OL";
 					} else if ($tlevel == "P") {
@@ -574,7 +582,7 @@ class Activity {
 						$this->recordday = date('Ymd', strtotime($this->recordday) + 7 * 86400);
 					}
 					if ($this->eid == 1081 && $this->year >= 2019) { // 2019年之后的小年终隔周再计
-						$this->recordday = date('Ymd', strtotime($this->recordday) + 7 * 86400);
+						$this->recordday = date('Ymd', strtotime($this->recordday) - 7 * 86400);
 					}
 					if ($this->year >= 2019 && $this->level == "YEC") {
 						$this->recordday = date('Ymd', strtotime($this->recordday) - 2 * 7 * 86400);
@@ -696,7 +704,10 @@ class Activity {
 	protected function process_atp_score($games, $wl) {
 		if (strpos($games, "W/O") !== false) {
 			return "W/O";
+		} else if (strpos($games, "UNP") !== false) { // 比赛没打
+			return "UNP";
 		}
+
 		$aff = "";
 		if (strpos($games, "RET") !== false) {
 			$aff = " Ret.";

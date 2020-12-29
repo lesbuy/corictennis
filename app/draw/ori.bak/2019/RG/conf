@@ -1,0 +1,16 @@
+tour=RG
+#资格赛第一场比赛的时间
+start_time="2019-5-20 16:00"
+qualifying_first_day="2019-5-20"
+main_first_day="2019-5-26"
+
+draw_url="https://www.rolandgarros.com/api/en-us/results/XXX/1"
+schedule_url="https://www.rolandgarros.com/api/en-us/matches?tournamentDay=YYY"
+result_url="https://www.rolandgarros.com/api/en-us/matches?tournamentDay=YYY&type=ALL&finished=true"
+player_list_url="https://www.rolandgarros.com/api/en-us/players"
+
+trans() {
+	param1=$1
+	echo `date -d "$qualifying_first_day +$[param1-1] days" +%Y%m%d`
+}
+

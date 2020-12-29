@@ -1,0 +1,125 @@
+{
+  "eventName" : "Wheelchair Quad Doubles",
+  "drawSize" : "2",
+  "drawFormat" : "bracket", 
+  "totalRounds" : 1,
+  "prizeMoney" : [],
+  "matches": [
+{
+  "match_id": "36101",
+  "eventName": "WC Quad Doubles",
+  "shortEventName": "WC Quad Doubles",
+  "eventCode": "UD",
+  "courtName": "Court 17",
+  "shortCourtName": "Court 17" ,
+  "courtId": "Q",
+  "roundCode": "F",
+  "roundName": "Final",
+  "roundNameShort": "F",
+  "eventDay": 21,
+  "duration": "1:43",
+  "statsLevel": "H",
+  "status": "Completed",
+  "statusCode": "D",
+  "winner": "1",
+  "epoch": 1567996295000,
+  "team1": {
+    "firstNameA": "Dylan",
+    "lastNameA": "Alcott",
+    "displayNameA": "D. Alcott",
+    "idA": "itf800257258",
+    "nationA": "AUS",
+    "firstNameB": "Andy",
+    "lastNameB": "Lapthorne",
+    "displayNameB": "A. Lapthorne",
+    "idB": "itf800277502",
+    "nationB": "GBR",
+    "seed": 1,
+    "totalSetsWon": 2,
+    "won": true,
+    "serve": false
+  },
+  "team2": {
+    "firstNameA": "Bryan",
+    "lastNameA": "Barten",
+    "displayNameA": "B. Barten",
+    "idA": "itf800210704",
+    "nationA": "USA",
+    "firstNameB": "David",
+    "lastNameB": "Wagner",
+    "displayNameB": "D. Wagner",
+    "idB": "itf800228475",
+    "nationB": "USA",
+    "seed": 2,
+    "totalSetsWon": 1,
+    "won": false,
+    "serve": false
+  },
+  "scores": {
+      "setsWon": [1,2,1,1,0,0],
+      "setDurations": ["54","35","14"],
+      "sets": [[{
+  "score": 6,
+  "scoreDisplay": "6",
+  "tiebreak": 5,
+  "tiebreakDisplay": "5",
+  "challenge_total": 0,
+  "challenge_won": 0,
+  "challenge_lost": 0,
+  "challenge_remaining": 3
+ },
+ {
+  "score": 7,
+  "scoreDisplay": "7",
+  "tiebreak": 7,
+  "tiebreakDisplay": "7",
+  "challenge_total": 1,
+  "challenge_won": 1,
+  "challenge_lost": 0,
+  "challenge_remaining": 3
+ }],
+[{
+  "score": 6,
+  "scoreDisplay": "6",
+  "tiebreak": null,
+  "tiebreakDisplay": null,
+  "challenge_total": 1,
+  "challenge_won": 0,
+  "challenge_lost": 1,
+  "challenge_remaining": 2
+ },
+ {
+  "score": 1,
+  "scoreDisplay": "1",
+  "tiebreak": null,
+  "tiebreakDisplay": null,
+  "challenge_total": 0,
+  "challenge_won": 0,
+  "challenge_lost": 0,
+  "challenge_remaining": 3
+ }],
+[{
+  "score": 10,
+  "scoreDisplay": "[10]",
+  "tiebreak": null,
+  "tiebreakDisplay": ""
+,  "challenge_total": 0,
+  "challenge_won": 0,
+  "challenge_lost": 0,
+  "challenge_remaining": 3
+ },
+ {
+  "score": 6,
+  "scoreDisplay": "[6]",
+  "tiebreak": null,
+  "tiebreakDisplay": "",
+  "challenge_total": 0,
+  "challenge_won": 0,
+  "challenge_lost": 0,
+  "challenge_remaining": 3
+ }]],
+      "gameScore": [null, null] 
+  }
+}
+]
+}

@@ -1,9 +1,8 @@
 <?php
 
 if (!defined('ROOT')) {$dir_arr = explode('/', __DIR__); define('ROOT', join('/', [$dir_arr[0], $dir_arr[1], $dir_arr[2]]));} require_once(ROOT . '/global.php'); require_once(APP . '/conf/func.php'); 
-require_once(APP . '/tool/decrypt.php');
 require_once(APP . '/tool/simple_html_dom.php');
-require_once('wt_bio.php');
+require_once(APP . '/conf/wt_bio.php');
 
 class Activity {
 
@@ -65,7 +64,7 @@ class Activity {
 		$final_round = "";
 		foreach ($this->matches as $amatch) {
 			$final_round = $amatch[1];
-			if ($amatch[3] != "" && $amatch[3] != "W/O") {
+			if ($amatch[3] != "" && $amatch[3] != "W/O" && $amatch[3] != "UNP") {
 				if ($amatch[2] == "W") {
 					++$win;
 					if ($streak < 0) $streak = 0;
@@ -171,6 +170,7 @@ class Activity {
 				if ($response !== false) break;
 				sleep(3);
 			}
+			file_put_contents(join("/", [TEMP, 'activity', $this->gender, $this->sd, join('_', [$this->pid, $this->year, $i])]), $response);
 			if ($response === false || strpos($response, "Error while rendering the view [Player Activity]") !== false) {
 				fputs(STDERR, join("\t", ["ERROR_DOWNLOAD", $this->pid, $this->sd, "PAGE" . $i]) . "\n");
 				continue;
@@ -228,22 +228,25 @@ class Activity {
 					$this->city = $this->title;
 				}
 
+				$tdates = explode("-", $infos->find('.tourney-dates', 0)->innertext);
+				$st = trim(str_replace(".", "", $tdates[0]));
+				$st = date('Ymd', strtotime(date('Y-m-d', strtotime($st . " +4 days")) . " last Monday"));
+				$this->st = $st;
+				$this->weeks = 1;
+				$et_unix = 0;
+				if (count($tdates) == 2) {
+					$et_unix = strtotime(trim(str_replace(".", "", $tdates[1])));
+					$st_unix = strtotime($this->st);
+					if ($et_unix - $st_unix > 86400 * 8) {
+						$this->weeks = 2;
+					}
+				}
+				$this->pre_year = $et_unix ? date('Y', $et_unix) : date('Y', strtotime($this->st) + 4 * 86400);
+
 				$dc_match = null; // 匹配DC的标题用的
 				if (strpos($this->title, " WCT") !== false) {
 					$this->level = "WCT";
 					$this->title = str_replace(" WCT", "", $this->title);
-				} else if (strpos($this->title, "LYMPIC") !== false) {
-					$this->level = "OL";
-				} else if (strpos($this->title, "GRAND SLAM CUP") !== false){
-					$this->level = "GC";
-				} else if (preg_match('/([A-Z]{3}) +(V\.?S?[\. ]+)([A-Z]{3})( .*)?$/', $this->title, $dc_match) || strpos($this->title, "DAVIS CUP") !== false) {
-					$this->level = "DC";
-					$this->eid = "9990";
-					if ($dc_match) {
-						$this->city = "DC" . @$dc_match[4] . ' (' . @$dc_match[1] . ' V ' . @$dc_match[3] . ')';
-					} else {
-						$this->city = $this->title;
-					}
 				} else if (strpos($imgurl, "_grandslam_") !== false) {
 					$this->level = "GS";
 					$this->city = $this->title;
@@ -267,12 +270,29 @@ class Activity {
 					$this->level = "250";
 				} else if (strpos($imgurl, "_challenger_") !== false) {
 					$this->level = "CH";
+				} else if (strpos($this->title, "LYMPIC") !== false) {
+					$this->level = "OL";
+				} else if (strpos($this->title, "GRAND SLAM CUP") !== false){
+					$this->level = "GSC";
+				} else if (preg_match('/([A-Z]{3}) +(V\.?S?[\. ]+)([A-Z]{3})( .*)?$/', $this->title, $dc_match) || strpos($this->title, "DAVIS CUP") !== false) {
+					$this->level = "DC";
+					$this->eid = "9990";
+					if ($dc_match) {
+						$this->city = "DC" . @$dc_match[4] . ' (' . @$dc_match[1] . ' V ' . @$dc_match[3] . ')';
+					} else {
+						$this->city = $this->title;
+					}
 				} else if (strpos($imgurl, "_itf_") !== false) {
 					$this->level = "ITF";
 				} else {
-					$this->level = "ATP";
+					$fetch_level = $this->redis->cmd('HGET', 'atp_level', $this->eid . '_' . $this->pre_year)->get();
+					if ($fetch_level) {
+						$this->level = $fetch_level;
+					} else {
+						$this->level = "ATP";
+					}
 				}
-				if ($this->eid == "0311") $this->city = $this->title;
+				if ($this->eid == "0311") $this->city = $this->title; // 女王杯特殊处理
 
 				$this->currency = "$"; $this->total_prize = 0;
 				if ($infos->find('.prize-money')) {
@@ -286,19 +306,6 @@ class Activity {
 					}
 				}
 
-				$tdates = explode("-", $infos->find('.tourney-dates', 0)->innertext);
-				$st = trim(str_replace(".", "", $tdates[0]));
-				$st = date('Ymd', strtotime(date('Y-m-d', strtotime($st . " +4 days")) . " last Monday"));
-				$this->st = $st;
-				$this->weeks = 1;
-				$et_unix = 0;
-				if (count($tdates) == 2) {
-					$et_unix = strtotime(trim(str_replace(".", "", $tdates[1])));
-					$st_unix = strtotime($this->st);
-					if ($et_unix - $st_unix > 86400 * 8) {
-						$this->weeks = 2;
-					}
-				}
 
 				$sfc = $infos->find('.tourney-details', 1)->find('.info-area .item-value', 0);
 				$this->sfc = trim($sfc->innertext);
@@ -422,6 +429,8 @@ class Activity {
 						$games = self::process_atp_score($games, $wl);
 					}
 
+					if ($games == "UNP") $wl = "";
+
 					if (in_array($oppo_rank, ['', '0', '9999', '-'])) $oppo_rank = '';
 
 					$this->matches[] = [
@@ -442,7 +451,6 @@ class Activity {
 				}
 
 				$this->pre_eid = $this->eid;
-				$this->pre_year = $et_unix ? date('Y', $et_unix) : date('Y', strtotime($this->st) + 4 * 86400);
 				self::output();
 				self::clear();
 			}
@@ -508,7 +516,11 @@ class Activity {
 					} else if ($tlevel == "ITF") {
 						$this->level = "ITF";
 					} else if ($tlevel == "CH") {
-						$this->level = "YEC";
+						if ($this->eid == "0808") {
+							$this->level = "YEC";
+						} else {
+							$this->level = "XXI";
+						}
 					} else if (strpos($this->city, "OLYMPICS") !== false) {
 						$this->level = "OL";
 					} else if ($tlevel == "P") {
@@ -698,7 +710,10 @@ class Activity {
 	protected function process_atp_score($games, $wl) {
 		if (strpos($games, "W/O") !== false) {
 			return "W/O";
+		} else if (strpos($games, "UNP") !== false) { // 比赛没打
+			return "UNP";
 		}
+
 		$aff = "";
 		if (strpos($games, "RET") !== false) {
 			$aff = " Ret.";

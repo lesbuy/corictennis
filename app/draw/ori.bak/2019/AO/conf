@@ -1,0 +1,20 @@
+tour=AO
+#资格赛第一场比赛的时间
+start_time="2019-1-8 7:00"
+qualifying_first_day="2019-1-8"
+main_first_day="2019-1-14"
+
+draw_url="https://prod-scores-api.ausopen.com/event/XXX/draws"
+schedule_url="https://prod-scores-api.ausopen.com/year/2019/period/XXX/schedule"
+result_url="https://prod-scores-api.ausopen.com/year/2019/period/XXX/results"
+
+trans() {
+	param1=$1
+	if [[ $param1 -le 6 ]]
+	then
+		echo "Q/day/"$param1
+	else
+		echo "MD/day/"$[param1-6]
+	fi
+}
+

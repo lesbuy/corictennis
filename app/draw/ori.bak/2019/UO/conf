@@ -1,0 +1,16 @@
+tour=UO
+#资格赛第一场比赛的时间
+start_time="2019-8-19 23:00"
+qualifying_first_day="2019-8-19"
+main_first_day="2019-8-26"
+
+draw_url="https://www.usopen.org/en_US/scores/feeds/2019/draws/XXX.json"
+schedule_url="https://www.usopen.org/en_US/scores/feeds/2019/schedule/scheduleYYY.json"
+result_url="https://www.usopen.org/en_US/scores/feeds/2019/completed_matches/days/day_YYY.json"
+player_list_url="https://www.usopen.org/en_US/scores/feeds/2019/players/players.json"
+live_url="https://www.usopen.org/en_US/scores/feeds/2019/matches/live/scores.json"
+
+trans() {
+	echo $1
+}
+

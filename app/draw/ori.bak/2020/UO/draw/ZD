@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/assets/images/misc/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="/assets/images/misc/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/misc/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/images/misc/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/images/misc/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/assets/images/misc/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/images/misc/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/images/misc/apple-touch-icon-152x152.png">        
+        <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/assets/images/misc/apple-touch-icon-180x180.png">
+        <link rel="stylesheet" href="https://use.typekit.net/hna0smy.css">
+        <link rel="stylesheet" href="/assets/style/style.15e6cc2.css">
+        <link rel="icon" type="image/icon" href="/assets/images/misc/favicon.ico">
+        <script src="//assets.adobedtm.com/launch-EN4cb0ade3a4044a19838922b6a89df941.min.js"></script>
+    </head>
+    <body>
+		<Component type="DevTools"></Component>
+        <Component type="data/Config"></Component>
+        <Component type="general/BreakingAlert"></Component>
+        <Component type="_scoring/SummaryScoreboard"></Component>
+		<Component type="Router"></Component>
+        <Component type="Controller"></Component>
+        <Component type="data/ActiveData"></Component>
+        <Component type="ScoreManager"></Component>
+        <script>
+			//src: index-static.html
+			window.version = "2.5.1";
+			window.commit = "15e6cc2.";
+            window.ssr        = false;
+            window.restAPI    = '/api';
+            window.parseAppId = 'Actinium';
+        </script>
+        <script charset="UTF-8" src="/assets/js/vendors.15e6cc2.js"></script>
+        <script charset="UTF-8" src="/assets/js/main.15e6cc2.js"></script>
+        
+    </body>
+</html>

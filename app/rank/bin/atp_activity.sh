@@ -22,6 +22,7 @@ do
 	sleep 2
 
 	cat $TEMP/activity_atp_d_$line >> $TEMP/activity_atp_s_$line
-	mv $TEMP/activity_atp_s_$line $DATA/activity/atp/$line
-	/bin/rm $TEMP/activity_atp_d_$line
+	cat $TEMP/activity_atp_s_$line $DATA/activity/atp/$line | sort -t"	" -k15r,15 -k8gr,8 -k3,3 -s -u > $TEMP/activity_atp_d_$line
+	mv $TEMP/activity_atp_d_$line $DATA/activity/atp/$line
+	/bin/rm $TEMP/activity_atp_*_$line
 done

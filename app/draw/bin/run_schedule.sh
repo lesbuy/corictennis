@@ -3,6 +3,13 @@
 source ~/.bashrc
 source ../conf/base.conf
 
+if [ -f PROGRESS.run.schedule ]
+then
+    exit
+fi
+
+touch PROGRESS.run.schedule
+
 current_monday=`date -d "last Monday" +%Y-%m-%d`
 monday1=`date -d "$current_monday -7 days" +%Y-%m-%d`
 monday2=`date -d "$current_monday +7 days" +%Y-%m-%d`
@@ -12,7 +19,7 @@ monday4=`date -d "$current_monday +14 days" +%Y-%m-%d`
 cat /dev/null > tmp_schedule
 
 now=`date +%s`
-grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 
+grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/GS $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 
 while read line
 do
 	eid=`echo "$line" | cut -f3`
@@ -27,7 +34,12 @@ do
 		endtime=$((unix+86400*8))
 	fi
 
-	starttime=$((unix-86400*4))
+	if [[ $weeks == "2" ]]
+	then
+		starttime=$((unix-86400*7))
+	else
+		starttime=$((unix-86400*4))
+	fi
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]
 	then
@@ -37,3 +49,5 @@ do
 done
 
 mv tmp_schedule completed
+
+rm PROGRESS.run.schedule

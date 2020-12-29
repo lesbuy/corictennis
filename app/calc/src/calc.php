@@ -12,13 +12,28 @@ class Calc {
 
 	protected $pre_pid = null;
 	protected $bonus = [];
-	protected $mandantory = [];
+	protected $mandatory = [];
 	protected $premier5 = [];
 	protected $optional = [];
+
+	protected $ranks = [];
+	protected $ch = []; // career high
 
 	protected $win = 0;
 	protected $loss = 0;
 	protected $streak = 0;
+	protected $prize = 0;
+
+	protected $current_start_date = "";
+	protected $current_end_date = "";
+	protected $current_prediction = "";
+	protected $current_city = "";
+	protected $current_round = "";
+	protected $current_oppo_pid = "";
+	protected $current_partner_pid = "";
+	protected $current_status = "";
+	protected $current_point = 0;
+	
 
 	protected $result = [];
 
@@ -49,10 +64,48 @@ class Calc {
 
 		$this->redis = new redis_cli('127.0.0.1', 6379);
 
+		// 读取配置
+		$configs = [];
+		$file = join("/", [APP, 'conf', 'calc']);
+		$cmd = "cat " . $file;
+		unset($r); exec($cmd, $r);
+		if ($r) {
+			foreach ($r as $line) {
+				if (trim($line) == "") continue;
+				$arr = explode("=", $line);
+				$configs[$arr[0]] = $arr[1];
+			}
+		}
+		$liveranking_end = $configs[$gender . "_liveranking_end"];
+		$weeks = $configs[$gender . "_this_weeks"];
+		$this->current_start_date = date('Ymd', strtotime($liveranking_end) - $weeks * 7 * 86400);
+		$this->current_end_date = date('Ymd', strtotime($liveranking_end));   // 不包含
+
+		// 读取排名
+		$file = join("/", [DATA, 'rank', $gender, $sd, 'current']);
+		$cmd = "cat " . $file;
+		unset($r); exec($cmd, $r);
+		if ($r) {
+			foreach ($r as $line) {
+				$arr = explode("\t", $line);
+				$this->rank[$arr[0]] = $arr[2];
+			}
+		}
+		// 读取最高排名
+		$file = join("/", [DATA, 'rank', $gender, $sd, 'highest']);
+		$cmd = "cat " . $file;
+		unset($r); exec($cmd, $r);
+		if ($r) {
+			foreach ($r as $line) {
+				$arr = explode("\t", $line);
+				$this->ch[$arr[0]] = $arr[1];
+			}
+		}
+
+
 		// 读取文件
 		$cmd = "cat " . DATA . "/calc/$gender/$sd/$period/loaded " . DATA . "/calc/$gender/$sd/$period/unloaded | sort -t\"	\" -k1,1 -k6g,6 -k8gr,8 -k3,3";
 		unset($r); exec($cmd, $r);
-
 		if ($r) {
 			foreach ($r as $line) {
 				$this->input($line);
@@ -64,93 +117,337 @@ class Calc {
 
 	protected function clear() {
 		unset($this->bonus); $this->bonus = [];
-		unset($this->mandantory); $this->mandantory = [];
+		unset($this->mandatory); $this->mandatory = [];
 		unset($this->premier5); $this->premier5 = [];
 		unset($this->optional); $this->optional = [];
-		$this->win = $this->loss = $this->streak = 0;
+		$this->win = $this->loss = $this->streak = $this->prize = $this->current_point = 0;
+		$this->current_prediction = $this->current_city = $this->current_round = $this->current_oppo_pid = $this->current_partner_pid = $this->current_status = "";
 	}
 
 	public function output_rank_list() {
 
 		usort($this->result, 'self::sortByTotalPoint');
 		$rank = 0;
+
+		$output_compose = "";
+		$output_rank = "";
+		$output_rank_for_db = [];
+		$rank = 0;
+		$total = 0;
+		$pre_point = 0;
+		$pre_point4compare = ""; // 同分时候用这个字段比
 		foreach ($this->result as $aplayer) {
 
-			if (($this->gender == "wta" && ($aplayer['point'] > 10 || count($aplayer['tours']) >= 3)) || $this->gender == "atp") { // atp直接输出，wta只输出10分以上或者3个有效赛事以上
-				echo join("\t", ["---------", $aplayer['first'] . ' ' . $aplayer['last'], $aplayer['point'], ++$rank, "----------------"]) . "\n";
+			if (($this->gender == "wta" && ($aplayer['point'] > 10 || count($aplayer['tours']) >= 3)) || ($this->gender == "atp" && $aplayer['point'] > 0)) { // atp 1分就输出，wta只输出10分以上或者3个有效赛事以上
 
+				++$total;
+				if ($aplayer['point'] != $pre_point || $aplayer['point4compare'] != $pre_point4compare) {
+					$rank = $total;
+				}
+
+				$oppo_pid = explode("/", $aplayer['oppo']);
+				$oppo_first = $oppo_last = $oppo_ioc = [];
+				foreach ($oppo_pid as $pid) {
+					if ($pid == "") continue;
+					$info = $this->redis->cmd('HMGET', join("_", [$this->gender, 'profile', $pid]), 'first', 'last', 'ioc')->get();
+					$oppo_first[] = $info[0];
+					$oppo_last[] = $info[1];
+					$oppo_ioc[] = $info[2];
+				}
+
+				$partner_first = $partner_last = $partner_ioc = "";
+				if ($aplayer['partner']) {
+					$info = $this->redis->cmd('HMGET', join("_", [$this->gender, 'profile', $aplayer['partner']]), 'first', 'last', 'ioc')->get();
+					$partner_first = $info[0];
+					$partner_last = $info[1];
+					$partner_ioc = $info[2];
+				}
+				$h2h = "";
+				if ($aplayer['partner']) {
+					$me = $aplayer['pid'] . "/" . $aplayer['partner'];
+				} else {
+					$me = $aplayer['pid'];
+				}
+				if ($aplayer['oppo']) {
+					$h2h = "0:0";
+					$info = $this->redis->cmd('HGET', 'h2h', $me . "\t" . $aplayer['oppo'])->get();
+					if ($info) {
+						$h2h = $info;
+					}
+				}
+
+				$arecord = [
+					$aplayer['pid'],
+					$aplayer['official_rank'], // official rank
+					$rank,
+					$aplayer['official_rank'] - $rank, // change
+					$aplayer['career_high'],
+					$aplayer['point'],
+					$aplayer['alt'],
+					0, // flop分
+					$aplayer['first'],
+					$aplayer['last'],
+					$aplayer['ioc'],
+					$aplayer['first'] . " " . $aplayer['last'],
+					$aplayer['birth'] ? floor((time() - strtotime($aplayer['birth'])) / 86400 / 365.25 * 10) / 10 : 0, // age
+					$aplayer['birth'], // birth
+					count($aplayer['tours']) + count($aplayer['alt_tours']), // plays
+					$aplayer['mand0'],
+					$aplayer['win'],
+					$aplayer['loss'],
+					$aplayer['win'] + $aplayer['loss'] == 0 ? 0 : $aplayer['win'] / ($aplayer['win'] + $aplayer['loss']),
+					$aplayer['streak'],
+					$aplayer['prize'],
+					"", // 起计分赛事
+					0, // 起计分
+					0, // 冠军数
+					$aplayer['partner'],
+					$partner_first,
+					$partner_last,
+					$partner_ioc,
+					$aplayer['oppo'],
+					join("/", $oppo_first),
+					join("/", $oppo_last),
+					join("/", $oppo_ioc),
+					$h2h,
+					$aplayer['city'],
+					$aplayer['round'],
+					$aplayer['this_week_point'],
+					$aplayer['status'],
+					$aplayer['prediction'],
+				];
+
+				$output_rank_for_db[] = $arecord;
+				$output_rank .= join("\t", $arecord) . "\n";
+					
+
+				// 计分赛事按级别排序
+				$cnt = 0;
 				usort($aplayer['tours'], 'self::sortByLevel');
 				foreach ($aplayer['tours'] as $atour) {
 					if ($atour[$this->sm['point']] == 10000) $atour[$this->sm['point']] = 0;
-					echo join("\t", ["", $atour['level'], $atour[$this->sm['city']], $atour[$this->sm['point']], $atour[$this->sm['final_round']]]) . "\n";
+					$output_compose .= join("\t", [
+						$aplayer['pid'],
+						++$cnt,
+						$atour[$this->sm['city']], 
+						$atour[$this->sm['point']], 
+						$atour[$this->sm['final_round']], 
+						date('Ymd', strtotime($atour[$this->sm['record_date']]) + 364 * 86400),
+						$atour['seq'],
+						$atour[$this->sm['surface']],
+						$atour['level'], 
+						$atour[$this->sm['year']]
+					]) . "\n";
 				}
 
+				// 非计分赛事按级别排序
 				if (count($aplayer['alt_tours']) > 0) {
-					echo "\t--ALT------------------------------------\n";
+					$cnt = -$cnt;
 					usort($aplayer['alt_tours'], 'self::sortByLevel');
 					foreach ($aplayer['alt_tours'] as $atour) {
-						echo join("\t", ["", "|", $atour['level'], $atour[$this->sm['city']], $atour[$this->sm['point']], $atour[$this->sm['final_round']]]) . "\n";
+						$output_compose .= join("\t", [
+							$aplayer['pid'],
+							--$cnt,
+							$atour[$this->sm['city']], 
+							$atour[$this->sm['point']], 
+							$atour[$this->sm['final_round']], 
+							date('Ymd', strtotime($atour[$this->sm['record_date']]) + 364 * 86400),
+							$atour['seq'],
+							$atour[$this->sm['surface']],
+							$atour['level'], 
+							$atour[$this->sm['year']]
+						]) . "\n";
 					}
-					echo "\t-----------------------------------------\n";
 				}
-				echo "\n";
+
+
+				$pre_point = $aplayer['point'];
+				$pre_point4compare = $aplayer['point4compare'];
 			}
 		}
+
+
+		$fp = fopen(join("/", [DATA, 'calc', $this->gender, $this->sd, $this->period, 'compose']), 'w');
+		fputs($fp, $output_compose);
+		fclose($fp);
+
+		$fp = fopen(join("/", [DATA, 'calc', $this->gender, $this->sd, $this->period, 'rank']), 'w');
+		fputs($fp, $output_rank);
+		fclose($fp);
+
+		$tbname = join("_", ['calc', $this->gender, $this->sd, $this->period]);
+		$db = new_db("test");
+		$sql = "delete from " . $tbname;
+		if (!$db->query($sql)) {
+			print_err("===========================上行删除sql ERROR==============================");
+			return;
+		} else {
+			if (!$db->multi_insert($tbname, $output_rank_for_db, "")) {
+				print_err("===========================上行插入ERROR==============================");
+				return;
+			}
+			$sql = "update info set `value_time` = '" . date('Y-m-d H:i:s') . "' where `key` = '" . join("_", ['calc', $this->gender, $this->sd, $this->period, 'update_time']) . "';";
+			print_err($sql);
+			if (!$db->query($sql)) {
+				print_err("===========================上行修改时间 sql ERROR=============================="); 
+				return;
+			}
+		}
+
 	}
 
 	public function sum() {
 
+		if (!preg_match('/^([A-Z0-9]{4}|[0-9]{5,6})$/', $this->pre_pid)) return;
+		if (in_array($this->pre_pid, ["310137", "313402", "312894", "313381"])) return;
+
+		// 把超5分数排序，根据强记超五的个数，把强记部分扔到mandatory里去，非强记部分扔到optional里去
 		if (count($this->premier5) > 1) {
 			usort($this->premier5, 'self::sortByPoint');
 		}
 
+		// 特殊策略，相同赛事只记高的
+		self::removeDupliByIdx($this->premier5, $this->sm["eid"]);
+
 		$p5_must = 0;
-		if ($this->gender == "wta" && $this->sd = "s") {
+		if ($this->gender == "wta" && $this->sd == "s") {
 			$p5_must = $this->redis->cmd('HGET', 'wta_p5_count_' . $this->pre_pid, $this->period)->get();
 		}
 
 		for ($i = 0; $i < count($this->premier5); ++$i) {
 			if ($i < $p5_must) {
-				$this->mandantory[] = $this->premier5[$i];
+				$this->mandatory[] = $this->premier5[$i];
 			} else {
 				$this->optional[] = $this->premier5[$i];
 			}
 		}
 		unset($this->premier5); $this->premier5 = [];
 
+		// optional和mandatory都重排序
 		if (count($this->optional) > 1) {
 			usort($this->optional, 'self::sortByPoint');
 		}
+		if (count($this->mandatory) > 1) {
+			usort($this->mandatory, 'self::sortByPoint');
+		}
+		if (count($this->bonus) > 1) {
+			usort($this->bonus, 'self::sortByPoint');
+		}
 
+		// 特殊策略，相同赛事只记高的(靠前的)
+		self::removeDupliByIdx($this->optional, $this->sm["eid"]);
+		self::removeDupliByIdx($this->mandatory, $this->sm["eid"]);
+		self::removeDupliByIdx($this->bonus, $this->sm["eid"]);
+
+		// --------------------------特殊处理，把20200501之后的比赛全部算作非强制项
+		$_mandatory = [];
+		foreach ($this->mandatory as $item) {
+			if ($item[$this->sm["start_date"]] > 20200501) {
+				$this->optional[] = $item;
+			} else {
+				$_mandatory[] = $item;
+			}
+		}
+		$this->mandatory = $_mandatory;
+		if (count($this->optional) > 1) {
+			usort($this->optional, 'self::sortByPoint');
+		}
+		// --------------------------结束特殊处理
+
+		// 超出数量的扔到non-countable里
 		$non_countable = [];
-
-		if (count($this->mandantory) + count($this->optional) > $this->max_valid) {
-			$countable_num = $this->max_valid - count($this->mandantory);
+		if (count($this->mandatory) + count($this->optional) > $this->max_valid) {
+			$countable_num = $this->max_valid - count($this->mandatory);
 			$non_countable = array_slice($this->optional, $countable_num);
 			$this->optional = array_slice($this->optional, 0, $countable_num);
 		}
 
-		$point = array_sum(array_map(function ($d) {return $d[$this->sm['point']] == 10000 ? 0 : $d[$this->sm['point']];}, array_merge($this->bonus, $this->mandantory, $this->optional)));
+		// 总分与替补分
+		$point = array_sum(array_map(function ($d) {return $d[$this->sm['point']] == 10000 ? 0 : $d[$this->sm['point']];}, array_merge($this->bonus, $this->mandatory, $this->optional)));
 		$alt_point = array_sum(array_map(function ($d) {return $d[$this->sm['point']];}, $non_countable));
 
-		$info = $this->redis->cmd('HMGET', join("_", [$this->gender, 'profile', $this->pre_pid]), 'first', 'last')->get();
+		// 大师赛分或者一级赛分
+		if ($this->gender == "atp") {
+			$master_point = array_sum(
+				array_map(
+					function ($d) {
+						return in_array($d["level"], ["GS", "WC", "1000"]) && $d[$this->sm["eid"]] != "0410" && !preg_match('/^Q[0-9]/', $d[$this->sm["final_round"]]) && $d[$this->sm["point"]] != 10000 ? $d[$this->sm["point"]] : 0;
+					}, 
+					array_merge($this->bonus, $this->mandatory, $this->optional)
+				)
+			);
+		} else {
+			$master_point = array_sum(
+				array_map(
+					function ($d) {
+						return in_array($d["level"], ["GS", "YEC", "PM", "P5"]) && !preg_match('/^Q[0-9]/', $d[$this->sm["final_round"]]) && $d[$this->sm["point"]] != 10000 ? $d[$this->sm["point"]] : 0;
+					}, 
+					array_merge($this->bonus, $this->mandatory, $this->optional)
+				)
+			);
+		}
+
+		// 巡回赛分
+		if ($this->gender == "atp") {
+			$tour_point = 0;
+		} else {
+			$tour_point = array_sum(
+				array_map(
+					function ($d) {
+						return in_array($d["level"], ["GS", "YEC", "PM", "P5", "XXI", "P700", "Int"]) && !preg_match('/^Q[0-9]/', $d[$this->sm["final_round"]]) && $d[$this->sm["point"]] != 10000 ? $d[$this->sm["point"]] : 0;
+					}, 
+					array_merge($this->bonus, $this->mandatory, $this->optional)
+				)
+			);
+		}
+
+		// 参赛数
+		$total_plays = count($this->bonus) + count($this->mandatory) + count($this->optional) + count($non_countable);
+
+		// 计算前三大分数 
+		$not0 = array_filter(array_merge($this->bonus, $this->mandatory, $this->optional), function ($d) {return $d[$this->sm['point']] != 10000;});
+		usort($not0, 'self::sortByPoint');
+		$max_1st = $max_2nd = $max_3rd = 0;
+		if (count($not0) > 0) $max_1st = $not0[0][$this->sm['point']];
+		if (count($not0) > 1) $max_2nd = $not0[1][$this->sm['point']];
+		if (count($not0) > 2) $max_3rd = $not0[2][$this->sm['point']];
+
+		// 计算用于比较同分时先后顺序的量
+		$point4compare = sprintf("rank%05u%05u%05u%02u%04u%04u%04u", $point, $master_point, $tour_point, 99 - $total_plays, $max_1st, $max_2nd, $max_3rd);
+
+		$info = $this->redis->cmd('HMGET', join("_", [$this->gender, 'profile', $this->pre_pid]), 'first', 'last', 'ioc', 'birthday')->get();
 		$first = $info[0];
 		$last = $info[1];
+		$ioc = $info[2];
+		$birth = $info[3];
 
-		$mand0 = array_sum(array_filter(array_merge($this->bonus, $this->mandantory, $this->optional), function ($d) {return $d[$this->sm['point']] == 10000;}));
+		$mand0 = count(array_filter(array_merge($this->bonus, $this->mandatory, $this->optional), function ($d) {return $d[$this->sm['point']] == 10000;}));
 
 		$this->result[] = [
 			'pid' => $this->pre_pid,
+			'official_rank' => isset($this->rank[$this->pre_pid]) ? $this->rank[$this->pre_pid] : 9999,
+			'career_high' => isset($this->ch[$this->pre_pid]) ? $this->ch[$this->pre_pid] : 9999,
 			'first' => $first,
 			'last' => $last,
+			'ioc' => $ioc,
+			'birth' => $birth,
 			'point' => $point,
 			'alt' => $alt_point,
 			'mand0' => $mand0,
 			'win' => $this->win,
 			'loss' => $this->loss,
 			'streak' => $this->streak,
-			'tours' => array_merge($this->bonus, $this->mandantory, $this->optional),
+			'prize' => $this->prize,
+			'point4compare' => $point4compare,
+			'tours' => array_merge($this->bonus, $this->mandatory, $this->optional),
 			'alt_tours' => $non_countable,
+			'oppo' => $this->current_oppo_pid,
+			'partner' => $this->current_partner_pid,
+			'city' => $this->current_city,
+			'round' => $this->current_round,
+			'this_week_point' => $this->current_point,
+			'status' => $this->current_status,
+			'prediction' => $this->current_prediction,
 		];
 	}
 		
@@ -169,11 +466,11 @@ class Calc {
 		// 修改一下低级别赛事的level
 		if (in_array($arr[$this->sm['level']], ['CH', 'ITF'])) {
 			if ($this->gender == "atp") {
-				if ($arr[$this->sm['total_prize']] > 136000) {
+				if ($arr[$this->sm['total_prize']] > 132000) {
 					$arr['level'] = "CH125";
 				} else if ($arr[$this->sm['total_prize']] > 110000) {
 					$arr['level'] = "CH110";
-				} else if ($arr[$this->sm['total_prize']] > 90000) {
+				} else if ($arr[$this->sm['total_prize']] > 88000) {
 					$arr['level'] = "CH100";
 				} else if ($arr[$this->sm['total_prize']] > 60000) {
 					$arr['level'] = "CH90";
@@ -185,7 +482,7 @@ class Calc {
 					$arr['level'] = "M15";
 				}
 			} else {
-				$arr['level'] = "W" . ($arr[$this->sm['total_prize']] / 1000);
+				$arr['level'] = "W" . floor($arr[$this->sm['total_prize']] / 1000);
 			}
 		} else {
 			$arr['level'] = $arr[$this->sm['level']];
@@ -194,7 +491,7 @@ class Calc {
 		// 这一段只是表明每项赛事在最后展示的时候的位置
 		if (in_array($arr[$this->sm['level']], ['GS'])) {
 			$arr['seq'] = 1;
-		} else if (in_array($arr['level'], ['WC', 'YEC'])) {
+		} else if (in_array($arr['level'], ['WC', 'YEC', 'XXI'])) {
 			$arr['seq'] = 2;
 		} else if (in_array($arr['level'], ['AC', 'PM'])) {
 			$arr['seq'] = 3;
@@ -218,6 +515,8 @@ class Calc {
 			$arr['seq'] = 12;
 		} else if (in_array($arr['level'], ['M15', 'W15'])) {
 			$arr['seq'] = 13;
+		} else {
+			//print_err($arr['level']);
 		}
 
 		// 强制0改成10000分
@@ -230,7 +529,7 @@ class Calc {
 		if (in_array($arr[$this->sm['level']], ['AC', 'WC', 'YEC']) && $arr[$this->sm['eid']] != 1081 && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
 			$this->bonus[] = $arr;
 		} else if (!preg_match('/^Q[0-9]/', $arr[$this->sm['final_round']]) && in_array($arr[$this->sm['level']], ['GS', '1000', 'PM']) && $arr[$this->sm['eid']] != "0410" && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
-			$this->mandantory[] = $arr;
+			$this->mandatory[] = $arr;
 		} else if (!preg_match('/^Q[0-9]/', $arr[$this->sm['final_round']]) && in_array($arr[$this->sm['level']], ['P5']) && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
 			$this->premier5[] = $arr;
 		} else if ($arr[$this->sm['point']] != 0) { // 有分数的肯定记入，分数为-1的也计入（强制分）
@@ -244,24 +543,52 @@ class Calc {
 			}
 		}
 
+		$this->prize += $arr[$this->sm['prize']];
 		$this->win += $arr[$this->sm['win']];
 		$this->loss += $arr[$this->sm['loss']];
 		if ($this->streak * $arr[$this->sm['streak']] < 0) {
 			$this->streak = 0;
 		}
-		$this->streak += $arr[$this->sm['streak']];
 
+		if ($arr[$this->sm['streak']] > 0) {
+			if ($arr[$this->sm['streak']] == $arr[$this->sm['win']] && $arr[$this->sm['loss']] == 0 && $this->streak >= 0) {
+				$this->streak += $arr[$this->sm['streak']] + 0;
+			} else {
+				$this->streak = $arr[$this->sm['streak']] + 0;
+			}
+		} else if ($arr[$this->sm['streak']] < 0) {
+			if ($arr[$this->sm['streak']] + $arr[$this->sm['loss']] == 0 && $arr[$this->sm['win']] == 0 && $this->streak <= 0) {
+				$this->streak += $arr[$this->sm['streak']] + 0;
+			} else {
+				$this->streak = $arr[$this->sm['streak']] + 0;
+			}
+		}
+
+		if ($arr[$this->sm['start_date']] >= $this->current_start_date && $arr[$this->sm['start_date']] < $this->current_end_date) {
+			$this->current_city = $arr[$this->sm['city']];
+			$this->current_round = $arr[$this->sm['final_round']];
+			$this->current_point += $arr[$this->sm['point']];
+			$this->current_oppo_pid = $arr[$this->sm['next']];
+			$this->current_partner_pid = $arr[$this->sm['partner_id']];
+			$this->current_prediction = @$arr[$this->sm['prediction']];
+			$this->current_status = @$arr[$this->sm['indraw']];
+		}
 
 		$this->pre_pid = $arr[$this->sm['pid']];
 	}
 
+	// 分数高的在前，分数一样的，时间早的在前
 	protected function sortByPoint($a, $b) {
-		return $a[$this->sm['point']] > $b[$this->sm['point']] ? -1 : ($a[$this->sm['point']] < $b[$this->sm['point']] ? 1 : ($a[$this->sm['record_date']] > $b[$this->sm['record_date']] ? -1 : 1));
+		return $a[$this->sm['point']] > $b[$this->sm['point']] ? -1 : ($a[$this->sm['point']] < $b[$this->sm['point']] ? 1 : ($a[$this->sm['record_date']] < $b[$this->sm['record_date']] ? -1 : 1));
 	}
 
 	protected function sortByTotalPoint($a, $b) {
 		return $a['point'] > $b['point'] ? -1 : (
-			1
+			$a['point'] < $b['point'] ? 1 : (
+				strcmp($a['point4compare'], $b['point4compare']) > 0 ? -1 : (
+					1
+				)
+			)
 		);
 	}
 
@@ -272,7 +599,19 @@ class Calc {
 			)
 		);
 	}
-}
 
-$calc = new Calc('wta', 's', 'year');
-$calc->output_rank_list();
+	protected function removeDupliByIdx(&$list, $idx) {
+		$dict = [];
+		$new_list = [];
+		foreach ($list as $v) {
+			if (!in_array($v[$idx], $dict)) { // 不在去重字典的才保留
+				$new_list[] = $v;
+				$dict[] = $v[$idx];
+			} else if ($v['seq'] > 6) { // 对于低级别赛事，不管在不在字典都保留
+				$new_list[] = $v;
+			}
+		}
+		$list = $new_list;
+	}
+
+}

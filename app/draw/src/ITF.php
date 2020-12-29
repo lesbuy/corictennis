@@ -1,22 +1,21 @@
 <?php
 
 require_once('base.class.php');
-require_once(APP . '/rank/src/wt_bio.new.php');
+require_once(APP . '/conf/wt_bio.php');
 
 class Event extends Base{
 
-	protected $eventCodeReset = [];
-	protected $otherSextip = 0;
+	protected $itf_point_prize;
 
 	public function  process() {
 		$this->preprocess();
 		$this->parsePlayer();
 		$this->parseDraw();
 //		$this->parseResult();
+		$this->parseLive();
 		$this->parseSchedule();
-//		$this->parseLive();
-//		$this->appendH2HandFS();
-//		$this->calaTeamFinal();
+		$this->appendH2HandFS();
+		$this->calaTeamFinal();
 
 	}
 
@@ -65,6 +64,8 @@ class Event extends Base{
 		}
 		fclose($fp);
 
+		$this->itf_point_prize = require_once(APP . '/draw/conf/itf_conf.php');
+		$this->iso3_to_ioc = require_once(APP . '/draw/conf/iso3_to_ioc.php');
 	}
 
 	protected function parsePlayer() {
@@ -114,6 +115,7 @@ class Event extends Base{
 							$first = $amatch["S" . $side . "P" . $pl . "FirstName"];
 							$last = $amatch["S" . $side . "P" . $pl . "LastName"];
 							$ioc = $amatch["S" . $side . "P" . $pl . "CCode"];
+							$ioc = $this->iso3_to_ioc[$ioc];
 
 							$wtpid = null;
 							// 先从redis里面 itf_redirect找
@@ -123,19 +125,23 @@ class Event extends Base{
 //								fputs(STDERR, "MEMORY FOUND: " . $itfpid . " => " . $wtpid . "\n");
 							}
 
-							// 如果没找到，就通过名字去查wt pid，如果是Junior比赛，不查
+							// 如果没找到wt pid
 							if ($wtpid === null) {
-//								fputs(STDERR, "TO SEEK WTPID: " . $itfpid . "(" . $first . " " . $last . ")\n");
-								if ($sex == "M") {
-									$wtpid = $bio->query_wtpid("atp", $first, $last, $this->redis, $itfpid);
-								} else if ($sex == "F") {
-									$wtpid = $bio->query_wtpid("wta", $first, $last, $this->redis, $itfpid);
-								}
-							}
+								fputs(STDERR, join("\t", ["TO SEEK WTPID", $itfpid, $first, $last]). "\n");
 
-							// 如果itf_profile找不到，也没有redirect到atpwta_profile，那么就插入一个新的itf_profile
-							if (!$this->redis->cmd('HGET', 'itf_redirect', $itfpid)->get() && !$this->redis->cmd('KEYS', 'itf_profile_' . $itfpid)->get()) {
-								$this->redis->cmd('HMSET', 'itf_profile_' . $itfpid, 'first', $first, 'last', $last, 'ioc', $ioc)->set();
+								// 如果itf_profile也找不到，那就set一次itf_profile，并记下当前时间。去找一次wt pid，找不到就休息9天再找
+								if (!$this->redis->cmd('KEYS', 'itf_profile_' . $itfpid)->get()
+									|| $this->redis->cmd('HGET', 'itf_profile_' . $itfpid, 'update_time')->get() - time() > 86400 * 9) {
+									$l_en = $bio->rename2long($first, $last, $ioc);
+									$s_en = $bio->rename2short($first, $last, $ioc);
+									$this->redis->cmd('HMSET', 'itf_profile_' . $itfpid, 'first', $first, 'last', $last, 'ioc', $ioc, 'l_en', $l_en, 's_en', $s_en, 'update_time', time())->set();
+
+									if ($sex == "M") {
+										$wtpid = $bio->query_wtpid("atp", $first, $last, $this->redis, $itfpid);
+									} else if ($sex == "F") {
+										$wtpid = $bio->query_wtpid("wta", $first, $last, $this->redis, $itfpid);
+									}
+								}
 							}
 
 							$pid = $itfpid;
@@ -174,7 +180,7 @@ class Event extends Base{
 					if (in_string($note, "(")) {
 						$entry = substr($note, 1, 1);
 					} else if (in_string($note, "[")) {
-						$seed = intval(substr($note, 1, 1));
+						$seed = intval(substr($note, 1));
 					}
 
 					$seeds = [];
@@ -252,6 +258,7 @@ class Event extends Base{
 				$event .= "D";
 				$sd = "D";
 			}
+			if (isset($this->draws[$event])) continue; // 防止重复
 
 			$event_raw = $event;
 
@@ -309,6 +316,38 @@ class Event extends Base{
 						$r2 = $r3 = "Q" . $r1;
 					}
 
+					if (!isset($this->draws[$event]['round'][$r2])) {
+						$point = 0; $prize = 0;
+						$placeid = $event_round - $r1 + 2;
+						if (isset($this->itf_point_prize[$this->atpprize + $this->wtaprize][$event])) {
+							if (isset($this->itf_point_prize[$this->atpprize + $this->wtaprize][$event][$placeid])) {
+								$point = $this->itf_point_prize[$this->atpprize + $this->wtaprize][$event][$placeid][0];
+								$prize = $this->itf_point_prize[$this->atpprize + $this->wtaprize][$event][$placeid][1];
+							}
+						}
+						$this->draws[$event]['round'][$r2] = [
+							'id' => $placeid,
+							'point' => $point,
+							'prize' => $prize,
+							'alias' => $r3,
+						];
+
+						if ($placeid == 2) { // 对于决赛或者决胜轮，添加冠军和出线的分数资金
+							$point = 0; $prize = 0; $placeid = 1;
+							if ($qm == "Q") $alias = "Qualify"; else $alias = "W";
+							if (isset($this->itf_point_prize[$this->atpprize + $this->wtaprize][$event][$placeid])) {
+								$point = $this->itf_point_prize[$this->atpprize + $this->wtaprize][$event][$placeid][0];
+								$prize = $this->itf_point_prize[$this->atpprize + $this->wtaprize][$event][$placeid][1];
+							}
+							$this->draws[$event]['round'][$alias] = [
+								'id' => $placeid,
+								'point' => $point,
+								'prize' => $prize,
+								'alias' => $alias,
+							];
+						}
+					}
+
 					$invalid_match_count = 0; // 对于参赛选手不明的比赛（BYE vs BYE，QUAL vs QUAL)
 					foreach ($around as $order => $amatch) {
 						if ($amatch['S1P1Id'] < 10 && $amatch['S2P1Id'] < 10) {
@@ -337,7 +376,7 @@ class Event extends Base{
 									if ($r1 == 1) { // 第一轮可能有bye或者qual
 										if ($pid == 1) {
 											$pids[] = "BYE";
-										} else if ($pid == 2) {
+										} else if ($pid == 0) {
 											$pids[] = "QUAL";
 										}
 									} else {
@@ -357,7 +396,7 @@ class Event extends Base{
 						// 记录比赛结果
 						$mStatus = "";
 						$playStatus = @$amatch['status'];
-						$statusLabel = @$amatch['statusLabel'];
+						$statusLabel = @$amatch['StatusLabel'];
 
 						if ($playStatus == "upcoming") {
 							// 表示未开打
@@ -385,6 +424,7 @@ class Event extends Base{
 						$revise = self::revise_itf_score($amatch, $mStatus);
 						$s1 = $revise[0];
 						$s2 = $revise[1];
+//						$s1 = $s2 = [];
 
 						// 记录到match里
 						$this->matches[$uuid] = [
@@ -416,21 +456,7 @@ class Event extends Base{
 		}
 	}
 
-	protected function parseResult() {
-
-		$file = join("/", [SHARE, 'down_result', 'completed', $this->year, $this->tour]);
-		if (!file_exists($file)) return false;
-
-		$xml = simplexml_load_file($file);
-		if (!$xml) return false;
-	
-		foreach ($xml->Tournament->Date as $adate) {
-			foreach ($adate->Match as $amatch) {
-				$matchid = $amatch->attributes()->matchId . '';
-				self::getResult($matchid, $amatch);
-			}
-		}
-	}
+	protected function parseResult() {}
 
 	protected function parseExtra() {}
 
@@ -473,6 +499,11 @@ class Event extends Base{
 				usort($date_matches, 'self::sortByCourtIdDesc');
 
 				foreach ($date_matches as $amatch) {
+
+					if (isset($amatch['match']['cancelled']) && $amatch['match']['cancelled']) {
+						continue;
+					}
+
 					$match_seq = @explode(";", $amatch['param1'])[1];
 					$matchid = $amatch['_id'];
 //					echo $matchid . "\n";
@@ -486,7 +517,7 @@ class Event extends Base{
 						];
 					}
 					$time = $amatch['match']['_dt']['uts'];
-					if ($amatch['match']['timeinfo'] && $amatch['match']['timeinfo']['started']){
+					if ($amatch['match']['timeinfo'] && $amatch['match']['timeinfo']['started'] && $amatch['match']['timeinfo']['running']){
 						$time = $amatch['match']['timeinfo']['started'];
 					}
 
@@ -509,86 +540,90 @@ class Event extends Base{
 
 	protected function parseLive() {
 
-		$file = join("/", [SHARE, 'down_result', 'live']);
+		$file = join("/", [DATA, 'tour', 'live_itf']);
 		if (!file_exists($file)) return false;
 
-		$xml = simplexml_load_file($file);
+		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
 	
-		foreach ($xml->Tournament as $atour) {
-			if ($atour->attributes()->id . '' != $this->tour) continue;
-			foreach ($atour->Match as $amatch) {
-				$matchid = $amatch->attributes()->mId . '';
-				self::getResult($matchid, $amatch);
+		foreach ($xml['doc'][0]['data'] as $amatch) {
+			$matchid = $amatch['matchid'];
+			if (!isset($this->matches[$matchid])) continue;
 
-				$this->live_matches[] = $matchid;
-			}
+			self::getResult($matchid, $amatch['match']);
+
+			$this->live_matches[] = $matchid;
 		}
 	}
 
 	protected function getResult($matchid, &$m, $match_time = "", $match_court = "") {
 
-		if (isset($m->attributes()->draw)) {
-			$event_raw = $m->attributes()->draw . '';
-		} else {
-			$event_raw = substr($m->attributes()->mId . '', 0, 2);
-		}
-		$event = self::transSextip($event_raw, intval($m->attributes()->isDoubles) + 1);
+		if (!isset($this->matches[$matchid])) return;
 
 		$match = &$this->matches[$matchid];
-		$match['tipmsg'] = $m->attributes()->msg . '';
+		$event = $match['event'];
 
-		$winner = $m->attributes()->winner . '';
-		$sScore = @$m->attributes()->sS . '';
+		$match['tipmsg'] = '';
 
-		$score1 = $score2 = [];
-
-		$mStatus = @$match['mStatus'];
-		if ($mStatus == "" || strpos("FGHIJKLM", $mStatus) === false) { // 如果已经有结果了，就不需要再记录结果了
-			if ($winner == 2) {
-				$mStatus = "F";
-			} else if ($winner == 3) {
-				$mStatus = "G";
-			} else if (strpos($sScore, 'Ret') !== false) {
-				if ($winner == 4) $mStatus = "H"; else if ($winner == 5) $mStatus = "I";
-			} else if (strpos($sScore, 'Def') !== false) {
-				if ($winner == 6) $mStatus = "J"; else if ($winner == 7) $mStatus = "K";
-			} else if (strpos($sScore, 'W/O') !== false) {
-				if ($winner == 4) $mStatus = "L"; else if ($winner == 5) $mStatus = "M";
-			} else if ($winner == 0) {
-				$mStatus = "B";
-			} else {
-				fputs(STDERR, $matchid . "\t" . $sScore . "\t" . $winner . "\n");
-			}
+		$winner = "";
+		$status = @$m['status']['name'];
+		if ($status == "Ended" || $status == "Retired" || $status == "Defaulted") {
+			$winner = $m["result"]["winner"];
+			if ($winner == "home") $winner = 1;
+			else if ($winner == "away") $winner = 2;
 		}
 
-		foreach ([1, 2, 3, 4, 5] as $set) {
-			$a = $m->attributes()->{'s' . $set . 'A'} . '';
-			$b = $m->attributes()->{'s' . $set . 'B'} . '';
-			if ($a === '' && $b === '') break;
-			$aa = @$m->attributes()->{'s' . ($set + 1) . 'A'} . '';
-			$bb = @$m->attributes()->{'s' . ($set + 1) . 'B'} . '';
-			if ($aa === '' && $bb === '' && strpos('FGHIJKLM', $mStatus) === false) { // 如果本盘是当前盘，则盘分胜负标记为0
-				$c = $d = 0;
-			} else {
-				if ($a > $b) {$c = 1; $d = -1;}
-				else if ($a < $b) {$c = -1; $d = 1;}
-				else {$c = $d = 0;}
+		$mStatus = $match['mStatus'];
+		if ($mStatus != "" && in_string("FGHIJKLM", $mStatus)) { // 已经决出结果了，不更改
+			//  do nothing
+		} else if ($winner) { // 有winner 说明比完了
+			if ($winner == 1) $mStatus == "F"; else if ($winner == 2) $mStatus == "G";
+			if ($status == "Retired") {
+				if ($winner == 1) $mStatus == "H"; else if ($winner == 2) $mStatus == "I";
+			} else if ($status == "Default") {
+				if ($winner == 1) $mStatus == "J"; else if ($winner == 2) $mStatus == "K";
+			} else if ($m['walkover']) {
+				if ($winner == 1) $mStatus == "L"; else if ($winner == 2) $mStatus == "M";
 			}
-			$tb = $m->attributes()->{'tb' . $set} . '';
-			if ($tb === '') {$e = $f = -1;}
-			else {
-				if ($a > $b) {$f = $tb; $e = $f + 2; if ($e < 7) $e = 7;}
-				else {$e = $tb; $f = $e + 2; if ($f < 7) $f = 7;}
-			}
-			$score1[] = [$a, $c, $e];
-			$score2[] = [$b, $d, $f];
+		} else if ($status == "Interrupted") {
+			$mStatus = 'C';
+		} else if ($m['matchstatus'] == 'live') {
+			$mStatus = 'B';
+		} else {
+			$mStatus = 'A';
 		}
 
 		$match['mStatus'] = $mStatus;
 
+		$score1 = [];
+		$score2 = [];
+		for ($i = 1; $i <= 5; ++$i) {
+			if (!isset($m['periods']['p' . $i])) continue;
+			$a = $m['periods']['p' . $i]['home'];
+			$b = $m['periods']['p' . $i]['away'];
+			if (isset($m['tiebreaks']['p' . $i])) {
+				$e = $m['tiebreaks']['p' . $i]['home'];
+				$f = $m['tiebreaks']['p' . $i]['away'];
+			} else {
+				$e = $f = -1;
+			}
+			if (isset($m['periods']['p' . ($i + 1)]) || (!isset($m['periods']['p' . ($i + 1)]) && $winner)) {
+				if ($a > $b) {
+					$c = 1; $d = -1;
+				} else {
+					$c = -1; $d = 1;
+				}
+			} else {
+				$c = $d = 0;
+			}
+			$score1[] = [$a, $c, $e];
+			$score2[] = [$b, $d, $f];
+		}
+		$match['s1'] = $score1;
+		$match['s2'] = $score2;
+
 		if ($mStatus != "A") {
-			$match['dura'] = $m->attributes()->mt . ''; 
+			$match['dura'] = $m['timeinfo'] && $m['timeinfo']['played'] ? date('H:i:s', strtotime('0:0:0 +' . $m['timeinfo']['played'] . " seconds")) : ""; 
 			$match['s1'] = $score1;
 			$match['s2'] = $score2;
 		} else {
@@ -597,14 +632,17 @@ class Event extends Base{
 		}
 
 		if ($mStatus == "B") {
-			$p1 = $m->attributes()->ptA . '';
-			$p2 = $m->attributes()->ptB . '';
+			$p1 = $p2 = $serve = "";
+			if (isset($m['gamescore'])) {
+				$p1 = $m['gamescore']['home'];
+				$p2 = $m['gamescore']['away'];
+				$serve = $m['gamescore']['service'];
+			}
 			if (($p1 == 50 || $p1 == 'A') && $p2 == 40) {$p1 = 'A'; $p2 = 40;}
 			if (($p2 == 50 || $p2 == 'A') && $p1 == 40) {$p2 = 'A'; $p1 = 40;}
 			$match['p1'] = $p1;
 			$match['p2'] = $p2;
-			$serve = $m->attributes()->serve . '';
-			$match['serve'] = ($serve === "" ? "" : (($serve + 0) % 2 == 0 ? 1 : 2));
+			$match['serve'] = $serve;
 		}
 
 		// fill in next match if completed

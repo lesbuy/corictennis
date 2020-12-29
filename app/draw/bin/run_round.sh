@@ -33,4 +33,12 @@ do
 		mv tmp_round $STORE/round/$year/$eid
 		echo $eid $year
 	fi
+
+#	if [[ "$eid" == "M024" ]]
+#	then
+#		cp $STORE/round/$((year-1))/$eid $STORE/round/$year/$eid
+#		echo cp $eid from $((year-1)) to $year
+#	fi
 done
+
+

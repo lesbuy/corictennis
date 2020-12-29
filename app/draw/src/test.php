@@ -9,24 +9,25 @@ $level = "";
 if (in_array($tour, ['AO', 'RG', 'WC', 'UO'])) {
 	$level = "GS";
 } else if (strlen($tour) > 6) {
-	$level = "ITF";
+	if (substr($tour, 0, 1) == "J") $level = "JU";
+	else $level = "ITF";
 } else {
 	$level = "WT";
 }
 
 if ($level == "GS") require_once($tour . '.php');
-else if ($level == "WT") require_once('WT.php');
-else if ($level == "ITF") require_once('ITF.php');
+else require_once($level . '.php');
 
 $event = new Event($tour, $year);
 $event->process();
 
 #$event->calaTeamFinal();
 #$event->outputSummary();
-$event->outputRawDraws();
+#$event->outputRawDraws();
 $event->outputRawMatches();
-$event->outputRawTeams();
-$event->outputRawOOPs();
+#$event->outputRawTeams();
+#$event->outputRounds();
+#$event->outputRawOOPs();
 #$event->outputPlayers();
 #$event->outputOOPs();
 #$event->outputLive();

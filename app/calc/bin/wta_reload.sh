@@ -5,7 +5,9 @@ source $APP/conf/calc
 
 # 算分起始日（以下日期都是记分日期）
 calc_start=`date -d "$wta_liveranking_end -357 days" +%Y-%m-%d`
+calc_start="2019-03-11"  # 临时操作
 itvl=$((wta_this_weeks*7))
+itvl=0  #临时操作
 # 掉分起始日为算分起始日往前推N周，N为本站赛事持续周数
 flop_start=`date -d "$calc_start -$itvl days" +%Y-%m-%d`
 
@@ -38,3 +40,6 @@ echo $flop $calc $curr $live
 
 awk -F"\t" -v flop=$flop -v calc=$calc '$15 == "s" && $8 >= flop && $8 < calc' $DATA/activity/wta/* $DATA/calc/wta/s/mandatory0 > $DATA/calc/wta/s/year/flop
 awk -F"\t" -v curr=$curr -v calc=$calc '$15 == "s" && $8 >= calc && $8 < curr' $DATA/activity/wta/* $DATA/calc/wta/s/mandatory0 > $DATA/calc/wta/s/year/loaded
+
+awk -F"\t" -v flop=$flop -v calc=$calc '$15 == "d" && $8 >= flop && $8 < calc' $DATA/activity/wta/*  > $DATA/calc/wta/d/year/flop
+awk -F"\t" -v curr=$curr -v calc=$calc '$15 == "d" && $8 >= calc && $8 < curr' $DATA/activity/wta/*  > $DATA/calc/wta/d/year/loaded

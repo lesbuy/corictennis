@@ -1,0 +1,22 @@
+tour=AO
+#资格赛第一场比赛的时间
+start_time="2020-1-14 7:00"
+qualifying_first_day="2020-1-14"
+main_first_day="2020-1-20"
+
+draw_url="https://prod-scores-api.ausopen.com/event/XXX/draws"
+schedule_url="https://prod-scores-api.ausopen.com/year/2020/period/YYY/schedule"
+result_url="https://prod-scores-api.ausopen.com/year/2020/period/YYY/results"
+player_list_url="https://ausopen.com/event/all/players"
+live_url="https://prod-scores-api.ausopen.com/live/scores"
+
+trans() {
+	param1=$1
+	if [[ $param1 -le 6 ]]
+	then
+		echo "Q/day/"$param1
+	else
+		echo "MD/day/"$[param1-6]
+	fi
+}
+

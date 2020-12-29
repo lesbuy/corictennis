@@ -1,9 +1,8 @@
 <?php
 
 if (!defined('ROOT')) {$dir_arr = explode('/', __DIR__); define('ROOT', join('/', [$dir_arr[0], $dir_arr[1], $dir_arr[2]]));} require_once(ROOT . '/global.php'); require_once(APP . '/conf/func.php'); 
-require_once(APP . '/tool/decrypt.php');
 require_once(APP . '/tool/simple_html_dom.php');
-require_once('wt_bio.php');
+require_once(APP . '/conf/wt_bio.php');
 
 class Activity {
 
@@ -65,7 +64,7 @@ class Activity {
 		$final_round = "";
 		foreach ($this->matches as $amatch) {
 			$final_round = $amatch[1];
-			if ($amatch[3] != "" && $amatch[3] != "W/O") {
+			if ($amatch[3] != "" && $amatch[3] != "W/O" && $amatch[3] != "UNP") {
 				if ($amatch[2] == "W") {
 					++$win;
 					if ($streak < 0) $streak = 0;
@@ -171,6 +170,7 @@ class Activity {
 				if ($response !== false) break;
 				sleep(3);
 			}
+			file_put_contents(join("/", [TEMP, 'activity', $this->gender, $this->sd, join('_', [$this->pid, $this->year, $i])]), $response);
 			if ($response === false || strpos($response, "Error while rendering the view [Player Activity]") !== false) {
 				fputs(STDERR, join("\t", ["ERROR_DOWNLOAD", $this->pid, $this->sd, "PAGE" . $i]) . "\n");
 				continue;
@@ -421,6 +421,8 @@ class Activity {
 						$games = trim($tr->find('td', 4)->find('a', 0)->innertext);
 						$games = self::process_atp_score($games, $wl);
 					}
+
+					if ($games == "UNP") $wl = "";
 
 					if (in_array($oppo_rank, ['', '0', '9999', '-'])) $oppo_rank = '';
 
@@ -698,7 +700,10 @@ class Activity {
 	protected function process_atp_score($games, $wl) {
 		if (strpos($games, "W/O") !== false) {
 			return "W/O";
+		} else if (strpos($games, "UNP") !== false) { // 比赛没打
+			return "UNP";
 		}
+
 		$aff = "";
 		if (strpos($games, "RET") !== false) {
 			$aff = " Ret.";

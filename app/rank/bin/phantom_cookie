@@ -1,0 +1,2 @@
+[General]
+cookies="@Variant(\0\0\0\x7f\0\0\0\x16QList<QNetworkCookie>\0\0\0\0\x1\0\0\0\x2\0\0\0\x8a__cfduid=d4f6dc072c0ab678a7a0e66704ac4496a1600828091; secure; HttpOnly; expires=Fri, 23-Oct-2020 02:28:11 GMT; domain=.atptour.com; path=/\0\0\0\xef__cf_bm=3178e5cbb73e828a12d41d67dcac7596b5edf264-1600828573-1800-AQ33UVO6jvdqKrPeJRCQD46D159jig6Ff7M9n2DA/Ab0D4QEP8XmH4AZSbXfWSxvG93uxgLCzfJ360+LYiJEL6I=; secure; HttpOnly; expires=Wed, 23-Sep-2020 03:06:13 GMT; domain=.atptour.com; path=/)"

@@ -1,0 +1,44 @@
+{
+	"tournamentEvent": {
+		"oneColumn": {
+			"matches": [
+				{
+					"id": "LD008",
+					"teamA":{"players":[{"firstName":"Nathalie","lastName":"DECHY","shortName":"N.DECHY","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/1986-n.dechy","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Amelie","lastName":"MAURESMO","shortName":"A.MAURESMO","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/2098-a.mauresmo","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Conchita","lastName":"MARTINEZ","shortName":"C.MARTINEZ","ranking":null,"country":"ESP","sex":"W","playerCardUrl":"/en-us/players/1885-c.martinez","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Sandrine","lastName":"TESTUD","shortName":"S.TESTUD","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/1921-s.testud","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "LD009",
+					"teamA":{"players":[{"firstName":"Nathalie","lastName":"DECHY","shortName":"N.DECHY","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/1986-n.dechy","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Amelie","lastName":"MAURESMO","shortName":"A.MAURESMO","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/2098-a.mauresmo","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Marion","lastName":"BARTOLI","shortName":"M.BARTOLI","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/5204-m.bartoli","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Iva","lastName":"MAJOLI","shortName":"I.MAJOLI","ranking":null,"country":"CRO","sex":"W","playerCardUrl":"/en-us/players/1886-i.majoli","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "LD010",
+					"teamA":{"players":[{"firstName":"Conchita","lastName":"MARTINEZ","shortName":"C.MARTINEZ","ranking":null,"country":"ESP","sex":"W","playerCardUrl":"/en-us/players/1885-c.martinez","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Sandrine","lastName":"TESTUD","shortName":"S.TESTUD","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/1921-s.testud","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Marion","lastName":"BARTOLI","shortName":"M.BARTOLI","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/5204-m.bartoli","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Iva","lastName":"MAJOLI","shortName":"I.MAJOLI","ranking":null,"country":"CRO","sex":"W","playerCardUrl":"/en-us/players/1886-i.majoli","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "LD011",
+					"teamA":{"players":[{"firstName":"Daniela","lastName":"HANTUCHOVA","shortName":"D.HANTUCHOVA","ranking":null,"country":"SVK","sex":"W","playerCardUrl":"/en-us/players/3593-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Nathalie","lastName":"TAUZIAT","shortName":"N.TAUZIAT","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/1904-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}	],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Lindsay","lastName":"DAVENPORT","shortName":"L.DAVENPORT","ranking":null,"country":"USA","sex":"W","playerCardUrl":"/en-us/players/1892-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Arantxa","lastName":"SANCHEZ-VICARIO","shortName":"A.SANCHEZ-VICARIO","ranking":null,"country":"ESP","sex":"W","playerCardUrl":"/en-us/players/4447-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "LD012",
+					"teamA":{"players":[{"firstName":"Daniela","lastName":"HANTUCHOVA","shortName":"D.HANTUCHOVA","ranking":null,"country":"SVK","sex":"W","playerCardUrl":"/en-us/players/3593-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Nathalie","lastName":"TAUZIAT","shortName":"N.TAUZIAT","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/1904-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}	],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Martina","lastName":"NAVRATILOVA","shortName":"M.NAVRATILOVA","ranking":null,"country":"USA","sex":"W","playerCardUrl":"/en-us/players/6093-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Dinara","lastName":"SAFINA","shortName":"D.SAFINA","ranking":null,"country":"RUS","sex":"W","playerCardUrl":"/en-us/players/6088-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "LD013",
+					"teamA":{"players":[{"firstName":"Lindsay","lastName":"DAVENPORT","shortName":"L.DAVENPORT","ranking":null,"country":"USA","sex":"W","playerCardUrl":"/en-us/players/1892-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Arantxa","lastName":"SANCHEZ-VICARIO","shortName":"A.SANCHEZ-VICARIO","ranking":null,"country":"ESP","sex":"W","playerCardUrl":"/en-us/players/4447-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Martina","lastName":"NAVRATILOVA","shortName":"M.NAVRATILOVA","ranking":null,"country":"USA","sex":"W","playerCardUrl":"/en-us/players/6093-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Dinara","lastName":"SAFINA","shortName":"D.SAFINA","ranking":null,"country":"RUS","sex":"W","playerCardUrl":"/en-us/players/6088-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				},{
+					"id": "LD001",
+					"teamA":{"players":[{"firstName":"Nathalie","lastName":"DECHY","shortName":"N.DECHY","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/1986-n.dechy","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Amelie","lastName":"MAURESMO","shortName":"A.MAURESMO","ranking":null,"country":"FRA","sex":"W","playerCardUrl":"/en-us/players/2098-a.mauresmo","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null},
+					"teamB":{"players":[{"firstName":"Martina","lastName":"NAVRATILOVA","shortName":"M.NAVRATILOVA","ranking":null,"country":"USA","sex":"W","playerCardUrl":"/en-us/players/6093-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null},{"firstName":"Dinara","lastName":"SAFINA","shortName":"D.SAFINA","ranking":null,"country":"RUS","sex":"W","playerCardUrl":"/en-us/players/6088-","birth":null,"info":null,"imageMarkup":null,"imageUrl":null}],"seed":null,"entryStatus":null}
+				}
+			]
+		}
+	},
+
+	"types": [
+		{"code":"LD","label": "Ladies Legends"}
+	],
+
+	"groupNum": 2,
+	"playersPerGroup": 3
+}
