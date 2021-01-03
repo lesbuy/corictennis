@@ -94,6 +94,18 @@ class Down extends DownBase {
 					}
 					$drawInfo[$event]['draw'][] = $pids;
 				}
+
+				// 从draw中记录w/o的比赛
+				foreach ($eventDiv->find('table.match-table') as $matchTable) {
+					if (strpos($matchTable->innertext, "W.O.") === false && strpos($matchTable->innertext, "Walk over") === false) continue;
+					$winnerClass = $matchTable->{"data-winner-class"};
+					$p1 = $matchTable->find('tr', 0)->{"data-player-row-id"};
+					$p2 = $matchTable->find('tr', 1)->{"data-player-row-id"};
+					if ($p1 == $winnerClass) $mStatus = "L";
+					else $mStatus = "M";
+					$key = str_replace("player-", "", $p1) . str_replace("player-", "", $p2);
+					$drawInfo[$event]['wo'][$key] = $mStatus;
+				}
 			}
 			$fp = fopen(join("/", [DATA, "tour", "draw", $t->year, $t->eventID]), "w");
 			fputs($fp, json_encode($drawInfo) . "\n"); 

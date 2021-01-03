@@ -293,6 +293,14 @@ class Event extends Base{
 					} else {
 						$r2 = $r3 = "Q1";
 					}
+
+					// 从w/o数据中读入
+					$tmp_pid = join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team1]['p'])) . "-" . join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team2]['p']));
+					if (isset($Event["wo"][$tmp_pid])) {
+						$mStatus = $Event["wo"][$tmp_pid];
+					} else {
+						$mStatus = "";
+					}
 					// 记录到match里
 					$this->matches[$ori_matchid] = [
 						'uuid' => $ori_matchid,
@@ -303,8 +311,8 @@ class Event extends Base{
 						'r2' => $r3,
 						't1' => $team1,
 						't2' => $team2,
-						'bestof' => ($this->tour == "7696" ? 5 : 3),
-						'mStatus' => "",
+						'bestof' => 3,
+						'mStatus' => $mStatus,
 						'h2h' => '',
 						'group' => $group,
 						'x' => $x,
@@ -342,6 +350,13 @@ class Event extends Base{
 					$group = 0; $x = $r1; $y = $order;
 					$this->draws[$event]['draw']['KO'][$group][$x][$y] = $ori_matchid;
 
+					// 从w/o数据中读入
+					$tmp_pid = join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team1]['p'])) . "-" . join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team2]['p']));
+					if (isset($Event["wo"][$tmp_pid])) {
+						$mStatus = $Event["wo"][$tmp_pid];
+					} else {
+						$mStatus = "";
+					}
 					// 记录到match里
 					$this->matches[$ori_matchid] = [
 						'uuid' => $ori_matchid,
@@ -352,8 +367,8 @@ class Event extends Base{
 						'r2' => $r3,
 						't1' => $team1,
 						't2' => $team2,
-						'bestof' => ($this->tour == "7696" ? 5 : 3),
-						'mStatus' => "",
+						'bestof' => 3,
+						'mStatus' => $mStatus,
 						'h2h' => '',
 						'group' => $group,
 						'x' => $x,
