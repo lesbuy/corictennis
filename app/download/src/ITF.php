@@ -8,6 +8,7 @@ class Down extends DownBase {
 	private $rank;
 	private $players;
 	private $teams;
+	private $draws;
 
 	protected function getTourList() {
 		$year = date('Y', time());
@@ -90,7 +91,7 @@ class Down extends DownBase {
 		}
 		fclose($fp);
 
-
+		// 遍历所有tour，并输出到相应的文件里
 		foreach ($this->tourList as $t) {
 			$t->printSelf();
 			$url = "https://live.itftennis.com//feeds/d/drawsheets.php/en/$t->eventID-$t->year";
@@ -126,6 +127,7 @@ class Down extends DownBase {
 					$sd = "d";
 				}
 
+				// 处理players与teams
 				foreach ($Event['rounds'][1] as $amatch) {
 					foreach ([1 ,2] as $side) {
 						$pids = [];
@@ -145,7 +147,7 @@ class Down extends DownBase {
 								$_get_wtpid = $this->redis->cmd('HGET', 'itf_redirect', $itfpid)->get();
 								if ($_get_wtpid) {
 									$wtpid = substr($_get_wtpid, 12);
-	//								fputs(STDERR, "MEMORY FOUND: " . $itfpid . " => " . $wtpid . "\n");
+									//fputs(STDERR, "MEMORY FOUND: " . $itfpid . " => " . $wtpid . "\n");
 								}
 
 								// 如果没找到wt pid
@@ -225,15 +227,44 @@ class Down extends DownBase {
 						];
 					} // foreach side
 				} // foreach match
+
 			} // foreach $k => $Event
 
-
-
+			$retContent = [
+				"players" => $this->players,
+				"teams" => $this->teams,
+			];
 
 			$fp = fopen(join("/", [DATA, "tour", "player", $t->year, $t->eventID]), "w");
-			fputs($fp, $html . "\n");
+			fputs($fp, $retContent . "\n");
+			fclose($fp);
+
+			// 把文件整一整扔到drawFile里
+			$htmlLines = explode("\n", $html);
+			$content = "";
+			foreach ($htmlLines as $line) {
+				if (strpos($line, "\"StartDateAndTime\"") !== false) continue;
+				else if (strpos($line, "\"EndDateAndTime\"") !== false) continue;
+				else if (strpos($line, "\"DrawsheetPosition\"") !== false) continue;
+				else if (strpos($line, "\"st_event_id\"") !== false) continue;
+				else if (strpos($line, "\"st_match_id\"") !== false) continue;
+				else if (strpos($line, "\"created\"") !== false) continue;
+				else if (strpos($line, "\"updated\"") !== false) continue;
+				else if (strpos($line, "\"RoundNumber\"") !== false) continue;
+				else if (strpos($line, "\"IsLiveScoringProvided\"") !== false) continue;
+				else if (strpos($line, "null") !== false) continue;
+				else if (strpos($line, "\"maxUpdated\"") !== false) continue;
+				else if (strpos($line, "\"lastlivetime\"") !== false) continue;
+				$content .= str_replace("Side", "S", str_replace("Player", "P", str_replace("Score", "Sc", str_replace("TieBreak", "TB", $line))));
+			}
+
+			$fp = fopen(join("/", [DATA, "tour", "draw", $t->year, $t->eventID]), "w");
+			fputs($fp, $content . "\n");
 			fclose($fp);
 		}
+
+		unset($this->redis);
+		$this->redis = null;
 		return [true, ""];
 	}
 
