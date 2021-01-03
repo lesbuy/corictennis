@@ -83,7 +83,15 @@ class Down extends DownBase {
 				}
 
 				foreach ($eventDiv->find('.tournament-draw__round-container--0 .match-table__row') as $drawLine) {
-					$pids = explode("-", str_replace("player-", "", $drawLine->{"data-player-row-id"}));
+					if ($drawLine->{"data-player-row-id"} == "player") {
+						if (strpos($drawLine->innertext, "Bye") !== false) {
+							$pids = ["BYE"];
+						} else if (strpos($drawLine->innertext, "Quali") !== false || strpos($drawLine->innertext, "Lucky") !== false || strpos($drawLine->innertext, "Alter") !== false) {
+							$pids = ["QUAL"];
+						}
+					} else {
+						$pids = explode("-", str_replace("player-", "", $drawLine->{"data-player-row-id"}));
+					}
 					$drawInfo[$event]['draw'][] = $pids;
 				}
 			}
