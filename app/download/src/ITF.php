@@ -62,6 +62,7 @@ class Down extends DownBase {
 				continue;
 			}
 
+			$allEvents = [];
 			foreach ($json_content as $k => $Event) {
 				if (!isset($Event['name'])) continue;
 			   
@@ -83,6 +84,7 @@ class Down extends DownBase {
 					$event .= "D";
 					$sd = "d";
 				}
+				$allEvents[] = $event;
 
 				// 处理players与teams
 				foreach ($Event['rounds'][1] as $amatch) {
@@ -188,6 +190,7 @@ class Down extends DownBase {
 			} // foreach $k => $Event
 
 			$retContent = [
+				"allEvents" => $allEvents,
 				"players" => $this->players,
 				"teams" => $this->teams,
 			];
