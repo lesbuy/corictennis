@@ -520,7 +520,8 @@ abstract class Base{
 							}
 						}
 
-						if ($loserid) {
+						$loserPureID = substr($loserid, 2);
+						if ($loserPureID && $loserPureID != "QUAL" && $loserPureID != "BYE" && $loserPureID != "LIVE" && $loserPureID != "COMEUP" && $loserPureID != "TBD") {
 							$loser = &$this->teams[$loserid];
 							if (!in_array($m['mStatus'], ['L', 'M'])) {
 								++$loser['loss'];

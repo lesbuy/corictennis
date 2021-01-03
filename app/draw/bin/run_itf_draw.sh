@@ -17,7 +17,7 @@ monday3=`date -d "$current_monday -14 days" +%Y-%m-%d`
 monday4=`date -d "$current_monday +14 days" +%Y-%m-%d`
 
 now=`date +%s`
-grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/ITF | 
+grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/ITF $STORE/calendar/$((year+1))/ITF | 
 #awk -F"\t" '$7 >= 1596211200 && $7 < 1609084800 && ($1 ~ /^M/ || $1 ~ /^W/)' $STORE/calendar/$year/ITF | 
 while read line
 do
@@ -25,6 +25,7 @@ do
 	unix=`echo "$line" | cut -f7`
 	year=`echo "$line" | cut -f5`
 	weeks=`echo "$line" | cut -f22`
+	echo $eid
 
 	if [[ $weeks == "2" ]]
 	then

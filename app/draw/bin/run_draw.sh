@@ -25,6 +25,17 @@ do
 	year=`echo "$line" | cut -f5`
 	weeks=`echo "$line" | cut -f22`
 
+	sex=`echo "$line" | cut -f4`
+
+	asso=""
+	if [[ $sex == "W" ]]
+	then
+		asso="wta"
+	elif [[ $sex == "M" ]]
+	then
+		asso="atp"
+	fi
+
 	if [[ $weeks == "2" ]]
 	then
 		endtime=$((unix+86400*15))
@@ -41,7 +52,7 @@ do
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]
 	then
-		php ../src/draw.php $eid $year > tmp_draw
+		php ../src/draw.php $eid $year $asso > tmp_draw
 		sort -t"	" -k1r,1 -k2,2 -s -u -o tmp_draw tmp_draw
 		mv tmp_draw $STORE/draw/$year/$eid
 		echo $eid $year
