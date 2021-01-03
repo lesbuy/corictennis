@@ -102,7 +102,7 @@ class Event extends Base{
 				else if ($entry == "SE") $entry = "S";
 				else if ($entry == "ITF") $entry = "I";
 				else if ($entry == "JE") $entry = "J";
-				$seed = $team->Seed . "";
+				$seed = $team["seed"];
 
 				$seeds = [];
 				if ($seed) $seeds[] = $seed;
@@ -403,7 +403,7 @@ class Event extends Base{
 			}
 			
 			$order = $amatch["CourtID"];
-			$name = "Court " . CourtID;
+			$name = "Court " . $order;
 
 			if (!isset($this->oop[$day]['courts'][$order])) {
 				$this->oop[$day]['courts'][$order] = [
@@ -412,7 +412,7 @@ class Event extends Base{
 				];
 			}
 
-			$time = $amatch["MatchTimeStamp"];
+			$time = strtotime($amatch["MatchTimeStamp"]);
 			$match_seq = count($this->oop[$day]['courts'][$order]['matches']);
 			$matchid = $amatch["MatchID"];
 
@@ -477,7 +477,7 @@ class Event extends Base{
 		$event = self::transSextip($event_raw, $m["DrawMatchType"] == "D" ? 2 : 1);
 
 		$match = &$this->matches[$matchid];
-		$match['tipmsg'] = $m->attributes()->msg . '';
+		$match['tipmsg'] = '';
 
 		$winner = $m["Winner"];
 		$sScore = @$m["ScoreString"];

@@ -33,7 +33,7 @@ $event->process();
 #$event->outputSummary();
 #$event->outputRawDraws();
 #$event->outputRawMatches();
-$event->outputRawTeams();
+#$event->outputRawTeams();
 #$event->outputRounds();
 #$event->outputRawOOPs();
 #$event->outputPlayers();
@@ -41,4 +41,4 @@ $event->outputRawTeams();
 #$event->outputLive();
 #$event->output();
 
-#$event->outputDraws();
+$event->outputDraws();
