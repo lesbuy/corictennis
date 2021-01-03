@@ -4,12 +4,15 @@ require_once('base.class.php');
 
 class Event extends Base{
 
+	private $walkOverMap = [];
+
 	public function  process() {
 		$this->preprocess();
 		$this->parsePlayer();
 		$this->parseDraw();
 		$this->parseResult();
 		$this->parseSchedule();
+		$this->parseExtra();
 		$this->parseLive();
 		$this->appendH2HandFS();
 		$this->calaTeamFinal();
@@ -195,6 +198,12 @@ class Event extends Base{
 				'group_name2id' => [],
 			];
 
+			if (isset($Event["wo"])) {
+				foreach ($Event["wo"] as $k => $v) {
+					$this->walkOverMap[$k] = $v;
+				}
+			}
+
 			foreach ($Event["round"] as $k => $roundInfo) {
 				$name = $roundInfo["round"];
 				$prize = intval($roundInfo["prize"]);
@@ -294,13 +303,6 @@ class Event extends Base{
 						$r2 = $r3 = "Q1";
 					}
 
-					// 从w/o数据中读入
-					$tmp_pid = join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team1]['p'])) . "-" . join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team2]['p']));
-					if (isset($Event["wo"][$tmp_pid])) {
-						$mStatus = $Event["wo"][$tmp_pid];
-					} else {
-						$mStatus = "";
-					}
 					// 记录到match里
 					$this->matches[$ori_matchid] = [
 						'uuid' => $ori_matchid,
@@ -312,7 +314,7 @@ class Event extends Base{
 						't1' => $team1,
 						't2' => $team2,
 						'bestof' => 3,
-						'mStatus' => $mStatus,
+						'mStatus' => '',
 						'h2h' => '',
 						'group' => $group,
 						'x' => $x,
@@ -350,13 +352,6 @@ class Event extends Base{
 					$group = 0; $x = $r1; $y = $order;
 					$this->draws[$event]['draw']['KO'][$group][$x][$y] = $ori_matchid;
 
-					// 从w/o数据中读入
-					$tmp_pid = join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team1]['p'])) . "-" . join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team2]['p']));
-					if (isset($Event["wo"][$tmp_pid])) {
-						$mStatus = $Event["wo"][$tmp_pid];
-					} else {
-						$mStatus = "";
-					}
 					// 记录到match里
 					$this->matches[$ori_matchid] = [
 						'uuid' => $ori_matchid,
@@ -368,7 +363,7 @@ class Event extends Base{
 						't1' => $team1,
 						't2' => $team2,
 						'bestof' => 3,
-						'mStatus' => $mStatus,
+						'mStatus' => "",
 						'h2h' => '',
 						'group' => $group,
 						'x' => $x,
@@ -394,7 +389,34 @@ class Event extends Base{
 		}
 	}
 
-	protected function parseExtra() {}
+	protected function parseExtra() {
+		// 补齐一些walkover的比赛。遍历所有比赛，如果已经有结果就跳过，选手不全也跳过，不在wo信息表中也跳过
+		foreach ($this->draws as $event => $Event) {
+			foreach ($Event['draw']['KO'][0] as $x => $X) {
+				foreach ($X as $y => $matchid) {
+					if ($this->matches[$matchid]['mStatus'] != "" && strpos("FGHIJKLM", $this->matches[$matchid]['mStatus']) !== false) {
+						continue;
+					}
+					$team1 = $this->matches[$matchid]['t1'];
+					$team2 = $this->matches[$matchid]['t2'];
+					if ($team1 == $event || $team2 == $event) continue;
+					// 从w/o数据中读入
+					$tmp_pid = join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team1]['p'])) . "-" . join("-", array_map(function ($d) {return $d['p'];}, $this->teams[$team2]['p']));
+					if (!isset($this->walkOverMap[$tmp_pid])) {
+						continue;
+					}
+					$mStatus = $this->walkOverMap[$tmp_pid];
+					$this->matches[$matchid]['mStatus'] = $mStatus;
+
+					$next_match = self::findNextMatchIdAndPos($matchid, $event);
+
+					if ($mStatus == "L") $winnerTeam = $team1; else $winnerTeam = $team2;
+
+					$this->matches[$next_match[0]]['t' . $next_match[1]] = $winnerTeam;
+				}
+			}
+		}
+	}
 
 	protected function parseSchedule() {
 

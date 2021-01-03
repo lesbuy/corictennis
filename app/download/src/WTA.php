@@ -103,7 +103,7 @@ class Down extends DownBase {
 					$p2 = $matchTable->find('tr', 1)->{"data-player-row-id"};
 					if ($p1 == $winnerClass) $mStatus = "L";
 					else $mStatus = "M";
-					$key = str_replace("player-", "", $p1) . str_replace("player-", "", $p2);
+					$key = str_replace("player-", "", $p1) . "-" . str_replace("player-", "", $p2);
 					$drawInfo[$event]['wo'][$key] = $mStatus;
 				}
 			}
