@@ -5,7 +5,7 @@ require_once(APP . '/tool/simple_html_dom.php');
 
 class Calendar extends CalendarBase {
 	// local模式下，源文件使用本地的
-	private $mode = "local";
+	private $mode = "";
 
 	private $mapLevel = [
 		"categorystamps_250.png" => "ATP250",
@@ -41,7 +41,7 @@ class Calendar extends CalendarBase {
 		$redis = new_redis();
 
 		foreach ($html->find('.tourney-result') as $tr) {
-			$json_content = trim($tr->find('script', 0)->innertext);
+			$json_content = trim($tr->find('script[type="application/ld+json"]', 0)->innertext);
 			if (!$json_content) return [false, "no json content in tourney result"];
 			$content = json_decode($json_content, true);
 			if (!$content) return [false, "json content parsed error in tourney result"];
@@ -49,6 +49,7 @@ class Calendar extends CalendarBase {
 			$t = new TournamentInfo;
 			$t->asso = $this->asso;
 			$t->level = preg_replace('/^.*\//', "", $content["image"][0]);
+			if (!isset($this->mapLevel[$t->level])) continue;
 			$t->level = $this->mapLevel[$t->level];
 			if ($t->level == "GS") continue;	
 			$urlArr = explode("/", $content["organizer"]["url"]);
@@ -60,10 +61,11 @@ class Calendar extends CalendarBase {
 			$t->end = date('Y-m-d', strtotime($content['endDate']));
 			$t->monday = get_monday($t->start);
 			$t->monday_unix = strtotime($t->monday);
-			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $this->weeks = 2;
+			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $t->weeks = 2;
 			$t->title = $content["organizer"]["name"];
+			if (strpos($t->title, "Cancel") !== false || strpos($t->title, "Postpone") !== false) continue;
 			$t->city = $content["location"]["name"];
-			if ($t->title == "ATP Cup") $t->city = $t->title;
+			if (in_array($t->eventID, ["9210", "7696", "8888", "0605"])) $t->city = $t->title;
 			$t->nation = trim(preg_replace('/^.*,/', "", $content["location"]["address"]["addressCountry"]));
 			if (preg_match('/^[A-Z]{3}$/', $t->nation)) {
 				$t->nation3 = $t->nation;

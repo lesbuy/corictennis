@@ -50,7 +50,7 @@ class Calendar extends CalendarBase {
 			$t->end = date('Y-m-d', strtotime($content['endDate']));
 			$t->monday = get_monday($t->start);
 			$t->monday_unix = strtotime($t->monday);
-			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $this->weeks = 2;
+			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $t->weeks = 2;
 			$t->title = $content["organizer"]["name"];
 			$t->city = $content["location"]["name"];
 			if ($t->title == "ATP Cup") $t->city = $t->title;

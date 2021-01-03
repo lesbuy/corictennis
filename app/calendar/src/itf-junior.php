@@ -48,7 +48,7 @@ class Calendar extends CalendarBase {
 			$t->end = date('Y-m-d', strtotime($tour['endDate']));
 			$t->monday = get_monday($t->start);
 			$t->monday_unix = strtotime($t->monday);
-			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $this->weeks = 2;
+			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $t->weeks = 2;
 			$t->title = $tour['tournamentName'];
 			if (strpos($t->title, "+H") !== false) $t->hospital = true;
 			$t->city = preg_replace('/,.*$/', '', $tour['location']);

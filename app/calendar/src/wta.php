@@ -45,7 +45,7 @@ class Calendar extends CalendarBase {
 			$t->end = $tour['endDate'];
 			$t->monday = get_monday($t->start);
 			$t->monday_unix = strtotime($t->monday);
-			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $this->weeks = 2;
+			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $t->weeks = 2;
 			$t->title = preg_replace('/ - .*$/', "", $tour['title']);
 			$t->surface = $tour['surface'];
 			$t->inOutdoor = $tour['inOutdoor'];
