@@ -90,7 +90,9 @@ class Event extends Base{
 
 		$this->teams = $xml["teams"];
 		foreach ($this->teams as $teamID => $info) {
-			$wtpids = join("/", $info['p']);
+			$wtpids = join("/", array_map(function ($d) {
+				return $this->players[$d]['p'];
+			}, $info['p']));
 			$sd = 's';
 			if (count($info['p']) == 2) $sd = 'd';
 			$this->teams[$teamID]['r'] = isset($this->rank[$sd][$wtpids]) ? $this->rank[$sd][$wtpids] : '-';
@@ -103,6 +105,9 @@ class Event extends Base{
 			$this->teams[$teamID]['prize'] = 0;
 			$this->teams[$teamID]['indraw'] = 1;
 			$this->teams[$teamID]['next'] = null;
+			$this->teams['p'] = array_map(function ($d) {
+				return $this->players[$d];
+			}, $info['p']);
 		}
 
 		foreach ($xml["allEvents"] as $event) {

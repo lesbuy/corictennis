@@ -182,7 +182,7 @@ class Down extends DownBase {
 							'e' => $entry,
 							'se' => join("/", $seeds),
 							'r' => $rank,
-							'p' => array_map(function ($d) {return $this->players[$d]['p'];}, $pids),
+							'p' => $pids,
 						];
 					} // foreach side
 				} // foreach match
