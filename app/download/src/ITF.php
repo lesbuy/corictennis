@@ -46,51 +46,6 @@ class Down extends DownBase {
 		$this->iso3_to_ioc = require_once(APP . '/draw/conf/iso3_to_ioc.php');
 		$this->itf_point_prize = require_once(APP . '/draw/conf/itf_conf.php');
 
-		// 获取官方排名
-		$file = join("/", [DATA, 'rank', 'atp', 's', 'history', $this->first_day]);
-		if (!file_exists($file)) $file = join("/", [DATA, 'rank', 'atp', 's', 'current']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$uuid = $arr[0];
-			$rank = $arr[2];
-			$this->rank['s'][$uuid] = $rank;
-		}
-		fclose($fp);
-
-		$file = join("/", [DATA, 'rank', 'wta', 's', 'history', $this->first_day]);
-		if (!file_exists($file)) $file = join("/", [DATA, 'rank', 'wta', 's', 'current']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$uuid = $arr[0];
-			$rank = $arr[2];
-			$this->rank['s'][$uuid] = $rank;
-		}
-		fclose($fp);
-
-		$file = join("/", [DATA, 'rank', 'atp', 'd', 'history', $this->first_day]);
-		if (!file_exists($file)) $file = join("/", [DATA, 'rank', 'atp', 'd', 'current']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$uuid = $arr[0];
-			$rank = $arr[2];
-			$this->rank['d'][$uuid] = $rank;
-		}
-		fclose($fp);
-
-		$file = join("/", [DATA, 'rank', 'wta', 'd', 'history', $this->first_day]);
-		if (!file_exists($file)) $file = join("/", [DATA, 'rank', 'wta', 'd', 'current']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$uuid = $arr[0];
-			$rank = $arr[2];
-			$this->rank['d'][$uuid] = $rank;
-		}
-		fclose($fp);
-
 		// 遍历所有tour，并输出到相应的文件里
 		foreach ($this->tourList as $t) {
 			$t->printSelf();
@@ -110,6 +65,8 @@ class Down extends DownBase {
 			foreach ($json_content as $k => $Event) {
 				if (!isset($Event['name'])) continue;
 			   
+				$sex = substr($k, 0, 1);
+
 				$sextip = $Event['name'];
 				if (in_string($sextip, "Main")) {
 					if ($sex == "M") $event = "M";
@@ -133,13 +90,13 @@ class Down extends DownBase {
 						$pids = [];
 						foreach ([1, 2] as $pl) {
 							if ($pl == 2 && $sd == "s") continue; // 单打时不看player2
-							if ($amatch["S" . $side . "P" . $pl . "Id"]) {
-								$itfpid = $amatch["S" . $side . "P" . $pl . "Id"];
+							if ($amatch["Side" . $side . "Player" . $pl . "Id"]) {
+								$itfpid = $amatch["Side" . $side . "Player" . $pl . "Id"];
 								if ($itfpid < 10) continue; // Bye是1，资格赛是0
 
-								$first = $amatch["S" . $side . "P" . $pl . "FirstName"];
-								$last = $amatch["S" . $side . "P" . $pl . "LastName"];
-								$ioc = $amatch["S" . $side . "P" . $pl . "CCode"];
+								$first = $amatch["Side" . $side . "Player" . $pl . "FirstName"];
+								$last = $amatch["Side" . $side . "Player" . $pl . "LastName"];
+								$ioc = $amatch["Side" . $side . "Player" . $pl . "CCode"];
 								$ioc = $this->iso3_to_ioc[$ioc];
 
 								$wtpid = null;
@@ -190,8 +147,8 @@ class Down extends DownBase {
 									'i' => $ioc,
 									's' => $short3,
 									's2' => $last2,
-									'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
-									'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
+									'rs' => '',
+									'rd' => '',
 								];
 
 								$pids[] = $itfpid;
@@ -201,7 +158,7 @@ class Down extends DownBase {
 						if (count($pids) == 0) continue;
 
 						$entry = $seed = "";
-						$note = $amatch["S" . $side . "P1Notes"];
+						$note = $amatch["Side" . $side . "Player1Notes"];
 						if (in_string($note, "(")) {
 							$entry = substr($note, 1, 1);
 						} else if (in_string($note, "[")) {
@@ -215,7 +172,7 @@ class Down extends DownBase {
 						$uuid = $event . join("/", $pids);
 
 						$wtpids = join("/", array_map(function ($d) {return $this->players[$d]['p'];}, $pids));
-						$rank = isset($this->rank[$sd][$wtpids]) ? $this->rank[$sd][$wtpids] : '-';
+						$rank = '-';
 
 						$this->teams[$uuid] = [
 							'uuid' => $uuid,
@@ -223,7 +180,7 @@ class Down extends DownBase {
 							'e' => $entry,
 							'se' => join("/", $seeds),
 							'r' => $rank,
-							'p' => array_map(function ($d) {return $this->players[$d];}, $pids),
+							'p' => array_map(function ($d) {return $this->players[$d]['p'];}, $pids),
 						];
 					} // foreach side
 				} // foreach match
@@ -236,7 +193,7 @@ class Down extends DownBase {
 			];
 
 			$fp = fopen(join("/", [DATA, "tour", "player", $t->year, $t->eventID]), "w");
-			fputs($fp, $retContent . "\n");
+			fputs($fp, json_encode($retContent) . "\n");
 			fclose($fp);
 
 			// 把文件整一整扔到drawFile里
@@ -258,9 +215,12 @@ class Down extends DownBase {
 				$content .= str_replace("Side", "S", str_replace("Player", "P", str_replace("Score", "Sc", str_replace("TieBreak", "TB", $line))));
 			}
 
+			$content = json_encode(json_decode($content, true));
 			$fp = fopen(join("/", [DATA, "tour", "draw", $t->year, $t->eventID]), "w");
 			fputs($fp, $content . "\n");
 			fclose($fp);
+
+			sleep(3);
 		}
 
 		unset($this->redis);
