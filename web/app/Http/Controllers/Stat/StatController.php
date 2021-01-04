@@ -1489,7 +1489,7 @@ class StatController extends Controller
 			}
 		}
 
-		for ($seq = 0; $seq < 2; ++$seq) {
+		foreach (["a", "b"] as $seq){
 			@$all[$seq]['s1_percent'] = self::add_percentage($all[$seq]['yifachenggong'] . "/" . $all[$seq]['faqiu']);
 			@$all[$seq]['s1'] = self::add_percentage($all[$seq]['yifadefen'] . "/" . $all[$seq]['yifachenggong']);
 			@$all[$seq]['s2'] = self::add_percentage($all[$seq]['erfadefen'] . "/" . $all[$seq]['erfa']);
