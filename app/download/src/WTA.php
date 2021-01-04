@@ -157,7 +157,7 @@ class Down extends DownBase {
 			$fp = fopen(join("/", [DATA, "tour", "oop", $t->year, $t->eventID]), "w");
 			fputs($fp, json_encode($json_content) . "\n"); 
 			fclose($fp);
-			sleep(3)
+			sleep(3);
 		}
 		return [true, ""];
 	}

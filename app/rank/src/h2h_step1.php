@@ -40,7 +40,6 @@ while ($line = trim(fgets(STDIN))) {
 
     $info = $arr[27];
 
-echo $info . "\n";
     $matches = explode("@", $info);
 
     foreach ($matches as $match) {
@@ -49,7 +48,7 @@ echo $info . "\n";
         $wl = $cols[3];
         $games = $cols[4];
         $oppo_id = $cols[8];
-        if ($oppo_id == 0 || $oppo_id == "" || $oppo_id == "BYE" || $wl == "") continue;
+        if ($oppo_id == "" || $oppo_id == "BYE" || $wl == "") continue;
         $oppo_partner_id = $cols[10];
         $_rankArr = explode("/", $cols[5]);
         $oppo_rank = $_rankArr[0];
