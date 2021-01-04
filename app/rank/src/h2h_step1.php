@@ -40,6 +40,7 @@ while ($line = trim(fgets(STDIN))) {
 
     $info = $arr[27];
 
+echo $info . "\n";
     $matches = explode("@", $info);
 
     foreach ($matches as $match) {
