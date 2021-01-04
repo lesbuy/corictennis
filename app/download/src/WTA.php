@@ -142,12 +142,14 @@ class Down extends DownBase {
 
 /*
 			// 先下载oop首页，拿到dateSeq与日期的对应的关系
-			$url = "https://www.wtatennis.com/tournament/$t->tourID/beijing/$t->year/scores";
+			$url = "https://www.wtatennis.com/tournament/$t->tourID/beijing/$t->year/order-of-play";
 			$html = http($url, null, null, null);
 			if (!$html) {
 				print_line("download oop page failed");
 				continue;
 			}
+			$html = str_replace("<!--", "", $html);
+			$html = str_replace("-->", "", $html);
 			$html_content = str_get_html($html);
 			if (!$html_content) {
 				print_line("oop page parse failed");
