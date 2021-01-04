@@ -1,0 +1,6 @@
+ATP ajax接口：
+
+H2H https://www.atptour.com/-/ajax/Head2HeadSearch/GetHead2HeadData/cg80/d643
+球员信息（含headshot） https://www.atptour.com/-/ajax/PredictiveContentSearch/GetPlayerResults/coric
+赛事简介 https://www.atptour.com/-/ajax/PredictiveContentSearch/GetTournamentResults/delray
+live score https://www.atptour.com/-/ajax/Scores/GetInitialScores  https://www.atptour.com/-/ajax/Scores/GetInitialChallengerScores

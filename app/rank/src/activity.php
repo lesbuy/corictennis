@@ -79,32 +79,32 @@ class Activity {
 		}
 
 		echo join("\t", [
-			$this->pid,
+			$this->pid, // 1
 			$this->ioc,
 			$this->pre_eid,
 			$this->join_eid,
 			$this->pre_year,
-			$this->st,
+			$this->st, // 6
 			$this->weeks,
 			$this->recordday,
 			$this->city,
 			$this->loc,
-			$this->level,
+			$this->level, // 11
 			$this->sfc,
 			$this->currency,
 			$this->total_prize,
 			$this->sd,
-			$this->rank,
+			$this->rank, // 16
 			$this->seed,
 			$this->entry,
 			$this->partner_id,
 			$this->partner_ioc,
-			$this->prize,
+			$this->prize, // 21
 			$this->point,
 			$this->award_point,
 			$final_round,
 			$win,
-			$loss,
+			$loss, // 26
 			$streak,
 			join("@", array_map(function ($d) {return '!' . join("!", $d) . '!';}, $this->matches)),
 		]) . "\n";
@@ -434,17 +434,17 @@ class Activity {
 					if (in_array($oppo_rank, ['', '0', '9999', '-'])) $oppo_rank = '';
 
 					$this->matches[] = [
-						$round_seq,
+						$round_seq, // 1
 						$round,
 						$wl,
 						$games,	
 						$oppo_rank,
-						$oppo_seed,
+						$oppo_seed, // 5
 						$oppo_entry,
 						$oppo_id,
 						$oppo_ioc,
 						$oppo_partner_id,
-						$oppo_partner_ioc,
+						$oppo_partner_ioc, //11
 						$partner_id,
 						$partner_ioc,
 					];
