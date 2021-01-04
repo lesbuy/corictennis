@@ -377,7 +377,7 @@ class Event extends Base{
 
 	protected function parseResult() {
 
-		$file = join("/", [DATA, 'tour', 'oop', $this->year, $this->tour]);
+		$file = join("/", [DATA, 'tour', 'result', $this->year, $this->tour]);
 		if (!file_exists($file)) return false;
 
 		$xml = json_decode(file_get_contents($file), true);
@@ -426,71 +426,86 @@ class Event extends Base{
 		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
 	
-		if (!isset($xml["seq"])) return false;
-		$daySeqToDate = $xml["seq"];
+		if (!isset($xml["OOP"]["Schedule"]["Day"])) return false;
 
-		foreach ($xml["matches"] as $amatch) {
-			$day = $amatch["DateSeq"];
-			$isodate = $daySeqToDate[$day];
+		$Days = [];
+		if (!is_array($xml["OOP"]["Schedule"]["Day"])) {
+			$Days[0] = $xml["OOP"]["Schedule"]["Day"];
+		} else {
+			$Days = $xml["OOP"]["Schedule"]["Day"];
+		}
+
+		foreach ($Days as $aday) {
+			$day = $aday["Seq"];
+			$isodate = $aday["ISODate"];
 			if (!isset($this->oop[$day])) {
 				$this->oop[$day] = [
 					'date' => $isodate,
 					'courts' => [],
 				];
 			}
-			
-			$order = $amatch["CourtID"];
-			$name = "Court " . $order;
 
-			if (!isset($this->oop[$day]['courts'][$order])) {
-				$this->oop[$day]['courts'][$order] = [
-					'name' => $name,
-					'matches' => [],
-				];
-			}
-
-			$time = strtotime($amatch["MatchTimeStamp"]);
-			$match_seq = count($this->oop[$day]['courts'][$order]['matches']);
-			$matchid = $amatch["MatchID"];
-
-			$event_raw = substr($matchid, 0, 2);
-			$event = self::transSextip($event_raw, $amatch["DrawMatchType"] == "D" ? 2 : 1);
-
-			if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
-			$matches = &$this->oop[$day]['courts'][$order]['matches'];
-			$matches[$match_seq] = [
-				'id' => $matchid,
-				'time' => $time,
-				'event' => $event,
-			];
-
-			$match = &$this->matches[$matchid];					
-			$match['date'] = $isodate;
-			if ($match['mStatus'] == "") { // 如果已经有结果了就不更改状态
-				if ($amatch["MatchState"] == "Suspended") { // 此处要改
-					/*
-					$score = trim(str_replace("TBF", "", $amatch->FreeTxt . ''));
-					$reviseScore = self::reviseScore($score);
-					$match['s1'] = $reviseScore[0];
-					$match['s2'] = $reviseScore[1];
-					*/
-					$match['mStatus'] = 'C';
-				} else {
-					$match['mStatus'] = 'A';
-					$match['s1'] = $time;
-					$match['s2'] = $name;
+			foreach ($aday["Court"] as $acourt) {
+				$order = $acourt["CourtId"];
+				$name = $acourt["CourtName"];
+				if (!isset($this->oop[$day]['courts'][$order])) {
+					$this->oop[$day]['courts'][$order] = [
+						'name' => $name,
+						'matches' => [],
+					];
 				}
-			}
 
-			$_next_match = self::findNextMatchIdAndPos($matchid, $event);
-			if ($_next_match !== null) {
-				$next_match = &$this->matches[$_next_match[0]];
-				if ($next_match['t' . $_next_match[1]] == $event) { // 只有在下场比赛人员还缺的时候，才修改
-					$next_match['t' . $_next_match[1]] = $event . 'COMEUP';
+				$time = strtotime($isodate . " " . $acourt["DisplayTime"] . " " . $acourt["UTCOffset"]);
+				$next_time = $time;
+
+				foreach ($acourt["Matches"]["Match"] as $amatch) {
+					if ($amatch["NotBeforeISOTime"] != "") {
+						$time = strtotime($isodate . " " . $amatch["NotBeforeISOTime"]);
+					} else {
+						$time = $next_time;
+					}
+					$next_time = $time + 5400;
+
+					$match_seq = $amatch["seq"];
+					$matchid = $amatch["MatchId"];
+
+					$event_raw = substr($matchid, 0, 2);
+					$event = self::transSextip($event_raw, $amatch["DrawMatchType"] == "D" ? 2 : 1);
+
+					if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
+					$matches = &$this->oop[$day]['courts'][$order]['matches'];
+					$matches[$match_seq] = [
+						'id' => $matchid,
+						'time' => $time,
+						'event' => $event,
+					];
+
+					$match = &$this->matches[$matchid];
+					$match['date'] = $isodate;
+					if ($match['mStatus'] == "") { // 如果已经有结果了就不更改状态
+						if ($amatch["Status"] == "Suspended") { // 此处要改
+							$score = trim(str_replace("TBF", "", $amatch->FreeText . ''));
+							$reviseScore = self::reviseScore($score);
+							$match['s1'] = $reviseScore[0];
+							$match['s2'] = $reviseScore[1];
+							$match['mStatus'] = 'C';
+						} else {
+							$match['mStatus'] = 'A';
+							$match['s1'] = $time;
+							$match['s2'] = $name;
+						}
+					}
+		
+					$_next_match = self::findNextMatchIdAndPos($matchid, $event);
+					if ($_next_match !== null) {
+						$next_match = &$this->matches[$_next_match[0]];
+						if ($next_match['t' . $_next_match[1]] == $event) { // 只有在下场比赛人员还缺的时候，才修改
+							$next_match['t' . $_next_match[1]] = $event . 'COMEUP';
+						}
+					}
 				}
 			}
 		}
-
 	}
 
 	protected function parseLive() {

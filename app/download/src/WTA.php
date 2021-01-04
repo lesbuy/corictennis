@@ -185,6 +185,27 @@ class Down extends DownBase {
 	}
 
 	protected function downResultFile() {
+		print_line("begin to down result");
+		foreach ($this->tourList as $t) {
+			$t->printSelf();
+
+			$url = "https://api.wtatennis.com/tennis/tournaments/$t->tourID/$t->year/matches/";
+			$html = http($url, null, null, null);
+			if (!$html) {
+				print_line("download oop failed");
+				continue;
+			}
+			$json_content = json_decode($html, true);
+			if (!$json_content || !isset($json_content["matches"])) {
+				print_line("oop parsed failed");
+				continue;
+			}
+
+			$fp = fopen(join("/", [DATA, "tour", "result", $t->year, $t->eventID]), "w");
+			fputs($fp, json_encode($json_content) . "\n"); 
+			fclose($fp);
+			sleep(3);
+		}
 		return [true, ""];
 	}
 
