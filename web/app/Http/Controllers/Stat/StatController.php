@@ -1484,7 +1484,7 @@ class StatController extends Controller
 			if (isset($match[$set])){
 				$SET = $match[$set];
 				$arr = explode(":", @$SET["settime"]);
-				$seconds += @$arr[0] * 3600 + @$arr[1] * 60 + @$arr[2];
+				$seconds += intval(@$arr[0]) * 3600 + intval(@$arr[1]) * 60 + intval(@$arr[2]);
 			}
 		}
 
@@ -1527,7 +1527,7 @@ class StatController extends Controller
 	}
 
 	protected function process_atp_tour() {
-		$url = "https://www.atptour.com/-/ajax/HawkEyeSecondScreen/MatchStats/en/False/$this->year/$this->eid/$this->matchid";
+		$url = "https://www.atptour.com/-/ajax/MatchStats/en/$this->year/$this->eid/$this->matchid";
 		$html = file_get_contents($url);
 		$match = json_decode($html, true);
 		if (!$match || !isset($match["Match"])) return ['status' => -1, 'errmsg' => __('stat.notice.error')];
@@ -1584,30 +1584,31 @@ class StatController extends Controller
 		$stat = [];
 
 		$all[0] = $all[1] = [];
-		for ($set = 1; $set <= 5; ++$set){
+		for ($set = 0; $set <= 5; ++$set){
 			if (isset($match["PlayerTeam1"]["Sets"][$set])){
 				$stat[$set] = [];
 				foreach ([1, 2] as $seq){
 					$oppo = 3 - $seq;
 
-					$ace = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ServiceStats"]["Aces"]["Number"];
-					$df = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ServiceStats"]["DoubleFaults"]["Number"];
-					$tp = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["PointStats"]["TotalPointsWon"]["Dividend"];
+					$ace = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["Aces"]["Number"];
+					$df = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["DoubleFaults"]["Number"];
+					$tp = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["PointStats"]["TotalPointsWon"]["Dividend"];
 
-					$faqiu = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ServiceStats"]["FirstServe"]["Divisor"];
-					$yifachenggong = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ServiceStats"]["FirstServe"]["Dividend"];
-					$yifadefen = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ServiceStats"]["FirstServePointsWon"]["Dividend"];
+					$faqiu = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServe"]["Divisor"];
+					$yifachenggong = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServe"]["Dividend"];
+					$yifadefen = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServePointsWon"]["Dividend"];
 					$erfa = $faqiu - $yifachenggong;
-					$erfadefen = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ServiceStats"]["SecondServePointsWon"]["Dividend"];
+					$erfadefen = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["SecondServePointsWon"]["Dividend"];
 					$faqiudefen = $yifadefen + $erfadefen;
-					$pofa = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Dividend"];
-					$pofajihui = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Divisor"];
-					$faqiuju = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["ServiceStats"]["ServiceGamesPlayed"]["Number"];
+					$pofa = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Dividend"];
+					$pofajihui = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Divisor"];
+					$faqiuju = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["ServiceGamesPlayed"]["Number"];
 
 					$oppo_faqiudiufen = $tp - $faqiudefen;
-					$oppo_faqiu = @$match["PlayerTeam" . $oppo]["Sets"][$i]["Stats"]["ServiceStats"]["FirstServe"]["Divisor"];
-					$baofa = $faqiuju - @$match["PlayerTeam" . $oppo]["Sets"][$i]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Dividend"];
+					$oppo_faqiu = @$match["PlayerTeam" . $oppo]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServe"]["Divisor"];
+					$baofa = $faqiuju - @$match["PlayerTeam" . $oppo]["Sets"][$set]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Dividend"];
 
+/*
 					@$all[$seq]['ace'] += $ace;
 					@$all[$seq]['df'] += $df;
 					@$all[$seq]['tp'] += $tp;
@@ -1623,7 +1624,7 @@ class StatController extends Controller
 					@$all[$seq]['oppo_faqiudiufen'] += $oppo_faqiudiufen;
 					@$all[$seq]['oppo_faqiu'] += $oppo_faqiu;
 					@$all[$seq]['baofa'] += $baofa;
-
+*/
 					$s1_percent = self::add_percentage($yifachenggong . "/" . $faqiu);
 					$s1 = self::add_percentage($yifadefen . "/" . $yifachenggong);
 					$s2 = self::add_percentage($erfadefen . "/" . $erfa);
@@ -1631,7 +1632,7 @@ class StatController extends Controller
 					$rp_percent = self::add_percentage($oppo_faqiudiufen . "/" . $oppo_faqiu);
 					$sg_percent = self::add_percentage($baofa . "/" . $faqiuju);
 
-					$dura = @$match["PlayerTeam" . $seq]["Sets"][$i]["Stats"]["Time"];
+					$dura = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["Time"];
 
 					$stat[$set][] = [
 						'dura' => $dura,
@@ -1649,14 +1650,20 @@ class StatController extends Controller
 			} // if isset
 		} // for set
 
-		$seconds = 0;
-		for ($set = 1; $set <= 5; ++$set){
-			if (isset($match["PlayerTeam1"]["Sets"][$set])){
-				$arr = explode(":", @$match["PlayerTeam1"]["Sets"][$set]["Stats"]["Time"]);
-				$seconds += @$arr[0] * 3600 + @$arr[1] * 60 + @$arr[2];
+		if ($stat[0][0]["dura"] == "") {
+			$seconds = 0;
+			for ($set = 1; $set <= 5; ++$set){
+				if (isset($match["PlayerTeam1"]["Sets"][$set]["Stats"])){
+					$arr = explode(":", @$match["PlayerTeam1"]["Sets"][$set]["Stats"]["Time"]);
+					$seconds += intval(@$arr[0]) * 3600 + intval(@$arr[1]) * 60 + intval(@$arr[2]);
+				}
 			}
+			$dura = date('H:i:s', strtotime("2021-1-1 0:0:0 +" . $seconds . " seconds"));
+			$stat[0][0]["dura"] = $dura;
+			$stat[0][1]["dura"] = $dura;
 		}
 
+/*
 		foreach ([1, 2] as $seq){
 			@$all[$seq]['s1_percent'] = self::add_percentage($all[$seq]['yifachenggong'] . "/" . $all[$seq]['faqiu']);
 			@$all[$seq]['s1'] = self::add_percentage($all[$seq]['yifadefen'] . "/" . $all[$seq]['yifachenggong']);
@@ -1679,7 +1686,7 @@ class StatController extends Controller
 				'tp' => $all[$seq]['tp'],
 			];
 		}
-
+*/
 		ksort($stat);
 			
 		$ratio = self::convertToRatio($stat);
