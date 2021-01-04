@@ -122,6 +122,25 @@ class Down extends DownBase {
 			$t->printSelf();
 			$seqMap = [];
 
+			$url = "https://api.wtatennis.com/tennis/tournaments/$t->tourID/$t->year/oop/";
+			$html = http($url, null, null, null);
+			if (!$html) {
+				print_line("download oop page failed");
+				continue;
+			}
+			$html_content = json_decode($html, true);
+			if (!isset($html_content["orderOfPlay"][0])) {
+				print_line("parse oop page failed");
+				continue;
+			}
+
+			$json_content = json_decode($html_content["orderOfPlay"][0], true);
+			if (!$json_content) {
+				print_line("parse oop page failed");
+				continue;
+			}
+
+/*
 			// 先下载oop首页，拿到dateSeq与日期的对应的关系
 			$url = "https://www.wtatennis.com/tournament/$t->tourID/beijing/$t->year/scores";
 			$html = http($url, null, null, null);
@@ -153,6 +172,7 @@ class Down extends DownBase {
 				continue;
 			}
 			$json_content["seq"] = $seqMap;
+*/
 
 			$fp = fopen(join("/", [DATA, "tour", "oop", $t->year, $t->eventID]), "w");
 			fputs($fp, json_encode($json_content) . "\n"); 
