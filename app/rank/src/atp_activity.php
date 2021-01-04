@@ -375,7 +375,7 @@ class Activity {
 						$oppo_rank = trim($tr->find('td', 1)->innertext);
 					} else {
 						if (!$is_atp_cup_doubles) {
-							$oppo_rank = join("/", array_map(function ($d) {return trim($d);}, explode("<br/>", $tr->find('td', 1)->innertext)));
+							$oppo_rank = join("/", array_map(function ($d) {return trim($d);}, explode("<br/>", str_replace("<br />", "<br>", $tr->find('td', 1)->innertext))));
 						} else {
 							$td = $tr->find('td', 1)->find('.day-table-flag a', 0);
 							$partner_id = strtoupper(explode("/", $td->href)[4]);
