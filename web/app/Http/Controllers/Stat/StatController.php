@@ -1377,7 +1377,7 @@ class StatController extends Controller
 		// 每盘比分
 		$score = [];
 		for ($i = 1; $i <= 5; ++$i){
-			if ($match[0]["ScoreSet1A"] != ""){
+			if ($match[0]["ScoreSet" . $i . "A"] != ""){
 				$a = intval($match[0]["ScoreSet" . $i . "A"]);
 				$b = intval($match[0]["ScoreSet" . $i . "B"]);
 
