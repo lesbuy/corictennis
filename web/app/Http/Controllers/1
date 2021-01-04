@@ -1,0 +1,129 @@
+Admin/MoneyController.php:					$ret[$k['account']][0] = $k['cost'] + 0;
+Admin/MoneyController.php:					$ret[$k['account']][1] = $k['income'] + 0;
+Admin/MoneyController.php:				$one->price = $arr[6] + 0;
+Dc/DcController.php:				$one = DcFill::firstOrNew(['year' => $year + 0, 'eid' => $eid, 'sextip' => $sextip, 'userid' => $userid + 0]);
+Binary file Dc/.DcController.php.swo matches
+Dcpk/SignController.php:				$newSign->itglPoint = $r[0] + 0;
+Dcpk/SignController.php:				$newSign->dcpkPoint = $r[0] + 0;
+Dcpk/GuessController.php:							$account_postnum = ($account_postnum + 0) * 10000;
+Dcpk/GuessController.php:						if (time() - ($account_age + 0.049) * 365 * 86400 - strtotime(Auth::user()->created_at) < -65 * 86400) { // 注册时间到登入时间超过2个月认为正常
+Dcpk/GuessController.php:					$res[$m[2]]['winner'] = $v + 0;
+Dcpk/GuessController.php:					$res[$m[2]]['sets'] = $v + 0;
+Dcpk/GuessController.php:					$res[$m[2]]['aces'] = $v + 0;
+Dcpk/GuessController.php:					@$res[$m[2]]['duras'] += $v + 0;
+Dcpk/GuessController.php:					'winner' => $v['winner'] + 0,
+Dcpk/GuessController.php:					'sets' => $v['sets'] + 0,
+Dcpk/GuessController.php:					'aces' => $v['aces'] + 0,
+Dcpk/GuessController.php:					'duras' => $v['duras'] + 0,
+Dcpk/GuessController.php:				$tz = preg_replace('/[,\]]/', "", @$s[4]) + 0;
+Home/HomeController.php:			$ts_m = date('m', $ts) + 0;
+Home/HomeController.php:			$ts_d = date('d', $ts) + 0;
+Home/HomeController.php:						$ret['rank']['dot'][$sd][] = [$date, $rank + 0];
+Rank/CustomController.php:				$prize = ($prize + 0) * 1000;
+Stat/StatController.php:		$bestof = @$json["BestOfSets"] + 0;
+Stat/StatController.php:		$winner = @$json["WinningSide"] + 0;
+Stat/StatController.php:				$ace = @$v["Side".$i."AceCount"] + 0;
+Stat/StatController.php:				$df = @$v["Side".$i."DoubleFaultCount"] + 0;
+Stat/StatController.php:				$faqiu = @$v["Side".$i."FirstServeCount"] + 0;
+Stat/StatController.php:				$yifachenggong = @$v["Side".$i."FirstServeInCount"] + 0;
+Stat/StatController.php:				$yifadefen = @$v["Side".$i."FirstServeInWonCount"] + 0;
+Stat/StatController.php:				$erfa = @$v["Side".$i."SecondServeCount"] + 0;
+Stat/StatController.php:				$erfadefen = @$v["Side".$i."SecondServeInWonCount"] + 0;
+Stat/StatController.php:				$bp = @$v["Side".$i."BreakPointsWonCount"] + 0;
+Stat/StatController.php:				$bpjihui = @$v["Side".$i."BreakPointsCount"] + 0;
+Stat/StatController.php:				$wi = @$v["Side".$i."TotalWinners"] + 0;
+Stat/StatController.php:				$ue = @$v["Side".$i."UnforcedErrors"] + 0;
+Stat/StatController.php:				$fe = @$v["Side".$i."ForcedErrors"] + 0;
+Stat/StatController.php:				$np = @$v["Side".$i."NetPointsWon"] + 0;
+Stat/StatController.php:				$npjihui = @$v["Side".$i."NetPointsTotal"] + 0;
+Stat/StatController.php:				$tp = @$v["Side".$i."TotalPointsWonCount"] + 0;
+Stat/StatController.php:				$f1fkph = max(@$v["Side".$i."Player1Fastest1stServeKPH"] + 0, @$v["Side".$i."Player2Fastest1stServeKPH"] + 0);
+Stat/StatController.php:				$f2fkph = max(@$v["Side".$i."Player1Fastest2ndServeKPH"] + 0, @$v["Side".$i."Player2Fastest2ndServeKPH"] + 0);
+Stat/StatController.php:				$f1akph = max(@$v["Side".$i."Player1Average1stServeKPH"] + 0, @$v["Side".$i."Player2Average1stServeKPH"] + 0);
+Stat/StatController.php:				$f2akph = max(@$v["Side".$i."Player1Average2ndServeKPH"] + 0, @$v["Side".$i."Player2Average2ndServeKPH"] + 0);
+Stat/StatController.php:				$f1fmph = max(@$v["Side".$i."Player1Fastest1stServeMPH"] + 0, @$v["Side".$i."Player2Fastest1stServeMPH"] + 0);
+Stat/StatController.php:				$f2fmph = max(@$v["Side".$i."Player1Fastest2ndServeMPH"] + 0, @$v["Side".$i."Player2Fastest2ndServeMPH"] + 0);
+Stat/StatController.php:				$f1amph = max(@$v["Side".$i."Player1Average1stServeMPH"] + 0, @$v["Side".$i."Player2Average1stServeMPH"] + 0);
+Stat/StatController.php:				$f2amph = max(@$v["Side".$i."Player1Average2ndServeMPH"] + 0, @$v["Side".$i."Player2Average2ndServeMPH"] + 0);
+Stat/StatController.php:			$setNum = str_replace("setStatistics", "", $set) + 0;
+Stat/StatController.php:					if ($k == "aces") $stat[$setNum][$_p]['ace'] = $v['team'.$p.'Value'] + 0;
+Stat/StatController.php:					else if ($k == "doubleFaults") $stat[$setNum][$_p]['df'] = $v['team'.$p.'Value'] + 0;
+Stat/StatController.php:					else if ($k == "winners") $stat[$setNum][$_p]['wi'] = $v['team'.$p.'Value'] + 0;
+Stat/StatController.php:					else if ($k == "unforcedErrors") $stat[$setNum][$_p]['ue'] = $v['team'.$p.'Value'] + 0;
+Stat/StatController.php:					else if ($k == "totalPointsWon") $stat[$setNum][$_p]['tp'] = $v['team'.$p.'Value'] + 0;
+Stat/StatController.php:						$yifachenggong = $arr[0] + 0;
+Stat/StatController.php:						$faqiu = @$arr[1] + 0;
+Stat/StatController.php:						$yifadefen = $arr[0] + 0;
+Stat/StatController.php:						$yifachenggong = @$arr[1] + 0;
+Stat/StatController.php:						$erfadefen = $arr[0] + 0;
+Stat/StatController.php:						$erfa = @$arr[1] + 0;
+Stat/StatController.php:						$wangqiandefen = $arr[0] + 0;
+Stat/StatController.php:						$wangqianqiu = @$arr[1] + 0;
+Stat/StatController.php:						$pofa = $arr[0] + 0;
+Stat/StatController.php:						$pofajihui = @$arr[1] + 0;
+Stat/StatController.php:						$jiefadefen = $arr[0] + 0;
+Stat/StatController.php:						$jiefa = @$arr[1] + 0;
+Stat/StatController.php:			$setNum = str_replace("set_", "", $set) + 0;
+Stat/StatController.php:					if ($k == "t_ace") $stat[$setNum][$_p]['ace'] = $v + 0;
+Stat/StatController.php:					else if ($k == "df") $stat[$setNum][$_p]['df'] = $v + 0;
+Stat/StatController.php:					else if ($k == "t_w") $stat[$setNum][$_p]['wi'] = $v + 0;
+Stat/StatController.php:					else if ($k == "t_ue") $stat[$setNum][$_p]['ue'] = $v + 0;
+Stat/StatController.php:					else if ($k == "t_f_srv") $faqiu = $v + 0;
+Stat/StatController.php:					else if ($k == "t_f_srv_in") $yifachenggong = $v + 0;
+Stat/StatController.php:					else if ($k == "t_f_srv_w") {$yifadefen = $v + 0; $tp += $v + 0;}
+Stat/StatController.php:					else if ($k == "t_s_srv") $erfa = $v + 0;
+Stat/StatController.php:					else if ($k == "t_s_srv_w") {$erfadefen = $v + 0; $tp += $v + 0;}
+Stat/StatController.php:					else if ($k == "t_bp") $pofajihui = $v + 0;
+Stat/StatController.php:					else if ($k == "t_bp_w") $pofa = $v + 0;
+Stat/StatController.php:					else if ($k == "t_na") $wangqianqiu = $v + 0;
+Stat/StatController.php:					else if ($k == "t_np_w") $wangqiandefen = $v + 0;
+Stat/StatController.php:					else if ($k == "t_p_w_opp_srv") $tp += $v + 0;
+Stat/StatController.php:						if ($k == "t_rtn_p") $jiefa = $v + 0;
+Stat/StatController.php:						else if ($k == "t_rtn_p_w") $jiefadefen = $v + 0;
+Stat/StatController.php:					$diskph = $team_value[0] + 0;
+Stat/StatController.php:						if ($k == "f_srv_f_spd") {$f1fkph = $v[0] + 0; $f1fmph = self::kilo2mile($f1fkph); }
+Stat/StatController.php:						else if ($k == "f_srv_a_spd") {$f1akph = $v[0] + 0; $f1amph = self::kilo2mile($f1akph); }
+Stat/StatController.php:						else if ($k == "s_srv_f_spd") {$f2fkph = $v[0] + 0; $f2fmph = self::kilo2mile($f2fkph); }
+Stat/StatController.php:						else if ($k == "s_srv_a_spd") {$f2akph = $v[0] + 0; $f2amph = self::kilo2mile($f2akph); }
+Stat/StatController.php:				$wangqiandefen = @$data['NetPtsWon'][$p] + 0;
+Stat/StatController.php:				$wangqianqiu = @$data['NetPts'][$p] + 0;
+Stat/StatController.php:				$f1akph = @$data['FSAvgKMH'][$p] + 0;
+Stat/StatController.php:				$f2akph = @$data['SSAvgKMH'][$p] + 0;
+Stat/StatController.php:				$f1fkph = @$data['FastKMH'][$p] + 0;
+Stat/StatController.php:					$f1fkph = $ar[7] + 0;
+Stat/StatController.php:					$f1akph = $ar[6] + 0;
+Stat/StatController.php:					$f2fkph = $ar[15] + 0;
+Stat/StatController.php:					$f2akph = $ar[14] + 0;
+Stat/StatController.php:							$dismph = $ar1[1] + 0;
+Stat/StatController.php:							$diskph = $ar1[0] + 0;
+Stat/StatController.php:					$ace = $w[$seq][0] + 0;
+Stat/StatController.php:					$df = $w[$seq][1] + 0;
+Stat/StatController.php:					$tp = $w[$seq][10] + 0;
+Stat/StatController.php:					$faqiu = $w[$seq][5] + 0;
+Stat/StatController.php:					$yifachenggong = $w[$seq][3] + 0;
+Stat/StatController.php:					$yifadefen = $w[$seq][2] + 0;
+Stat/StatController.php:					$faqiudefen = $w[$seq][4] + 0;
+Stat/StatController.php:					$pofa = $w[$seq][6] + 0;
+Stat/StatController.php:					$pofajihui = $w[$seq][7] + 0;
+Stat/StatController.php:					$faqiuju = $w[$seq][8] + 0;
+Stat/StatController.php:					$oppo_faqiu = $w[1 - $seq][5] + 0;
+Stat/StatController.php:				$dura = date('H:i:s', strtotime('0:0:0 +' . (@$v2['Duration'] + 0) . ' seconds'));
+Stat/StatController.php:				$ace = @$v2['Aces'] + 0;
+Stat/StatController.php:				$df = @$v2['Double Faults'] + 0;
+Stat/StatController.php:					$stat[$set][$seq]['wi'] = $v2['Total Winners'] + 0;
+Stat/StatController.php:					$stat[$set][$seq]['ue'] = $v2['Unforced Errors'] + 0;
+Stat/StatController.php:					$stat[$set][$seq]['fe'] = $v2['Forced Errors'] + 0;
+Stat/StatController.php:					$stat[$set][$seq]['f1f'] = [$v2['Fastest 1st Serve'] + 0, self::kilo2mile($v2['Fastest 1st Serve'] + 0)];
+Stat/StatController.php:					$stat[$set][$seq]['f1a'] = [$v2['Average 1st Serve'] + 0, self::kilo2mile($v2['Average 1st Serve'] + 0)];
+Stat/StatController.php:					$stat[$set][$seq]['f2f'] = [$v2['Fastest 2nd Serve'] + 0, self::kilo2mile($v2['Fastest 2nd Serve'] + 0)];
+Stat/StatController.php:					$stat[$set][$seq]['f2a'] = [$v2['Average 2nd Serve'] + 0, self::kilo2mile($v2['Average 2nd Serve'] + 0)];
+Stat/StatController.php:				$mgr = @$v2['Max Games in a Row'] + 0;
+Stat/StatController.php:				$mpr = @$v2['Max Points in a Row'] + 0;
+Stat/StatController.php:				$tp = @$v2['Points won'] + 0;
+Stat/StatController.php:					$v1 = preg_replace('/%.*$/', '', $v1) + 0;
+Stat/StatController.php:					$v2 = preg_replace('/%.*$/', '', $v2) + 0;
+Stat/StatController.php:									$b[$c][$e][$i + 1] = $t[$i] + 0;
+Stat/PbPController.php:						$game1 = trim($tmp_arr[0]) + 0;
+Stat/PbPController.php:						$game2 = trim($tmp_arr[1]) + 0;
+Stat/PbPController.php:				$point1 = $ep["game_points"]['home'] + 0;
+Stat/PbPController.php:				$point2 = $ep["game_points"]['away'] + 0;

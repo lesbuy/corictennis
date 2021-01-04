@@ -1,0 +1,20 @@
+{{-- Holmes代码 --}}
+<script>
+	var _hmt = _hmt || [];
+	_hmt.push(['_setUserTag', '17', GLOBAL_source]);
+	@if (Auth::check())
+		_hmt.push(['_setUserTag', '2444', GLOBAL_userid]);
+		_hmt.push(['_setUserTag', '2445', GLOBAL_username]);
+	@endif
+	_hmt.push(['_setVisitTag', '18', GLOBAL_islogin]);
+	_hmt.push(['_setPageTag', '19', GLOBAL_lang]);
+
+	_hmt.push(['_setVisitTag', '2500', GLOBAL_theme]);
+
+	_hmt.push(['_setPageTag', '6310', GLOBAL_pagetype1]);
+	_hmt.push(['_setPageTag', '6572', GLOBAL_pagetype2]);
+
+	(function() {  var hm = document.createElement("script");  hm.src = "https://hm.baidu.com/hm.js?3b995bf0c6a621a743d0cf009eaf5c8a";  var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();
+</script>
+{{-- 结束Holmes代码 --}}
+

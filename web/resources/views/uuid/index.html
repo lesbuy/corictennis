@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>h5 uuid</title>
+</head>
+
+<body>
+    <div>
+        <div>当前为业务页，保存uuid在iframe中</div>
+        <div id="target"></div>
+    </div>
+    <script>
+        window.passUuid = function (id) {
+            console.log(id)
+            alert(id)
+        }
+        document.getElementById('target').innerHTML = '<iframe id="uuid" src=""></iframe>'
+        // 500ms , 可尝试缩短时间或onload或onreadystatechange，微信中会有触发不了的问题
+        setTimeout(() => {
+            document.getElementById('uuid').contentWindow.location.href = './uuid.html'
+        }, 500)
+    </script>
+</body>
+
+</html>

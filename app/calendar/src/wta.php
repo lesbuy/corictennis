@@ -68,6 +68,6 @@ class Calendar extends CalendarBase {
 }
 
 $start = "2021-01-01";
-$end = "2021-03-31";
+$end = "2021-12-31";
 
 $calendar = new Calendar("wta", $start, $end);

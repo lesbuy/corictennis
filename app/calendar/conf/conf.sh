@@ -1,3 +1,3 @@
 #!/bin/bash
 
-year=2020
+year=2021

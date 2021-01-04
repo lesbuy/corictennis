@@ -1,0 +1,8 @@
+if (window.innerWidth < 500) {
+ad.css('width', '300px');
+ad.html("<div><script>document.write(unescape('%3Cscript src=\"http://u.dji.com/cn/ad_banners/lead?size=300%20*%20250&open_id=E0ZLyLd3&language=cn&component_id=2\"%3E%3C/script%3E'));</script></div>");
+} else {
+ad.css('width', '728px');
+ad.html("<div><script>document.write(unescape('%3Cscript src=\"http://u.dji.com/cn/ad_banners/lead?size=728%20*%2090&open_id=E0ZLyLd3&language=cn&component_id=2\"%3E%3C/script%3E'));</script></div>");
+}
+
