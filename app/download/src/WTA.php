@@ -49,6 +49,7 @@ class Down extends DownBase {
 			$fp = fopen(join("/", [DATA, "tour", "player", $t->year, $t->eventID]), "w");
 			fputs($fp, $html . "\n");
 			fclose($fp);
+			sleep(3);
 		}
 		return [true, ""];
 	}
@@ -110,6 +111,7 @@ class Down extends DownBase {
 			$fp = fopen(join("/", [DATA, "tour", "draw", $t->year, $t->eventID]), "w");
 			fputs($fp, json_encode($drawInfo) . "\n"); 
 			fclose($fp);
+			sleep(3);
 		}
 		return [true, ""];
 	}
@@ -155,6 +157,7 @@ class Down extends DownBase {
 			$fp = fopen(join("/", [DATA, "tour", "oop", $t->year, $t->eventID]), "w");
 			fputs($fp, json_encode($json_content) . "\n"); 
 			fclose($fp);
+			sleep(3)
 		}
 		return [true, ""];
 	}
