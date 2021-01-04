@@ -1529,7 +1529,7 @@ class StatController extends Controller
 
 	protected function process_itf_event() {
 
-		$url = "https://ls.sportradar.com/ls/feeds/?/itf/en/Europe:Berlin/gismo/match_info/$this->matchid";
+		$url = "https://ls.fn.sportradar.com/itf/en/Europe:Berlin/gismo/match_info/$this->matchid";
 		$html = file_get_contents($url);
 		$XML = json_decode(trim($html), true);
 		
