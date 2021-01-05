@@ -4,6 +4,9 @@ completed
 2
 live
 itf_live
+tmp_live
+tmp_round
+tmp_draw
 PROGRESS.run.live
 PROGRESS.run.draw
 PROGRESS.run.activity
