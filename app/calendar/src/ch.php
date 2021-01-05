@@ -5,7 +5,7 @@ require_once(APP . '/tool/simple_html_dom.php');
 
 class Calendar extends CalendarBase {
 	// local模式下，源文件使用本地的
-	private $mode = "local";
+	private $mode = "";
 
 	protected function preProcessSelf() {
 		return [true, ""];

@@ -79,7 +79,13 @@ class Calendar extends CalendarBase {
 
 }
 
-$start = "2021-01-01";
-$end = "2021-01-31";
-
+$start = date('Y-m-01', time());
+$end = date('Y-m-d', strtotime($start . " +1 month") - 86400);
 $calendar = new Calendar("itf-women", $start, $end);
+
+if (date('d', time()) > 16) {
+	$start = date('Y-m-01', time());
+	$start = date('Y-m-d', strtotime($start . " +1 month"));
+	$end = date('Y-m-d', strtotime($start . " +1 month") - 86400);
+	$calendar = new Calendar("itf-women", $start, $end);
+}

@@ -38,6 +38,9 @@ class Calendar extends CalendarBase {
 			$t->level = $this->mapLevel[$tour['tournamentGroup']['level']];
 			$t->eventID = $tour['liveScoringId'];
 			$t->liveID = $tour['tournamentGroup']['id'];
+			if ($t->eventID == "" && $t->liveID != "") {
+				$t->eventID = sprintf("%04d", $t->liveID);
+			}
 			$t->year = $tour['year'];
 			if (isset($tour['tournamentGroup']['customStatus' . $t->year]) && $tour['tournamentGroup']['customStatus' . $t->year] == "CANCELLED") continue;
 			$t->gender = "W";
