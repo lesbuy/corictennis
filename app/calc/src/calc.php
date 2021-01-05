@@ -495,13 +495,13 @@ class Calc {
 			$arr['seq'] = 2;
 		} else if (in_array($arr['level'], ['AC', 'PM'])) {
 			$arr['seq'] = 3;
-		} else if (in_array($arr['level'], ['1000', 'P5'])) {
+		} else if (in_array($arr['level'], ['1000', 'P5', 'WTA1000', 'ATP1000'])) {
 			$arr['seq'] = 4;
-		} else if (in_array($arr['level'], ['500', 'P700'])) {
+		} else if (in_array($arr['level'], ['500', 'P700', 'WTA500', 'ATP500'])) {
 			$arr['seq'] = 5;
-		} else if (in_array($arr['level'], ['250', 'Int'])) {
+		} else if (in_array($arr['level'], ['250', 'Int', 'WTA250', 'ATP250'])) {
 			$arr['seq'] = 6;
-		} else if (in_array($arr['level'], ['CH125', '125K'])) {
+		} else if (in_array($arr['level'], ['CH125', '125K', 'WTA125'])) {
 			$arr['seq'] = 7;
 		} else if (in_array($arr['level'], ['CH110'])) {
 			$arr['seq'] = 8;

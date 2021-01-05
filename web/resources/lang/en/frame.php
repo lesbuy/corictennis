@@ -19,6 +19,7 @@ return [
 		'GS' => 'Grand Slam',
 		'WC' => 'ATP YEC',
 		'YEC' => 'WTA YEC',
+		'XXI' => 'YEC',
 		'1000' => 'ATP 1000',
 		'500' => 'ATP 500',
 		'250' => 'ATP 250',

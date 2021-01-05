@@ -1403,7 +1403,7 @@ class StatController extends Controller
 			}
 			$score[] = [$a, $b, $c, $d];
 		}
-
+		$total_dura = $match[0]["MatchTimeTotal"];
 
 		$url = "https://api.wtatennis.com/tennis/tournaments/$this->eid/$this->year/matches/$this->matchid/stats";
 		$html = file_get_contents($url);
@@ -1495,7 +1495,8 @@ class StatController extends Controller
 			@$all[$seq]['bp_percent'] = self::add_percentage($all[$seq]['pofa'] . "/" . $all[$seq]['pofajihui']);
 			@$all[$seq]['rp_percent'] = self::add_percentage($all[$seq]['oppo_faqiudiufen'] . "/" . $all[$seq]['oppo_faqiu']);
 			@$all[$seq]['sg_percent'] = self::add_percentage($all[$seq]['baofa'] . "/" . $all[$seq]['faqiuju']);
-			@$all[$seq]['dura'] = date('H:i:s', strtotime("2021-1-1 0:0:0 +" . $seconds . " seconds"));
+			//@$all[$seq]['dura'] = date('H:i:s', strtotime("2021-1-1 0:0:0 +" . $seconds . " seconds"));
+			@$all[$seq]['dura'] = $total_dura;
 
 			$stat[0][] = [
 				'dura' => $all[$seq]['dura'],
