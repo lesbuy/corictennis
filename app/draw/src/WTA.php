@@ -149,6 +149,489 @@ class Event extends Base{
 		$file = join("/", [DATA, 'tour', 'draw', $this->year, $this->tour]);
 		if (!file_exists($file)) return false;
 
+		$xml = json_decode(file_get_content($file), true);
+		if (!$xml) return false;
+
+		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
+
+		foreach ($xml["Events"]["Event"] as $Event) {
+
+			$this->tourname = $Event["TournamentTitle"];
+			$this->city = $Event["Location"];
+			$this->city = preg_replace('/[,_].*$/', '', $this->city);
+			if (!$this->surface) {
+				$this->surface = $Event["Surface"];
+				if ($this->surface != 'Clay' && $this->surface != 'Grass' && $this->surface != 'Carpet') $this->surface = 'Hard';
+			}
+			$scoreCode = $Event["EventScorerCode"];
+			$prize = $Event["Tfc"];
+			if (strpos($prize, 'USD') !== false || strpos($prize, '$') !== false) $this->currency = "$";
+			else if (strpos($prize, 'EUR') !== false || strpos($prize, '€') !== false) $this->currency = "€";
+			else if (strpos($prize, 'GBP') !== false || strpos($prize, '￡') !== false) $this->currency = "￡";
+			else if (strpos($prize, 'AUD') !== false || strpos($prize, 'A$') !== false) $this->currency = "A$";
+			$prize = intval(preg_replace('/[^0-9]/', '', $prize));
+
+			$event_raw = $Event["EventTypeCode"];
+			$event = self::transSextip($event_raw, count($Event["Draw"]["DrawLine"][0]["Players"]["Player"]) == 2 ? 2 : 1);
+
+			$f = substr($event, 0, 1);
+			if ($f == 'M' || $f == 'Q') {
+				$this->atpid = $scoreCode;
+				$this->atpprize = $prize;
+			} else if ($f == 'W' || $f == 'P') {
+				$this->wtaid = $scoreCode;
+				$this->wtaprize = $prize;
+			}
+
+			$event_size = intval($Event["DrawSize"]);
+			$event_round = count($Event["Results"]["Round"]);
+			$eventid = $web_const['grandslam']['type2id'][$event];
+			$eventid4oop = $web_const['grandslam']['id2oopid'][$eventid];
+
+			$ko_type = $Event["Type"];
+			if (strpos($event, "D") !== false) {
+				$sd = "D";
+			} else {
+				$sd = "S";
+			}
+			if (strpos($Event["DrawTypeTitle"], "Quali") !== false) {
+				$qm = "Q";
+			} else {
+				$qm = "M";
+			}
+			$ct = 0;
+			foreach ($Event["Results"]["Round"] as $r) {
+				$ct += count($r["Match"]);
+			}
+
+			$this->draws[$event] = [
+				'uuid' => $event_raw,
+				'event' => $event,
+				'eventid' => $eventid,
+				'eventid2' => $eventid4oop,
+				'total_round' => $event_round,
+				'asso' => in_array($event, ['QS', 'QD', 'MS', 'MD']) ? 'ATP' : (in_array($event, ['PS', 'PD', 'WS', 'WD']) ? 'WTA' : ''),
+				'status' => 0,
+				'type' => $ko_type,
+				'sd' => $sd,
+				'qm' => $qm,
+				'ct' => $ct,
+				'groups' => 0,
+				'playersPerGroup' => 0,
+				'maxRRRounds' => 0,
+				'matchesPerGroupPerRound' => 0,
+				'group' => [],
+				'draw' => [],
+				'round' => [],
+				'group_id2name' => [],
+				'group_name2id' => [],
+			];
+
+			foreach ($Event["Breakdown"]["Place"] as $place) {
+				$name = $place["Name"];
+				$prize = $place["PrizeRound"];
+				$point = intval(str_replace(",", "", $place["PointsRound"]));
+
+				$placeid = intval($place["id"]);
+
+				if ($name == "Winner") $round = "W";
+				else if ($name == "Final") $round = "F";
+				else if ($name == "Semifinals") $round = "SF";
+				else if ($name == "Quarterfinals") $round = "QF";
+				else if ($name == "First Round") $round = "R1";
+				else if ($name == "Second Round") $round = "R2";
+				else if ($name == "Third Round") $round = "R3";
+				else if ($name == "Fourth Round") $round = "R4";
+				else if ($name == "Round 1") $round = "Q1";
+				else if ($name == "Round 2") $round = "Q2";
+				else if ($name == "Round 3") $round = "Q3";
+				else if ($name == "Round 4") $round = "Q4";
+				else if ($name == "Qualifiers") $round = "Qualify";
+				else if ($name == "Group Stage") $round = "RR";
+
+				$prize = intval(preg_replace('/[^0-9]/', '', $prize));
+
+				$_round = "";
+				if (in_array($event, ['MS', 'WS', 'MD', 'WD'])) {
+					if ($round == "R1" && $event_size > 8) {$_round = "R" . $event_size;}
+					else if ($round == "R2" && $event_size > 16) {$_round = "R" . ($event_size / 2);}
+					else if ($round == "R3" && $event_size > 32) {$_round = "R" . ($event_size / 4);}
+					else if ($round == "R4" && $event_size > 64) {$_round = "R" . ($event_size / 8);}
+				}
+				if ($_round == "") $_round = $round;
+
+				$this->draws[$event]['round'][$round] = [
+					'id' => $placeid,
+					'point' => $point,
+					'prize' => $prize,
+					'alias' => $_round,
+				];
+			}
+
+			// 小组赛时获取一些基本信息
+			if ($ko_type == "RR") {
+				$this->draws[$event]['groups'] = count($Event["RoundRobinGroups"]["Group"]);
+				$this->draws[$event]['playersPerGroup'] = count($Event["Draw"]["DrawLine"]) / $this->draws[$event]['groups'];
+				$this->draws[$event]['matchesPerGroupPerRound'] = floor($this->draws[$event]['playersPerGroup'] / 2);
+				$this->draws[$event]['maxRRRounds'] = $this->draws[$event]['playersPerGroup'] * ($this->draws[$event]['playersPerGroup'] - 1) / 2 / $this->draws[$event]['matchesPerGroupPerRound'];
+
+				foreach ($Event["RoundRobinGroups"]["Group"] as $_gr) {
+					$_gr_name = $_gr["Name"];
+					$_gr_num = $_gr["Number"];
+					$this->draws[$event]['group_name2id'][$_gr_name] = $_gr_num - 1;
+					$this->draws[$event]['group_id2name'][$_gr_num] = $_gr_name;
+				}
+
+				$_group = &$this->draws[$event]['group'];
+				for ($i = 0; $i < $this->draws[$event]['groups']; ++$i) {
+					$_group[$i] = [];
+				}
+				foreach ($Event["Draw"]["DrawLine"] as $drawline) {
+					$_gr_name = $drawline["GroupName"];
+					$_gr_num = $this->draws[$event]['group_name2id'][$_gr_name];
+
+					$pids = [];
+					if (count($drawline["Players"]["Player"]) > 2) {
+						$drawline["Players"]["Player"] = [$drawline["Players"]["Player"]];
+					}
+					foreach ($drawline["Players"]["Player"] as $p) {
+						$pids[] = $p["id"];
+					}
+					
+					$_group[$_gr_num][] = $event . join("/", $pids);
+				}
+
+				// 弥补某些已经退赛的选手
+				foreach ($Event["Results"]["Round"]["Match"] as $amatch) {
+					$_gr_name = $amatch["RRGroup"];
+					if (!$_gr_name) continue;
+					$_gr_num = $this->draws[$event]['group_name2id'][$_gr_name];
+					foreach ($amatch["Players"]["PT"] as $team) {
+						$pids = [];
+						if (count($team["Player"]) > 2) {
+							$team["Player"] = [$team["Player"]];
+						}
+						foreach ($team["Player"] as $p) {
+							$pids[] = $p["id"];
+						}
+						
+						$pid = $event . join("/", $pids);
+						if (!in_array($pid, $_group[$_gr_num])) {
+							 $_group[$_gr_num][] = $pid;
+						}
+					}
+				}
+				// 记下选手的位置，包括group，order;
+				foreach ($this->draws[$event]['group'] as $x => $v1) {
+					foreach ($v1 as $y => $v2) {
+						$this->teams[$v2]['group'] = $x + 1;
+						$this->teams[$v2]['pos'] = $y + 1;
+					}   
+				}
+
+				// 遍历小组赛
+				foreach ($Event["Results"]["Round"]["Match"] as $amatch) {
+					$match_id = $amatch["Id"];
+					$teams = [];
+					if (isset($amatch["Players"])) {
+						foreach ($amatch["Players"]["PT"] as $team) {
+							$pids = [];
+							if (count($team["Player"]) > 2) {
+								$team["Player"] = [$team["Player"]];
+							}
+							foreach ($team["Player"] as $p) {
+								$pids[] = $p["id"];
+							}
+							$teams[] = $event . join("/", $pids);
+						}
+
+						$pos1 = $this->teams[$teams[0]]['pos'];
+						$pos2 = $this->teams[$teams[1]]['pos'];
+						$group = $this->teams[$teams[0]]['group'];
+
+						// 此处无需调换pos1与pos2，即使pos1比pos2大                  
+						$x = $pos1; $y = $pos2;
+										  
+						$this->draws[$event]['draw']['RR'][$group][$x][$y] = $match_id;
+					} else {
+						$teams = [$event, $event];
+						$group = 1;
+						$x = $y = 0;
+					}
+
+					// 记录到match里
+					$this->matches[$match_id] = [
+						'uuid' => $match_id,
+						'id' => $match_id,
+						'event' => $event,
+						'r' => 0,
+						'r1' => "RR",
+						'r2' => "RR",
+						't1' => $teams[0],
+						't2' => $teams[1],
+						'bestof' => ($this->tour == "7696" ? 5 : 3),
+						'mStatus' => "",
+						'h2h' => '',
+						'group' => $group,
+						'group_name' => $this->draws[$event]['group_id2name'][$group],
+						'x' => $x,
+						'y' => $y,
+						'type' => (!$group ? 'KO' : 'RR'),
+					];
+				} // end foreach match
+
+			} // end if RR
+
+			if ($ko_type == "KO") {
+				// 遍历签位
+				$drawlines = [];
+				$pre_pos = 0;
+				foreach ($Event["Draw"]["DrawLine"] as $line) {
+					$pids = [];
+					$pos = $line["Pos"];
+					for ($i = 0; $i < $pos - $pre_pos - 1; ++$i) {
+						$drawlines[] = $event . "QUAL";
+					}
+					if (count($line["Players"]["Player"]) > 2) {
+						$line["Players"]["Player"] = [$line["Players"]["Player"]];
+					}
+					foreach ($line["Players"]["Player"] as $p) {
+						$pid = trim($p["id"]);
+						if (!$pid && strpos($p["PlayerDisplayLine"], "Bye") !== false) {
+							$pid = "BYE";
+						} else if (!$pid && (strpos($p["PlayerDisplayLine"], "Quali") !== false || strpos($p["PlayerDisplayLine"], "Lucky") !== false || strpos($p["PlayerDisplayLine"], "Alter") !== false)) {
+							$pid = "QUAL";
+						}
+						$pids[] = $pid;
+					}
+					if ($pids[0] == "BYE") $pids = ['BYE'];
+					else if ($pids[0] == "QUAL") $pids = ['QUAL'];
+					$drawlines[] = $event . join("/", $pids);
+					$pre_pos = $pos;
+				}
+
+				// 组建首轮签表
+				for ($i = 0; $i < count($drawlines); $i += 2) {
+					$team1 = $drawlines[$i];
+					$team2 = $drawlines[$i + 1];
+
+					$r1 = 1;
+					$order = $i / 2 + 1;
+
+					$match_seq = pow(2, ceil(log($event_size) / log(2))) / 2 + $i / 2;
+					$ori_matchid = sprintf("%s%03d", $event_raw, $match_seq);
+
+					$group = 0; $x = $r1; $y = $order;
+					$this->draws[$event]['draw']['KO'][$group][$x][$y] = $ori_matchid;
+
+					if ($qm == "M") {
+						if ($event_size == 8) {
+							$r2 = $r3 = "QF";
+						} else if ($event_size == 4) {
+							$r2 = $r3 = "SF";
+						} else if ($event_size == 2) {
+							$r2 = $r3 = "F";
+						} else {
+							$r3 = "R" . $event_size;
+							$r2 = "R1";
+						}
+					} else {
+						$r2 = $r3 = "Q1";
+					}
+					// 记录到match里
+					$this->matches[$ori_matchid] = [
+						'uuid' => $ori_matchid,
+						'id' => $ori_matchid,
+						'event' => $event,
+						'r' => $r1,
+						'r1' => $r2,
+						'r2' => $r3,
+						't1' => $team1,
+						't2' => $team2,
+						'bestof' => ($this->tour == "7696" ? 5 : 3),
+						'mStatus' => "",
+						'h2h' => '',
+						'group' => $group,
+						'x' => $x,
+						'y' => $y,
+						'type' => (!$group ? 'KO' : 'RR'),
+					];
+				} // end for 
+			} else { // end if KO. if RR
+
+				$event_size = count($Event["Results"]["Round"][1]["Match"]) * 2;
+				$_ct = 0;
+				foreach ($Event["Results"]["Round"][1]["Match"] as $amatch) {
+					++$_ct;
+					$ori_matchid = $amatch["Id"];
+					$teams = [];
+
+					if (isset($amatch["Players"])) {
+						foreach ($amatch["Players"]["PT"] as $team) {
+							$pids = [];
+							if (count($team["Player"]) > 2) {
+								$team["Player"] = [$team["Player"]];
+							}
+							foreach ($team["Player"] as $p) {
+								$pids[] = $p["id"];
+							}
+							$teams[] = $event . join("/", $pids);
+						}
+					} else {
+						$teams = [$event, $event];
+					}
+					$r1 = 1;
+					$order = $_ct;
+
+					$group = 0; $x = $r1; $y = $order;
+					$this->draws[$event]['draw']['KO'][$group][$x][$y] = $ori_matchid;
+
+					if ($event_size == 8) {
+						$r2 = $r3 = "QF";
+					} else if ($event_size == 4) {
+						$r2 = $r3 = "SF";
+					} else if ($event_size == 2) {
+						$r2 = $r3 = "F";
+					} else {
+						$r3 = "R" . $event_size;
+						$r2 = "R1";
+					}
+
+					// 记录到match里
+					$this->matches[$ori_matchid] = [
+						'uuid' => $ori_matchid,
+						'id' => $ori_matchid,
+						'event' => $event,
+						'r' => $r1,
+						'r1' => $r2,
+						'r2' => $r3,
+						't1' => $teams[0],
+						't2' => $teams[1],
+						'bestof' => ($this->tour == "7696" ? 5 : 3),
+						'mStatus' => "",
+						'h2h' => '',
+						'group' => $group,
+						'x' => $x,
+						'y' => $y,
+						'type' => (!$group ? 'KO' : 'RR'),
+					];
+				} // end foreach 
+			} // end if RR
+
+			// 组建后面的比赛。RR比赛总轮数减1
+			for ($i = 1; $i < ($ko_type == "KO" ? $event_round : $event_round - 1); ++$i) {
+				$r1 = $i + 1;
+				if ($qm == "Q") {
+					$r2 = $r3 = "Q" . $r1;
+				} else {
+					$t = $event_size / pow(2, $r1 - 1);
+					if ($t == 8) $r2 = $r3 = "QF";
+					else if ($t == 4) $r2 = $r3 = "SF";
+					else if ($t == 2) $r2 = $r3 = "F";
+					else {
+						$r2 = "R" . $r1;
+						$r3 = "R" . ($event_size / pow(2, $r1 - 1));
+					}
+				}
+				$team1 = $team2 = $event;
+
+				for ($j = 1; $j <= $event_size / pow(2, $r1); ++$j) {
+					$order = $j;
+
+					$match_seq = pow(2, ceil(log($event_size) / log(2))) / pow(2, $r1) + $j - 1;
+					$ori_matchid = sprintf("%s%03d", $event_raw, $match_seq);
+
+					$group = 0; $x = $r1; $y = $order;
+					$this->draws[$event]['draw']['KO'][$group][$x][$y] = $ori_matchid;
+
+					// 记录到match里
+					$this->matches[$ori_matchid] = [
+						'uuid' => $ori_matchid,
+						'id' => $ori_matchid,
+						'event' => $event,
+						'r' => $r1,
+						'r1' => $r2,
+						'r2' => $r3,
+						't1' => $team1,
+						't2' => $team2,
+						'bestof' => ($this->tour == "7696" ? 5 : 3),
+						'mStatus' => "",
+						'h2h' => '',
+						'group' => $group,
+						'x' => $x,
+						'y' => $y,
+						'type' => (!$group ? 'KO' : 'RR'),
+					];
+				}
+			} // end for
+
+			// 获取每场比赛结果
+			foreach ($Event["Results"]["Round"] as $around) {
+				foreach ($around["Match"] as $amatch) {
+					$ori_matchid = $amatch["Id"];
+					$match = &$this->matches[$ori_matchid];
+
+					if (isset($amatch["Result"]) && isset($amatch["Result"]["winnerPTId"])) {
+						$winner = $amatch["Result"]["winnerPTId"];
+					} else {
+						$winner = "";
+					}
+
+					if ($amatch["finished"] == 1 && isset($amatch["Result"]["Score"])) {
+						$score1 = [];
+						$score2 = [];
+						foreach ($amatch["Result"]["Score"]["Set"] as $set) {
+							$sA = $set["sA"];
+							$sB = $set["sB"];
+							$tbA = $set["tbA"];
+							$tbB = $set["tbB"];
+							if ($tbA == 0 && $tbB == 0) $hasTB = false; else $hasTB = true;
+							if ($sA > $sB) $set_winner = 1; else $set_winner = 2;
+
+							$score1[] = [$sA, $set_winner == 1 ? 1 : -1, $hasTB ? $tbA : -1];
+							$score2[] = [$sB, $set_winner == 2 ? 1 : -1, $hasTB ? $tbB : -1];
+						}
+						$match['s1'] = $score1;
+						$match['s2'] = $score2;
+					}
+
+					$mStatus = "";
+
+					if ($winner) {
+						if ($winner == "A") {
+							$mStatus = "F";
+							if (strpos($amatch["Result"]["Score"]["rsn"], "Ret") !== false) $mStatus = "H";
+							else if (strpos($amatch["Result"]["Score"]["rsn"], "Def") !== false) $mStatus = "J";
+							else if (strpos($amatch["Result"]["Score"]["rsn"], "W/O") !== false) $mStatus = "L";
+							$winner = $match['t1'];
+						} else {
+							$mStatus = "G";
+							if (strpos($amatch["Result"]["Score"]["rsn"], "Ret") !== false) $mStatus = "I";
+							else if (strpos($amatch["Result"]["Score"]["rsn"], "Def") !== false) $mStatus = "K";
+							else if (strpos($amatch["Result"]["Score"]["rsn"], "W/O") !== false) $mStatus = "M";
+							$winner = $match['t2'];
+						}
+					}
+					$match['mStatus'] = $mStatus;
+
+					$_next_match = self::findNextMatchIdAndPos($ori_matchid, $event);
+					if ($winner != "" && $_next_match !== null) {
+						$next_match = &$this->matches[$_next_match[0]];
+						$next_match['t' . $_next_match[1]] = $winner;
+					}
+
+				} // end foreach match
+			} // end foreach round
+
+		}
+	}
+
+	/*
+	protected function parseDraw() {
+
+		$file = join("/", [DATA, 'tour', 'draw', $this->year, $this->tour]);
+		if (!file_exists($file)) return false;
+
 		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
 
@@ -374,6 +857,7 @@ class Event extends Base{
 			} // end for
 		}
 	}
+	*/
 
 	protected function parseResult() {
 
