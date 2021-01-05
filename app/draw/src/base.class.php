@@ -80,15 +80,14 @@ abstract class Base{
 				$this->wta_level = $ar[1];
 			} else {
 				$this->atp_level = $this->wta_level = $ar[0];
-
-				if (in_string($ar[0], "ITF")) {
-					$prize = $arr[20];
+				$prize = $arr[20];
+				if (in_string($ar[0], "ITF") || preg_match('/^[WM]\d{2,3}$/', $ar[0])) {
 					if (in_string($arr[11], "+")) $prize += 1;
-					if ($arr[3] == "M") {
-						$this->atpprize = $prize;
-					} else {
-						$this->wtaprize = $prize;
-					}
+				}
+				if ($arr[3] == "M") {
+					$this->atpprize = $prize;
+				} else {
+					$this->wtaprize = $prize;
 				}
 			}
 			if (strpos($this->atp_level, 'CH') !== false) {

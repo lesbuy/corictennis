@@ -26,6 +26,17 @@ do
 	unix=`echo "$line" | cut -f7`
 	year=`echo "$line" | cut -f5`
 	weeks=`echo "$line" | cut -f22`
+	
+	sex=`echo "$line" | cut -f4`
+
+	asso=""
+	if [[ $sex == "W" ]]
+	then
+		asso="wta"
+	elif [[ $sex == "M" ]]
+	then
+		asso="atp"
+	fi
 
 	if [[ $weeks == "2" ]]
 	then
@@ -43,7 +54,7 @@ do
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]
 	then
-		php ../src/oop.php $eid $year >> tmp_schedule
+		php ../src/oop.php $eid $year $asso >> tmp_schedule
 		echo $eid $year
 	fi
 done

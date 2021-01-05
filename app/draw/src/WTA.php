@@ -429,8 +429,8 @@ class Event extends Base{
 		if (!isset($xml["OOP"]["Schedule"]["Day"])) return false;
 
 		$Days = [];
-		if (!is_array($xml["OOP"]["Schedule"]["Day"])) {
-			$Days[0] = $xml["OOP"]["Schedule"]["Day"];
+		if (!isset($xml["OOP"]["Schedule"]["Day"][0])) {
+			$Days[] = $xml["OOP"]["Schedule"]["Day"];
 		} else {
 			$Days = $xml["OOP"]["Schedule"]["Day"];
 		}
@@ -470,9 +470,9 @@ class Event extends Base{
 					$matchid = $amatch["MatchId"];
 
 					$event_raw = substr($matchid, 0, 2);
-					$event = self::transSextip($event_raw, $amatch["DrawMatchType"] == "D" ? 2 : 1);
+					$event = self::transSextip($event_raw, isset($amatch["Players"][0]["Player"][0]) ? 2 : 1);
 
-					if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
+					//if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
 					$matches = &$this->oop[$day]['courts'][$order]['matches'];
 					$matches[$match_seq] = [
 						'id' => $matchid,
