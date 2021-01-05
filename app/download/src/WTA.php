@@ -59,6 +59,27 @@ class Down extends DownBase {
 		foreach ($this->tourList as $t) {
 			$t->printSelf();
 			$drawInfo = [];
+			$url = "https://api.wtatennis.com/tennis/tournaments/$t->tourID/$t->year/draw";
+			$html = http($url, null, null, null);
+			if (!$html) {
+				print_line("download draw failed");
+				continue;
+			}
+			$html_content = json_decode($html, true);
+			if (!$html_content || !isset($html_content["drawInfo"][0])) {
+				print_line("parse draw failed");
+				continue;
+			}
+
+			$json_content = json_decode($html_content["drawInfo"][0], true);
+			if (!$json_content) {
+				print_line("parse draw failed");
+				continue;
+			}
+
+			$json_content["tournament"] = $html_content["tournament"];
+
+/*
 			$url = "https://www.wtatennis.com/tournament/$t->tourID/beijing/$t->year/draws";
 			$html = http($url, null, null, null);
 			if (!$html) return [false, "download draw failed"];
@@ -108,8 +129,9 @@ class Down extends DownBase {
 					$drawInfo[$event]['wo'][$key] = $mStatus;
 				}
 			}
+*/
 			$fp = fopen(join("/", [DATA, "tour", "draw", $t->year, $t->eventID]), "w");
-			fputs($fp, json_encode($drawInfo) . "\n"); 
+			fputs($fp, json_encode($json_content) . "\n"); 
 			fclose($fp);
 			sleep(3);
 		}
