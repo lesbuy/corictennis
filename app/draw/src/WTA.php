@@ -967,6 +967,87 @@ class Event extends Base{
 					$event_raw = substr($matchid, 0, 2);
 					$event = self::transSextip($event_raw, isset($amatch["Players"][0]["Player"][0]) ? 2 : 1);
 
+					// 取一些选手数据
+					$seq = 0;
+					foreach ($amatch["Players"] as $team) {
+						++$seq;
+						if (count($team["Player"]) > 2) {
+							$team["Player"] = [$team["Player"]];
+						}
+						$pids = array_map(function ($d) {
+							return $d["id"];
+						}, $team["Player"]);
+						$teamID = $event . join("/", $pids);
+						if (!isset($this->teams[$teamID])) {
+							foreach ($team["Player"] as $p) {
+								$pid = $p["id"];
+								if (!isset($this->players[$pid])) {
+									$gender = "F";
+									$first = $p["FirstName"];
+									$last = $p["SurName"];
+									$ioc = $p["Country"];
+									$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+									$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
+									$this->players[$pid] = [
+										'p' => $pid,
+										'g' => $gender,
+										'f' => $first,
+										'l' => $last,
+										'i' => $ioc,
+										's' => $short3,
+										's2' => $last2,
+										'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
+										'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
+									];
+								}
+							}
+							$seeds = [];
+							$seed = $team["Seed"]; if ($seed != "") $seeds[] = $seed; 
+							$entry = $team["EntryType"]; if ($entry != "") $seeds[] = $entry;
+							$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : "";
+							$this->teams[$teamID] = [
+								'uuid' => $teamID,
+								's' => $seed,
+								'e' => $entry,
+								'se' => join("/", $seeds),
+								'r' => $rank,
+								'p' => array_map(function ($d) {
+									return $this->players[$d];
+								}, $pids),
+								'matches' => [],
+								'win' => 0,
+								'loss' => 0,
+								'streak' => 0,
+								'round' => '',
+								'point' => 0,
+								'prize' => 0,
+								'indraw' => 1,
+								'next' => null,
+							];
+						}
+
+						if (!isset($this->matches[$matchid])) {
+							$this->matches[$matchid] = [
+								'uuid' => $matchid,
+								'id' => $matchid,
+								'event' => $event,
+								'r' => 0,
+								'r1' => "",
+								'r2' => "",
+								't1' => "",
+								't2' => "",
+								'bestof' => ($this->tour == "7696" ? 5 : 3),
+								'mStatus' => "",
+								'h2h' => '',
+								'group' => 0,
+								'x' => 0,
+								'y' => 0,
+								'type' => (!$group ? 'KO' : 'RR'),
+							];
+						}
+						$this->matches[$matchid]["t" . $seq] = $teamID;
+					}
+
 					//if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
 					$matches = &$this->oop[$day]['courts'][$order]['matches'];
 					$matches[$match_seq] = [
@@ -1005,13 +1086,15 @@ class Event extends Base{
 
 	protected function parseLive() {
 
-		$file = join("/", [SHARE, 'down_result', 'live']);
+		$file = join("/", [SHARE, 'down_result', 'wta_live']);
 		if (!file_exists($file)) return false;
 
 		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
 
-		foreach ($xml["matches"] as $amatch) {
+		foreach ($xml as $amatch) {
+			if ($amatch["EventID"] != $this->tour) continue;
+
 			$matchid = $amatch["MatchID"];
 			self::getResult($matchid, $amatch);
 
