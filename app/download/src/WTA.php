@@ -30,27 +30,6 @@ class Down extends DownBase {
 	}
 
 	protected function downPlayerFile() {
-		print_line("begin to down players");
-		foreach ($this->tourList as $t) {
-			$t->printSelf();
-			$url = "https://api.wtatennis.com/tennis/tournaments/$t->tourID/$t->year/players/";
-			$html = http($url, null, null, null);
-			if (!$html) {
-				print_line("download players failed");
-				continue;
-			}
-
-			$json_content = json_decode($html, true);
-			if (!$json_content || !isset($json_content['events'])) {
-				print_line("players parsed failed");
-				continue;
-			}
-
-			$fp = fopen(join("/", [DATA, "tour", "player", $t->year, $t->eventID]), "w");
-			fputs($fp, $html . "\n");
-			fclose($fp);
-			sleep(3);
-		}
 		return [true, ""];
 	}
 

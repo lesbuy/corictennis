@@ -12,4 +12,4 @@ if ($asso == "wta") {
 }
 
 $down = new Down($asso);
-$down->process();
+$down->process_logo();

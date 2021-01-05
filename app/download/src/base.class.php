@@ -19,7 +19,9 @@ abstract class DownBase {
 
 	public function __construct($asso = null) {
 		$this->asso = $asso;
+	}
 
+	public function process() {
 		$res = $this->getTourList();
 		if (!$res[0]) {print_line($res[1]); exit;}
 
@@ -35,6 +37,15 @@ abstract class DownBase {
 		$res = $this->downResultFile();
 		if (!$res[0]) {print_line($res[1]); exit;}
 	}
+
+	public function process_logo() {
+		$res = $this->getTourList();
+		if (!$res[0]) {print_line($res[1]); exit;}
+
+		$res = $this->downLogo();
+		if (!$res[0]) {print_line($res[1]); exit;}
+	}
+
 	public function printTourList() {
 		foreach ($this->tourList as $t) {
 			print_line($t->eventID, $t->year, $t->city, $t->monday);
@@ -45,4 +56,6 @@ abstract class DownBase {
 	abstract protected function downDrawFile();
 	abstract protected function downOOPFile();
 	abstract protected function downResultFile();
+
+	protected function downLogo() {}
 }

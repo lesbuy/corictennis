@@ -1,6 +1,7 @@
 <?php
 require_once('base.class.php');
 require_once(APP . '/tool/decrypt.php');
+require_once(APP . '/tool/simple_html_dom.php');
 
 class Down extends DownBase {
 
@@ -121,5 +122,44 @@ class Down extends DownBase {
 		return [true, ""];
 	}
 
+	protected function downLogo() {
+		print_line("begin to down logo");
+		foreach ($this->tourList as $t) {
+			$t->printSelf();
+			$url = "https://www.atptour.com/en/tournaments/delray-beach/" . intval($t->eventID) . "/overview";
+			$html = http($url, null, null, null);
+			if (!$html) {
+				print_line("download homepage failed");
+				continue;
+			}
+			$html_content = str_get_html($html);
+			if (!$html_content) {
+				print_line("parse homepage failed");
+				continue;
+			}
+			$img = $html_content->find('.tournament-sponsor-logo img', 0);
+			if (!$img) {
+				print_line("no pic on homepage");
+				continue;
+			}
+			$imgLink = preg_replace('/\?.*$/', '', $img->src);
+			if ($imgLink != "") {
+				$imgLink = "https://www.atptour.com" . $imgLink;
+			}
+
+			$fp = fopen(join("/", [STORE, "tourlogo", $t->year, "tourlogo"]), "a");
+			fputs($fp, join("\t", [
+				"ATP",
+				$t->eventID,
+				$t->eventID,
+				"",
+				$t->city,
+				$imgLink,
+			]) . "\n");
+			fclose($fp);
+			sleep(3);
+		}
+		return [true, ""];
+	}
 }
 
