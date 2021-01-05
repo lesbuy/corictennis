@@ -100,7 +100,7 @@ class Event extends Base{
 				$entry = $team["entryType"];
 				if ($entry == "LL") $entry = "L";
 				else if ($entry == "WC") $entry = "W";
-				else if ($entry == "Alt") $entry = "A";
+				else if ($entry == "Alt" || $entry == "ALT") $entry = "A";
 				else if ($entry == "PR") $entry = "P";
 				else if ($entry == "SE") $entry = "S";
 				else if ($entry == "ITF") $entry = "I";
@@ -227,26 +227,30 @@ class Event extends Base{
 				'group_name2id' => [],
 			];
 
-			foreach ($Event["Breakdown"]["Place"] as $place) {
+			foreach ($Event["Breakdown"]["Place"] as $idx => $place) {
 				$name = $place["Name"];
 				$prize = $place["PrizeRound"];
 				$point = intval(str_replace(",", "", $place["PointsRound"]));
 
-				$placeid = intval($place["id"]);
+				$placeid = $idx + 1;
 
 				if ($name == "Winner") $round = "W";
 				else if ($name == "Final") $round = "F";
 				else if ($name == "Semifinals") $round = "SF";
 				else if ($name == "Quarterfinals") $round = "QF";
-				else if ($name == "First Round") $round = "R1";
-				else if ($name == "Second Round") $round = "R2";
-				else if ($name == "Third Round") $round = "R3";
-				else if ($name == "Fourth Round") $round = "R4";
+				else if ($name == "Round of 16" || $name == "Round of 32" || $name == "Round of 64" || $name == "Round of 128") {
+					if ($event_round >= $idx) {
+						$round = "R" . ($event_round - $idx + 1);
+					} else {
+						continue;
+					}
+				}
 				else if ($name == "Round 1") $round = "Q1";
 				else if ($name == "Round 2") $round = "Q2";
 				else if ($name == "Round 3") $round = "Q3";
 				else if ($name == "Round 4") $round = "Q4";
-				else if ($name == "Qualifiers") $round = "Qualify";
+				else if ($name == "Q1" || $name == "Q2" || $name == "Q3" || $name == "Q4") $round = $name;
+				else if ($name == "Qualifier") $round = "Qualify";
 				else if ($name == "Group Stage") $round = "RR";
 
 				$prize = intval(preg_replace('/[^0-9]/', '', $prize));
@@ -1003,7 +1007,7 @@ class Event extends Base{
 							}
 							$seeds = [];
 							$seed = $team["Seed"]; if ($seed != "") $seeds[] = $seed; 
-							$entry = $team["EntryType"]; if ($entry != "") $seeds[] = $entry;
+							$entry = $team["EntryType"]; if ($entry == "DA") $entry = ""; if ($entry != "") $seeds[] = $entry;
 							$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : "";
 							$this->teams[$teamID] = [
 								'uuid' => $teamID,
@@ -1042,13 +1046,13 @@ class Event extends Base{
 								'group' => 0,
 								'x' => 0,
 								'y' => 0,
-								'type' => (!$group ? 'KO' : 'RR'),
+								'type' => 'KO',
 							];
 						}
 						$this->matches[$matchid]["t" . $seq] = $teamID;
 					}
 
-					//if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
+					if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
 					$matches = &$this->oop[$day]['courts'][$order]['matches'];
 					$matches[$match_seq] = [
 						'id' => $matchid,
@@ -1094,7 +1098,7 @@ class Event extends Base{
 
 		foreach ($xml as $amatch) {
 			if ($amatch["EventID"] != $this->tour) continue;
-
+			if ($amatch["MatchState"] == "F" && time() - strtotime($amatch["LastUpdated"]) > 10 * 60) continue;
 			$matchid = $amatch["MatchID"];
 			self::getResult($matchid, $amatch);
 
@@ -1175,7 +1179,7 @@ class Event extends Base{
 			$match['p1'] = $p1;
 			$match['p2'] = $p2;
 			$serve = $m["Serve"];
-			$match['serve'] = ($serve === "" ? "" : (($serve + 0) % 2 == 0 ? 1 : 2));
+			$match['serve'] = ($serve === "" ? "" : ($serve == "A" ? 1 : 2));
 		}
 
 		// fill in next match if completed

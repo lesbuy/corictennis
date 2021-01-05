@@ -30,11 +30,10 @@ $event = new Event($tour, $year);
 $event->process();
 
 #$event->calaTeamFinal();
-#$event->outputSummary();
-#$event->outputRawDraws();
+$event->outputRawDraws();
 #$event->outputRawMatches();
 #$event->outputRawTeams();
-$event->outputRounds();
+#$event->outputRounds();
 #$event->outputRawOOPs();
 #$event->outputPlayers();
 #$event->outputOOPs();

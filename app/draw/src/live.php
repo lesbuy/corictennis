@@ -23,7 +23,7 @@ if (in_array($tour, ['AO', 'RG', 'WC', 'UO'])) {
 }
 
 if ($level == "GS") require_once($tour . '.php');
-else require_once($level . '.php')
+else require_once($level . '.php');
 
 $event = new Event($tour, $year);
 $event->process();
