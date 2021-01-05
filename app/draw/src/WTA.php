@@ -45,6 +45,188 @@ class Event extends Base{
 	}
 
 	protected function parsePlayer() {
+		$file = join("/", [DATA, 'tour', 'draw', $this->year, $this->tour]);
+		if (!file_exists($file)) return false;
+
+		$xml = json_decode(file_get_contents($file), true);
+		if (!$xml) return false;
+
+		$players = [];
+
+		foreach ($xml["Draws"]["Events"]["Event"] as $event) {
+			$sextip = $event["EventTypeCode"];
+			$sextip = self::transSextip($sextip, count($event["Draw"]["DrawLine"][0]["Players"]["Player"]) == 2 ? 2 : 1);
+
+			foreach ($event["Draw"]["DrawLine"] as $team) {
+				$pids = [];
+
+				if (count($team["Players"]["Player"]) > 2) {
+					$team["Players"]["Player"] = [$team["Players"]["Player"]];
+				}
+				foreach ($team["Players"]["Player"] as $p) {
+					$pid = $p["id"];
+					if (!$pid) continue;
+					$pids[] = $pid;
+					$gender = "F";
+					$first = $p["FirstName"];
+					$last = $p["SurName"];
+					$ioc = $p["Country"];
+					$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+					$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
+
+					$players[$pid] = [
+						'p' => $pid,
+						'g' => $gender,
+						'f' => $first,
+						'l' => $last,
+						'i' => $ioc,
+						's' => $short3,
+						's2' => $last2,
+						'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
+						'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
+						
+					];
+					$this->players[$pid] = [
+						'p' => $pid,
+						'g' => $gender,
+						'f' => $first,
+						'l' => $last,
+						'i' => $ioc,
+						's' => $short3,
+						's2' => $last2,
+						'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
+						'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
+					];
+				}
+				if (count($pids) == 0) continue;
+
+				$entry = $team["EntryType"];
+				if ($entry == "LL") $entry = "L";
+				else if ($entry == "WC") $entry = "W";
+				else if ($entry == "Alt" || $entry == "ALT") $entry = "A";
+				else if ($entry == "PR") $entry = "P";
+				else if ($entry == "SE") $entry = "S";
+				else if ($entry == "ITF") $entry = "I";
+				else if ($entry == "JE") $entry = "J";
+				$seed = $team["Seed"];
+
+				$seeds = [];
+				if ($seed) $seeds[] = $seed;
+				if ($entry) $seeds[] = $entry;
+
+				$uuid = $sextip . join("/", $pids);
+
+				$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : '-';
+
+				$this->teams[$uuid] = [
+					'uuid' => $uuid,
+					's' => $seed,
+					'e' => $entry,
+					'se' => join("/", $seeds),
+					'r' => $rank,
+					'p' => array_map(function ($d) use ($players) {
+						return $players[$d];
+					}, $pids),
+					'matches' => [],
+					'win' => 0,
+					'loss' => 0,
+					'streak' => 0,
+					'round' => '',
+					'point' => 0,
+					'prize' => 0,
+					'indraw' => 1,
+					'next' => null,
+				];
+			}
+
+			// 在RR里，还要遍历每场比赛，看看有没有退赛的
+			if ($event["Type"]== "RR") {
+				foreach ($event["Results"]["Round"] as $around) {
+					if (!isset($around["Match"][0])) {
+						$around["Match"] = [$around["Match"]];
+					}
+					foreach ($around["Match"] as $amatch) {
+						if (isset($amatch["Players"]["PT"])) {
+							foreach ($amatch["Players"]["PT"] as $ateam) {
+								$pids = [];
+								if (count($ateam["Player"]) > 2) {
+									$ateam["Player"] = [$ateam["Player"]];
+								}
+								foreach ($ateam["Player"] as $aplayer) {
+									$pid = $aplayer["id"];
+									if (!$pid) continue;
+									$pids[] = $pid;
+								}
+								if (!count($pids)) continue;
+								if (isset($this->teams[$sextip . join("/", $pids)])) continue;
+
+								foreach ($ateam["Player"] as $aplayer) {
+									$pid = $aplayer["id"];
+									if (isset($players[$pid])) continue;
+									else {
+										$gender = "F";
+										$first = $aplayer["FirstName"];
+										$last = $aplayer["SurName"];
+										$ioc = $aplayer["Country"];
+										$players[$pid] = [
+											'p' => $pid,
+											'g' => $gender,
+											'f' => $first,
+											'l' => $last,
+											'i' => $ioc
+										];
+									
+									}
+								}
+
+								$entry = $ateam["EntryType"];
+								if ($entry == "LL") $entry = "L";
+								else if ($entry == "WC") $entry = "W";
+								else if ($entry == "Alt" || $entry == "ALT") $entry = "A";
+								else if ($entry == "PR") $entry = "P";
+								$seed = $ateam["Seed"];
+
+								$seeds = [];
+								if ($seed) $seeds[] = $seed;
+								if ($entry) $seeds[] = $entry;
+
+								$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : '-';
+								$uuid = $sextip . join("/", $pids);
+		
+								$this->teams[$uuid] = [
+									'uuid' => $uuid,
+									's' => $seed,
+									'e' => $entry,
+									'se' => join("/", $seeds),
+									'r' => $rank,
+									'p' => array_map(function ($d) use ($players) {
+										return $players[$d];
+									}, $pids),
+									'matches' => [],
+									'win' => 0,
+									'loss' => 0,
+									'streak' => 0,
+									'round' => '',
+									'point' => 0,
+									'prize' => 0,
+									'indraw' => 1,
+									'next' => null,
+								];
+							}
+						}
+					}
+				}			
+			}
+
+			$this->teams[$sextip . 'LIVE'] = ['uuid' => $sextip . 'LIVE', 's' => '', 'e' => '', 'r' => '', 'p' => [['p' => 'LIVE', 'g' => '', 'f' => '', 'l' => '', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
+			$this->teams[$sextip . 'TBD'] = ['uuid' => $sextip . 'TBD', 's' => '', 'e' => '', 'r' => '', 'p' => [['p' => 'TBD', 'g' => '', 'f' => '', 'l' => '', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
+			$this->teams[$sextip . 'QUAL'] = ['uuid' => $sextip . 'QUAL', 's' => '', 'e' => '', 'r' => '', 'p' => [['p' => 'QUAL', 'g' => '', 'f' => '', 'l' => 'Qualifier', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
+			$this->teams[$sextip . 'COMEUP'] = ['uuid' => $sextip . 'COMEUP', 's' => '', 'e' => '', 'r' => '', 'p' => [['p' => 'COMEUP', 'g' => '', 'f' => '', 'l' => '', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
+			$this->teams[$sextip . 'BYE'] = ['uuid' => $sextip . 'BYE', 's' => '', 'e' => '', 'r' => '', 'p' => [['p' => 'BYE', 'g' => '', 'f' => '', 'l' => 'Bye', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
+		}
+	}
+	/*
+	protected function parsePlayer() {
 		$file = join("/", [DATA, 'tour', 'player', $this->year, $this->tour]);
 		if (!file_exists($file)) return false;
 
@@ -143,6 +325,7 @@ class Event extends Base{
 			$this->teams[$sextip . 'BYE'] = ['uuid' => $sextip . 'BYE', 's' => '', 'e' => '', 'r' => '', 'p' => [['p' => 'BYE', 'g' => '', 'f' => '', 'l' => 'Bye', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
 		}
 	}
+	*/
 
 	protected function parseDraw() {
 
@@ -1006,8 +1189,18 @@ class Event extends Base{
 								}
 							}
 							$seeds = [];
-							$seed = $team["Seed"]; if ($seed != "") $seeds[] = $seed; 
-							$entry = $team["EntryType"]; if ($entry == "DA") $entry = ""; if ($entry != "") $seeds[] = $entry;
+							$seed = $team["Seed"]; 
+							if ($seed != "") $seeds[] = $seed; 
+							$entry = $team["EntryType"]; 
+							if ($entry == "DA") $entry = "";
+							if ($entry == "LL") $entry = "L";
+							else if ($entry == "WC") $entry = "W";
+							else if ($entry == "Alt" || $entry == "ALT") $entry = "A";
+							else if ($entry == "PR") $entry = "P";
+							else if ($entry == "SE") $entry = "S";
+							else if ($entry == "ITF") $entry = "I";
+							else if ($entry == "JE") $entry = "J";
+							if ($entry != "") $seeds[] = $entry;
 							$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : "";
 							$this->teams[$teamID] = [
 								'uuid' => $teamID,
