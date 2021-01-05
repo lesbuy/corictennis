@@ -2,7 +2,7 @@
 
 source ~/.bashrc
 
-gender=atp
+gender=wta
 
 cat $DATA/activity/$gender/* | php ../src/h2h_step1.php $gender | sort -t"	" -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 -k20,20 -k21,21 -k22,22 | sort -u -s -t"	" -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 -k20,20 -k21,21 | php ../src/h2h_step2.php $gender > $TEMP/${gender}_h2h_detail
 

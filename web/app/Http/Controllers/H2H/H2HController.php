@@ -48,7 +48,8 @@ class H2HController extends Controller
 
 			$type = $req->input('type', 'atp');
 //			$file = join('/', [Config::get('const.root'), $type, "all_h2h_3"]);
-			$file = join('/', [Config::get('const.root'), 'store', 'h2h', $type . "_detail"]);
+//			$file = join('/', [Config::get('const.root'), 'store', 'h2h', $type . "_detail"]);
+			$file = join('/', [Config::get('const.root'), 'data', 'h2h', $type . "_detail"]);
 
 			$p1 = $req->input('p1id');
 			$p2 = $req->input('p2id');
