@@ -22,7 +22,7 @@ now=`date +%s`
 grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/GS $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 
 while read line
 do
-	eid=`echo "$line" | cut -f3`
+	eid=`echo "$line" | cut -f2`
 	unix=`echo "$line" | cut -f7`
 	year=`echo "$line" | cut -f5`
 	weeks=`echo "$line" | cut -f22`

@@ -3,6 +3,7 @@ if (!defined('ROOT')) {$dir_arr = explode('/', __DIR__); define('ROOT', join('/'
 
 $tour = get_param($argv, 1, '0718');
 $year = get_param($argv, 2, 2020);
+$asso = get_param($argv, 3, "");
 
 $level = "";
 
@@ -11,12 +12,18 @@ if (in_array($tour, ['AO', 'RG', 'WC', 'UO'])) {
 } else if (strlen($tour) > 6) {
 	$level = "ITF";
 } else {
-	$level = "WT";
+//	$level = "WT";
+	if ($asso == "atp") {
+		$level = "ATP";
+	} else if ($asso == "wta") {
+		$level = "WTA";
+	} else {
+		exit;
+	}
 }
 
 if ($level == "GS") require_once($tour . '.php');
-else if ($level == "WT") require_once('WT.php');
-else if ($level == "ITF") require_once('ITF.php');
+else require_once($level . '.php')
 
 $event = new Event($tour, $year);
 $event->process();

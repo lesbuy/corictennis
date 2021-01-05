@@ -3,6 +3,13 @@
 source ~/.bashrc
 source ../conf/base.conf
 
+if [ -f PROGRESS.run.round ]
+then
+    exit
+fi
+
+touch PROGRESS.run.round
+
 current_monday=`date -d "last Monday" +%Y-%m-%d`
 monday1=`date -d "$current_monday -7 days" +%Y-%m-%d`
 monday2=`date -d "$current_monday +7 days" +%Y-%m-%d`
@@ -13,10 +20,21 @@ now=`date +%s`
 grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 
 while read line
 do
-	eid=`echo "$line" | cut -f3`
+	eid=`echo "$line" | cut -f2`
 	unix=`echo "$line" | cut -f7`
 	year=`echo "$line" | cut -f5`
 	weeks=`echo "$line" | cut -f22`
+
+	sex=`echo "$line" | cut -f4`
+
+	asso=""
+	if [[ $sex == "W" ]]
+	then
+		asso="wta"
+	elif [[ $sex == "M" ]]
+	then
+		asso="atp"
+	fi
 
 	if [[ $weeks == "2" ]]
 	then
@@ -29,7 +47,7 @@ do
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]
 	then
-		php ../src/round.php $eid $year | sort -k1,1 -k2gr,2 > tmp_round
+		php ../src/round.php $eid $year $asso | sort -k1,1 -k2gr,2 > tmp_round
 		mv tmp_round $STORE/round/$year/$eid
 		echo $eid $year
 	fi
@@ -41,4 +59,4 @@ do
 #	fi
 done
 
-
+rm PROGRESS.run.round
