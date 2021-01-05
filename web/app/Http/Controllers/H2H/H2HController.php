@@ -4,6 +4,7 @@ namespace App\Http\Controllers\H2H;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redis;
 use Config;
 use App;
 use DB;
@@ -220,12 +221,19 @@ class H2HController extends Controller
 					$ret['size'] = 'Portrait';
 					$ret['double'] = true;
 				} else {
-					$pt1 = fetch_player_image($type, $p1, "portrait", false);
-					$pt2 = fetch_player_image($type, $p2, "portrait", false);
+					//$pt1 = fetch_player_image($type, $p1, "portrait", false);
+					//$pt2 = fetch_player_image($type, $p2, "portrait", false);
+					//$hs1 = fetch_player_image($type, $p1, "headshot", false);
+					//$hs2 = fetch_player_image($type, $p2, "headshot", false);
 					$ptd = fetch_player_image($type, "", "portrait", true);
-					$hs1 = fetch_player_image($type, $p1, "headshot", false);
-					$hs2 = fetch_player_image($type, $p2, "headshot", false);
 					$hsd = fetch_player_image($type, "", "headshot", true);
+
+					$p1res = Redis::hmget(join("_", [$type, "profile", $p1]), 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
+					$p2res = Redis::hmget(join("_", [$type, "profile", $p2]), 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
+					$pt1 = $p1res[5]; if ($pt1) $pt1 = url(env('CDN') . '/images/' . $type . '_portrait/' . preg_replace('/^.*\//', '', $pt1));
+					$pt2 = $p2res[5]; if ($pt2) $pt2 = url(env('CDN') . '/images/' . $type . '_portrait/' . preg_replace('/^.*\//', '', $pt2));
+					$hs1 = $p1res[6]; if ($hs1) $hs1 = url(env('CDN') . '/images/' . $type . '_headshot/' . preg_replace('/^.*\//', '', $hs1));
+					$hs2 = $p2res[6]; if ($hs2) $hs2 = url(env('CDN') . '/images/' . $type . '_headshot/' . preg_replace('/^.*\//', '', $hs2));
 
 					if ($pt1 && $pt2) {
 						$ret['p1head'] = $pt1?$pt1:$ptd;
@@ -254,10 +262,16 @@ class H2HController extends Controller
 					}
 				}
 			} else if ($method == 'c') {
-				$pt1 = fetch_player_image($type, $p1, "portrait", false);
+				
 				$ptd = fetch_player_image($type, "", "portrait", true);
-				$hs1 = fetch_player_image($type, $p1, "headshot", false);
 				$hsd = fetch_player_image($type, "", "headshot", true);
+				//$pt1 = fetch_player_image($type, $p1, "portrait", false);
+				//$hs1 = fetch_player_image($type, $p1, "headshot", false);
+
+				$p1res = Redis::hmget(join("_", [$type, "profile", $p1]), 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
+				$pt1 = $p1res[5]; if ($pt1) $pt1 = url(env('CDN') . '/images/' . $type . '_portrait/' . preg_replace('/^.*\//', '', $pt1));
+				$hs1 = $p1res[6]; if ($hs1) $hs1 = url(env('CDN') . '/images/' . $type . '_headshot/' . preg_replace('/^.*\//', '', $hs1));
+				
 				$pt2 = get_flag_url($p2);
 
 				if (!$pt1 && $hs1) {
@@ -270,10 +284,14 @@ class H2HController extends Controller
 					$ret['size'] = 'Portrait';
 				}
 			} else if ($method == 't') {
-				$pt1 = fetch_player_image($type, $p1, "portrait", false);
+				//$pt1 = fetch_player_image($type, $p1, "portrait", false);
+				//$hs1 = fetch_player_image($type, $p1, "headshot", false);
 				$ptd = fetch_player_image($type, "", "portrait", true);
-				$hs1 = fetch_player_image($type, $p1, "headshot", false);
 				$hsd = fetch_player_image($type, "", "headshot", true);
+
+				$p1res = Redis::hmget(join("_", [$type, "profile", $p1]), 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
+				$pt1 = $p1res[5]; if ($pt1) $pt1 = url(env('CDN') . '/images/' . $type . '_portrait/' . preg_replace('/^.*\//', '', $pt1));
+				$hs1 = $p1res[6]; if ($hs1) $hs1 = url(env('CDN') . '/images/' . $type . '_headshot/' . preg_replace('/^.*\//', '', $hs1));
 
 				if (!$pt1 && $hs1) {
 					$ret['p1head'] = $hs1; 
@@ -305,21 +323,14 @@ class H2HController extends Controller
 				if (strpos($p1, "/") !== false || strpos($p1, "|") === false) {
 					$arr = explode("/", $p1);
 					foreach ($arr as $k => $v) {
-						$row = DB::table($tbname)->where('id', $v)->first();
-						if ($row) {
-							$arr[$k] = rename2short($row->first, $row->last, $row->nat);
-						} else {
-							$arr[$k] = '';
-						}
+						$arr[$k] = translate2short($v);
 					}
 					$name1 = "<br>" . join("<br>", $arr);
 				} else {
 					$arr = explode('|', $p1);
-					$rows = DB::table($tbname)->whereIn('id', $arr)->get();
-
 					$name1 = "";
-					foreach ($rows as $row) {
-						$name1 .= rename2short($row->first, $row->last, $row->nat) . "<br>";
+					foreach ($arr as $p) {
+						$name1 .= translate2short($p) . "<br>";
 					}
 				}
 
@@ -327,21 +338,14 @@ class H2HController extends Controller
 					if (strpos($p2, "/") !== false || strpos($p2, "|") === false) {
 						$arr = explode("/", $p2);
 						foreach ($arr as $k => $v) {
-							$row = DB::table($tbname)->where('id', $v)->first();
-							if ($row) {
-								$arr[$k] = rename2short($row->first, $row->last, $row->nat);
-							} else {
-								$arr[$k] = '';
-							}
+							$arr[$k] = translate2short($v);
 						}
 						$name2 = "<br>" . join("<br>", $arr);
 					} else {
 						$arr = explode('|', $p2);
-						$rows = DB::table($tbname)->whereIn('id', $arr)->get();
-
 						$name2 = "";
-						foreach ($rows as $row) {
-							$name2 .= rename2short($row->first, $row->last, $row->nat) . "<br>";
+						foreach ($rows as $p) {
+							$name2 .= translate2short($p) . "<br>";
 						}
 					}
 				} else if ($method == 'c') {
@@ -356,7 +360,7 @@ class H2HController extends Controller
 			$ret['name1'] = $name1;
 			$ret['name2'] = $name2;
 
-			$cmd = "grep '^$p1\t' " . join('/', [Config::get('const.root'), $type, "player_rank"]) . " | cut -f3 | head -1";
+			$cmd = "grep '^$p1\t' " . join('/', [Config::get('const.root'), "data", "rank", $type, "s", "current"]) . " | cut -f3 | head -1";
 			unset($r); exec($cmd, $r);
 			if ($r && isset($r[0])) {
 				$ret['rank1'] = $r[0];
@@ -365,7 +369,7 @@ class H2HController extends Controller
 			}
 
 			if ($method == 'p' || $method == 'm') {
-				$cmd = "grep '^$p2\t' " . join('/', [Config::get('const.root'), $type, "player_rank"]) . " | cut -f3 | head -1";
+				$cmd = "grep '^$p2\t' " . join('/', [Config::get('const.root'), "data", "rank", $type, "s", "current"]) . " | cut -f3 | head -1";
 				unset($r); exec($cmd, $r);
 				if ($r && isset($r[0])) {
 					$ret['rank2'] = $r[0];
@@ -376,19 +380,11 @@ class H2HController extends Controller
 				$ret['rank2'] = "";
 			}
 
-			$one = DB::table('profile_' . $type)->where('longid', $p1)->first();
-			if ($one) {
-				$ret['ioc1'] = $one->nation3;
-			} else {
-				$ret['ioc1'] = "";
-			}
-			$one = DB::table('profile_' . $type)->where('longid', $p2)->first();
-			if ($one) {
-				$ret['ioc2'] = $one->nation3;
-			} else {
-				$ret['ioc2'] = "";
-			}
+			$p1res = Redis::hmget(join("_", [$type, "profile", $p1]), 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
+			$ret['ioc1'] = $p1res[4];
 
+			$p2res = Redis::hmget(join("_", [$type, "profile", $p2]), 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
+			$ret['ioc2'] = $p2res[4];
 		}
 
 		if (is_test_account()) {
