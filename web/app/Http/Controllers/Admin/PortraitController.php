@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redis;
 use Config;
 
 class PortraitController extends Controller
@@ -56,8 +57,11 @@ class PortraitController extends Controller
 			$pid = $arr[0];
 			$rank = $arr[2];
 			$name = $arr[1];
-			if (isset($por[$pid])) {
-				$_por = strpos($por[$pid], "http") === false ? url(join("/", ['images', $gender . '_' . $path, $por[$pid]])) : $por[$pid];
+			$pinfo = Redis::hmget(join("_", [$gender, "profile", $pid]), $path == "portrait" ? 'pt' : 'hs');
+			$head = $pinfo[0];
+
+			if ($head) {
+				$_por = strpos($head, "http") === false ? url(join("/", ['images', $gender . '_' . $path, $head])) : $head;
 			} else {
 				$_por = "";
 			}
@@ -69,6 +73,7 @@ class PortraitController extends Controller
 			$ret[] = [$rank, $pid, $name, $_por, $_por_new, $_por_new ? $por_new[$pid] : "" ];
 		}
 
+//		return json_encode($ret);
 		return view('admin.portrait', [
 			'ret' => $ret,
 		]);

@@ -168,16 +168,16 @@ class H2HController extends Controller
 					$arr = explode("\t", $row);
 					$winnerId = $arr[1] . ($arr[2] !== "" ? "/" . $arr[2] : "");
 					$loserId = $arr[3] . ($arr[4] !== "" ? "/" . $arr[4] : "");
-					$winner = rename2short($arr[5], $arr[9], $arr[13]);
-					$loser = rename2short($arr[7], $arr[11], $arr[15]);
+					$winner = translate2short($arr[1]);
+					$loser = translate2short($arr[3]);
 					$rank1 = self::reviseRank(@$arr[26]);
 					$rank2 = self::reviseRank(@$arr[28]);
 					$W = $rank1 . $winner;
 					$L = $rank2 . $loser;
 
 					if ($sd == "d") {
-						$winner = rename2short($arr[6], $arr[10], $arr[14]);
-						$loser = rename2short($arr[8], $arr[12], $arr[16]);
+						$winner = translate2short($arr[2]);
+						$loser = translate2short($arr[4]);
 						$rank1 = self::reviseRank(@$arr[27]);
 						$rank2 = self::reviseRank(@$arr[29]);
 						$W .= "/" . $rank1 . $winner;

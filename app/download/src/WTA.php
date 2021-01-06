@@ -210,6 +210,84 @@ class Down extends DownBase {
 		return [true, ""];
 	}
 
+	protected function downPortrait() {
+		$urlPrefix = "https://api.wtatennis.com/content/wta/photo/EN/?pageSize=100&tagNames=player-headshot&referenceExpression=";
+
+		$file = join("/", [DATA, "rank", "wta", "*", "current"]);
+		$cmd = "cat $file | cut -f1,2 | sort -u";
+		$pids = [];
+		$count = 0;
+		$info = [];
+		$pid2name = [];
+		unset($r); exec($cmd, $r);
+		foreach ($r as $line) {
+			$arr = explode("\t", $line);
+			$pid = $arr[0];
+			$name = $arr[1];
+			$pid2name[$pid] = $name;
+			$pids[] = $pid;
+			++$count;
+			if ($count == 20) {
+				$param = join(" or ", array_map(function ($d) {
+					return "TENNIS_PLAYER:" . $d;
+				}, $pids));
+				$pids = [];
+				$count = 0;
+
+				$html = http($urlPrefix . $param, null, null, null);
+				$json_content = json_decode($html, true);
+				foreach ($json_content["content"] as $p) {
+					$pid = $p["references"][0]["id"];
+					$title = $p["title"];
+					if (strpos($title, "Full-body") === false && strpos($title, "Hero") === false) continue;
+					$img = $p["onDemandUrl"] . "?height=603";
+					if (strpos($title, "Hero") !== false) {
+						$info[$pid] = [$title, $img, $pid2name[$pid]];
+					} else if (strpos($title, "Full-body") !== false && !isset($info[$pid])) {
+						$info[$pid] = [$title, $img, $pid2name[$pid]];
+					}
+				}
+				sleep(1);
+			}
+		}
+
+		foreach ($info as $pid => $i) {
+			echo join("\t", [$pid, $i[1], $i[2], $i[0]]) . "\n";
+		}
+
+		return [true, ""];
+	}
+
+	protected function updatePortrait() {
+		$file = join("/", [APP, "download", "bin", "wta_portrait"]);
+
+		$fp = fopen($file, "r");
+		$fp2 = fopen(join("/", [APP, "redis_script", "portrait"]), "w");
+		while ($line = trim(fgets($fp))) {
+			$arr = explode("\t", $line);
+			$pid = $arr[0];
+			$name = $arr[1];
+			$img = $arr[2];
+			$suffix = "";
+			if (strpos($img, ".png") !== false) {
+				$suffix = ".png";
+			} else if (strpos($img, ".jpg") !== false) {
+				$suffix = ".jpg";
+			}
+			$imgFile = str_replace(" ", "-", strtolower($name));
+			echo "curl \"" . $img . "\" > " . STORE . "/images/wta_portrait/original/" . $imgFile . $suffix . "\n";
+			fputs($fp2, join("\t", [
+				"wta",
+				$pid,
+				$name,
+				$imgFile . $suffix
+			]) . "\n");
+		}
+		fclose($fp2);
+		fclose($fp);
+
+		return [true, ""];
+	}
 }
 
 
