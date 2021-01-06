@@ -1312,6 +1312,8 @@ class Event extends Base{
 		$score1 = $score2 = [];
 
 		$mStatus = @$match['mStatus'];
+		if ($mStatus != "" && strpos("FGHIJKLM", $mStatus) !== false) return true;
+
 		if ($mStatus == "" || strpos("FGHIJKLM", $mStatus) === false) { // 如果已经有结果了，就不需要再记录结果了
 			if ($winner == 2) {
 				$mStatus = "F";

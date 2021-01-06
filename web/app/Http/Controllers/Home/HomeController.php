@@ -15,7 +15,7 @@ use Auth;
 class HomeController extends Controller
 {
 	//
-	private $current_year = 2020;
+	private $current_year = 2021;
 	private $banned_ip = ['316161' => ['139.207.51.29', '240e:d8:207:ebd1:d573:3387:ec3a:819d', '222.210.139.232', '171.210.249.184', '182.144.111.18', '240e:d8:715:590d:e405:eb61:a4ae:8b05', '14.111.54.173', '14.111.48.150', '182.144.121.229', '240e:d8:710:28e8:5dcc:1ed3:2d8e:c7f0', '14.106.179.86', '14.111.51.97']];
 	private $banned_pid = [];
 
