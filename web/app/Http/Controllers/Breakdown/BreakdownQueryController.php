@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Breakdown;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redis;
 use Config;
 use App;
 use DB;
@@ -24,7 +25,7 @@ class BreakdownQueryController extends Controller
 			$tbname = join('_', ['rank', $type, $sd, $period]);
 
 		} else {
-			$tbname = join('_', ['rank', $type, $sd, $period, 'en']);
+			$tbname = join('_', ['calc', $type, $sd, $period]);
 		}
 
 		$row = DB::table($tbname)->where('id', $id)->first();
@@ -40,12 +41,7 @@ class BreakdownQueryController extends Controller
 				$ret['flag_path'] = $server_file;
 				$ret['nation'] = Config::get('const.flag.' . $row->ioc) . translate('nationname', $row->ioc, true);
 			}
-			$arr = explode(",", $row->full_name);
-			if (count($arr) == 2) {
-				$ret['name'] = rename2short($arr[1], $arr[0], $ret['ioc']);
-			} else {
-				$ret['name'] = $row->full_name;
-			}
+			$ret['name'] = translate2short($id);
 			$ret['rank'] = $row->c_rank;
 			$ret['win'] = $row->win;
 			$ret['lose'] = $row->lose;
@@ -64,15 +60,13 @@ class BreakdownQueryController extends Controller
 
 		} else {
 
-			$cmd = "grep '^$id\t' " . join('/', [Config::get('const.root'), $type, "player_headshot"]) . " | cut -f3";
+			$res = Redis::hmget(join("_", [$type, "profile", $id]), 'hs');
 
-			unset($r); exec($cmd, $r);
-
-			if ($r && isset($r[0])) {
-				if (strpos($r[0], "http") === 0) {
-					$ret['head_path'] = $r[0];
+			if ($res[0]) {
+				if (strpos($res[0], "http") === 0) {
+					$ret['head_path'] = $res[0];
 				} else {
-					$ret['head_path'] = get_headshot($type, preg_replace('/^.*\//', '', $r[0]));
+					$ret['head_path'] = get_headshot($type, preg_replace('/^.*\//', '', $res[0]));
 				}
 			} else {
 				$ret['head_path'] = url(env('CDN') . '/images/' . $type . '_headshot/' . $type . 'player.jpg');
@@ -119,35 +113,26 @@ class BreakdownQueryController extends Controller
 
 				if ($type == "atp") {
 					if ($level > 0 && $level < 40) {
-//						$level = __('frame.level.FU');
 						$level = 'FU';
 					} else if ($level >= 40 && $level < 170) {
-//						$level = __('frame.level.CH');
 						$level = 'CH';
 					} else {
-//						$level = __('frame.level.' . $level);
 					}
 				} else if ($type == "wta") {
 					if ($level > 0 && $level < 115) {
-//						$level = __('frame.level.ITF');
 						$level = 'ITF';
 					} else if (($level >= 115 && $level < 170) || $level == "C") {
-//						$level = __('frame.level.125K');
 						$level = '125K';
 					} else {
-//						$level = __('frame.level.' . $level);
 					}
 				} else {
-//					$level = __('frame.level.' . $level);
 				}
 
 				if ($arr[6] == 100) {
-//					$level = __('frame.level.DROP');
 					$level = 'DROP';
 					@$bydrop[$level][] = [$tour, $point, $round];
 				} else {
 					if ($seq < 0) {
-//						$level = __('frame.level.ALT');
 						$level = 'ALT';
 						@$byalt[$level][] = [$tour, $point, $round];
 					} else {

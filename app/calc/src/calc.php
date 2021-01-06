@@ -299,7 +299,7 @@ class Calc {
 	public function sum() {
 
 		if (!preg_match('/^([A-Z0-9]{4}|[0-9]{5,6})$/', $this->pre_pid)) return;
-		if (in_array($this->pre_pid, ["310137", "313402", "312894", "313381"])) return;
+		if (in_array($this->pre_pid, ["310137", "313402", "312894", "313381", "312580", "314672", "311593"])) return;
 
 		// 把超5分数排序，根据强记超五的个数，把强记部分扔到mandatory里去，非强记部分扔到optional里去
 		if (count($this->premier5) > 1) {
