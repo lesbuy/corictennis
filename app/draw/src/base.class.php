@@ -696,6 +696,99 @@ abstract class Base{
 		} // end foreach gender
 	}
 
+	public function outputH2H() {
+		foreach ($this->matches as $match) {
+			$event = $match["event"];
+			if (!in_array($event, ["MS", "WS", "MD", "WD", "QS", "PS", "QD", "PD"])) continue;
+			$mStatus = $match["mStatus"];
+			if ($mStatus == "" || strpos("FGHIJKLM", $mStatus) === false) continue;
+
+			$winnerTeamID = $match["t1"];
+			if (in_array(substr($winnerTeamID), ["", "/", "BYE", "QUAL", "LIVE", "COMEUP", "TBD"])) continue;
+			$loserTeamID = $match["t2"];
+			if (in_array(substr($loserTeamID), ["", "/", "BYE", "QUAL", "LIVE", "COMEUP", "TBD"])) continue;
+			$winnerTeamScore = $match["s1"];
+			$loserTeamScore = $match["s2"];
+
+			// tour info
+			$sd = $this->draws[$match["event"]]["sd"];
+			$year = $this->year;
+			$date = date('Ymd', strtotime($this->first_day));
+			$round = $this->$match["r2"];
+			$eid = $this->tour;
+			$city = $this->city;
+			$level = $this->level;
+			$loc = $this->loc;
+			$surface = $this->surface;
+
+			// level
+			$gender = "atp";
+			if (in_array($event, ["WS", "WD", "PS", "PD"])) $gender = "wta";
+			$_lev = $this->{$gender . '_level'};
+			if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
+			if (strpos($_lev, "CH ") === 0) $_lev = "CH";
+
+			// id & score
+			if (strpos("GIKM", $mStatus) !== false) {
+				swap($winnerTeamID, $loserTeamID);
+				swap($winnerTeamScore, $loserTeamScore);
+			}
+
+			if ($mStatus == "L" || $mStatus == "M") {
+				$scores = "W/O";
+			} else {
+				$scoresArr = [];
+				foreach ($winnerTeamScore as $idx => $set) {
+					$score = $set[0] . "-" . $loserTeamScore[$idx][0];
+					if ($set[2] > -1) {
+						$score .= "(" . min($set[2], $loserTeamScore[$idx][2]) . ")";
+					}
+					$scoresArr[] = $score;
+				}
+				if ($mStatus == "H" || $mStatus == "I") {
+					$scoresArr[] = "Ret.";
+				} else if ($mStatus == "J" || $mStatus == "K") {
+					$scoresArr[] = "Def.";
+				}
+				$scores = join(" ", $scoresArr);
+			}
+
+			// output
+			echo join("\t", [
+				$sd,
+				$this->teams[$winnerTeamID]['p'][0]['p'],
+				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['p'],
+				$this->teams[$loserTeamID]['p'][0]['p'],
+				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['p'],
+				$this->teams[$winnerTeamID]['p'][0]['f'],
+				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['f'],
+				$this->teams[$loserTeamID]['p'][0]['f'],
+				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['f'],
+				$this->teams[$winnerTeamID]['p'][0]['l'],
+				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['l'],
+				$this->teams[$loserTeamID]['p'][0]['l'],
+				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['l'],
+				$this->teams[$winnerTeamID]['p'][0]['i'],
+				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['i'],
+				$this->teams[$loserTeamID]['p'][0]['i'],
+				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['i'],
+				$scores,
+				$year,
+				$date,
+				$round,
+				$eid,
+				strtoupper($city),
+				$_lev,
+				strtoupper($loc),
+				$surface,
+				$sd == "S" ? $this->teams[$winnerTeamID]['p'][0]['rs'] : $this->teams[$winnerTeamID]['p'][0]['rd'],
+				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['rd'],
+				$sd == "S" ? $this->teams[$loserTeamID]['p'][0]['rs'] : $this->teams[$loserTeamID]['p'][0]['rd'],
+				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['rd'],
+			]) . "\n";
+		}
+	}
+
 	public function outputActivity() {
 		$this->redis = new redis_cli('127.0.0.1', 6379);
 

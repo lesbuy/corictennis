@@ -29,6 +29,12 @@ function in_string($string, $str) {
 	return strpos($string, $str) !== false;
 }
 
+function swap(&$a, &$b) {
+	$tmp = $a;
+	$a = $b;
+	$b = $tmp;
+}
+
 function ceil_power($draw) {
 	if ($draw == 0) return 0;
 	return exp(ceil(log($draw, 2)) * log(2));
