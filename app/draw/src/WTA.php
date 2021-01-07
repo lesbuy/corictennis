@@ -1144,8 +1144,10 @@ class Event extends Base{
 			$Days = $xml["OOP"]["Schedule"]["Day"];
 		}
 
+		$maxDay = 0; // 当前已经出了几天了的oop了
 		foreach ($Days as $aday) {
 			$day = $aday["Seq"];
+			$maxDay = $day;
 			$isodate = $aday["ISODate"];
 			$this->oop[$day] = [
 				'date' => $isodate,
@@ -1304,6 +1306,68 @@ class Event extends Base{
 							$next_match['t' . $_next_match[1]] = $event . 'COMEUP';
 						}
 					}
+				}
+			}
+		}
+
+		// 当oop中缺了最新的赛程时，从result里面补一些oop信息
+		$file = join("/", [DATA, 'tour', 'result', $this->year, $this->tour]);
+		if (!file_exists($file)) return false;
+
+		$xml = json_decode(file_get_contents($file), true);
+		if (!$xml) return false;
+	
+		if (!isset($this->oop[1])) return; // 第1天赛程都没有
+		foreach ($xml["matches"] as $matchSeq => $amatch) {
+			$matchid = $amatch["MatchID"];
+			$day = $amatch["DateSeq"];
+			if ($day <= $maxDay) continue;
+
+			$isodate = date('Y-m-d', strtotime($this->oop[1]["date"] . " +" . ($day - 1) . " days"));
+			if (!isset($this->oop[$day])) {
+				$this->oop[$day] = [
+					'date' => $isodate,
+					'courts' => [],
+				];
+			}
+
+			$order = $amatch["CourtId"] + 100;
+			$name = "Court " . $amatch["CourtId"];
+			if (!isset($this->oop[$day]['courts'][$order])) {
+				$this->oop[$day]['courts'][$order] = [
+					'name' => $name,
+					'matches' => [],
+				];
+			}
+
+			$time = strtotime($amatch["MatchTimeStamp"]);
+
+			$match_seq = $matchSeq;
+			$matchid = $amatch["MatchID"];
+
+			$event_raw = substr($matchid, 0, 2);
+			$event = self::transSextip($event_raw, $amatch["PlayerIDA2"] != "" ? 2 : 1);
+
+			$matches = &$this->oop[$day]['courts'][$order]['matches'];
+			$matches[$match_seq] = [
+				'id' => $matchid,
+				'time' => $time,
+				'event' => $event,
+			];
+			$match = &$this->matches[$matchid];
+			$match['date'] = $isodate;
+
+			if (isset($match['mStatus']) && $match['mStatus'] == "") { // 如果已经有结果了就不更改状态
+				$match['mStatus'] = 'A';
+				$match['s1'] = $time;
+				$match['s2'] = $name;
+			}
+
+			$_next_match = self::findNextMatchIdAndPos($matchid, $event);
+			if ($_next_match !== null) {
+				$next_match = &$this->matches[$_next_match[0]];
+				if ($next_match['t' . $_next_match[1]] == $event) { // 只有在下场比赛人员还缺的时候，才修改
+					$next_match['t' . $_next_match[1]] = $event . 'COMEUP';
 				}
 			}
 		}
