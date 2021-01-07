@@ -1331,8 +1331,8 @@ class Event extends Base{
 				];
 			}
 
-			$order = $amatch["CourtId"] + 100;
-			$name = "Court " . $amatch["CourtId"];
+			$order = $amatch["CourtID"] + 100;
+			$name = "Court " . $amatch["CourtID"];
 			if (!isset($this->oop[$day]['courts'][$order])) {
 				$this->oop[$day]['courts'][$order] = [
 					'name' => $name,
@@ -1404,6 +1404,9 @@ class Event extends Base{
 		$score1 = $score2 = [];
 
 		$mStatus = @$match['mStatus'];
+		if ($mStatus != "A") {
+			$match['dura'] = $m["MatchTimeTotal"];
+		}
 		if ($mStatus != "" && strpos("FGHIJKLM", $mStatus) !== false) return true;
 
 		if ($mStatus == "" || strpos("FGHIJKLM", $mStatus) === false) { // 如果已经有结果了，就不需要再记录结果了
@@ -1425,6 +1428,7 @@ class Event extends Base{
 		}
 
 		foreach ([1, 2, 3, 4, 5] as $set) {
+			if ($set > $match["bestof"]) break;
 			$a = $m["ScoreSet" . $set . "A"];
 			$b = $m["ScoreSet" . $set . "B"];
 			if ($a === '' || $b === '' || $a === null || $b === null) break;
@@ -1450,7 +1454,6 @@ class Event extends Base{
 		$match['mStatus'] = $mStatus;
 
 		if ($mStatus != "A") {
-			$match['dura'] = $m["MatchTimeTotal"]; 
 			$match['s1'] = $score1;
 			$match['s2'] = $score2;
 		} else {
