@@ -704,9 +704,9 @@ abstract class Base{
 			if ($mStatus == "" || strpos("FGHIJKLM", $mStatus) === false) continue;
 
 			$winnerTeamID = $match["t1"];
-			if (in_array(substr($winnerTeamID), ["", "/", "BYE", "QUAL", "LIVE", "COMEUP", "TBD"])) continue;
+			if (in_array(substr($winnerTeamID, 2), ["", "/", "BYE", "QUAL", "LIVE", "COMEUP", "TBD"])) continue;
 			$loserTeamID = $match["t2"];
-			if (in_array(substr($loserTeamID), ["", "/", "BYE", "QUAL", "LIVE", "COMEUP", "TBD"])) continue;
+			if (in_array(substr($loserTeamID, 2), ["", "/", "BYE", "QUAL", "LIVE", "COMEUP", "TBD"])) continue;
 			$winnerTeamScore = $match["s1"];
 			$loserTeamScore = $match["s2"];
 
@@ -714,7 +714,7 @@ abstract class Base{
 			$sd = $this->draws[$match["event"]]["sd"];
 			$year = $this->year;
 			$date = date('Ymd', strtotime($this->first_day));
-			$round = $this->$match["r2"];
+			$round = $match["r2"];
 			$eid = $this->tour;
 			$city = $this->city;
 			$level = $this->level;
@@ -727,6 +727,17 @@ abstract class Base{
 			$_lev = $this->{$gender . '_level'};
 			if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
 			if (strpos($_lev, "CH ") === 0) $_lev = "CH";
+
+			// 记分日期
+			$weeks = 1;
+			if (in_array($this->tour, ['AO', 'RG', 'WC', 'UO', "0404", "0403", "0609", "0902", "1536", "1038" ])) {
+				$weeks = 2;
+			}
+			$recordday = date('Ymd', strtotime($date) + $weeks * 7 * 86400);
+
+			if ($this->{$gender . '_level'} == "ITF") { // 如果是ITF低级别，再延一周
+				$recordday = date('Ymd', strtotime($recordday) + 7 * 86400);
+			} 
 
 			// id & score
 			if (strpos("GIKM", $mStatus) !== false) {
@@ -785,6 +796,7 @@ abstract class Base{
 				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['rd'],
 				$sd == "S" ? $this->teams[$loserTeamID]['p'][0]['rs'] : $this->teams[$loserTeamID]['p'][0]['rd'],
 				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['rd'],
+				$recordday
 			]) . "\n";
 		}
 	}

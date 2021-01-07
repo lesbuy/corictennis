@@ -28,17 +28,4 @@ else require_once($level . '.php');
 
 $event = new Event($tour, $year);
 $event->process();
-
-#$event->calaTeamFinal();
-$event->outputRawDraws();
-$event->outputRawMatches();
-$event->outputRawTeams();
 $event->outputH2H();
-#$event->outputRounds();
-#$event->outputRawOOPs();
-#$event->outputPlayers();
-#$event->outputOOPs();
-#$event->outputLive();
-#$event->output();
-
-#$event->outputDraws();

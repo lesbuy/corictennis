@@ -50,7 +50,7 @@ class H2HController extends Controller
 			$type = $req->input('type', 'atp');
 //			$file = join('/', [Config::get('const.root'), $type, "all_h2h_3"]);
 //			$file = join('/', [Config::get('const.root'), 'store', 'h2h', $type . "_detail"]);
-			$file = join('/', [Config::get('const.root'), 'data', 'h2h', $type . "_detail"]);
+			$file = join('/', [Config::get('const.root'), 'data', 'h2h', $type . "_detail*"]);
 
 			$p1 = $req->input('p1id');
 			$p2 = $req->input('p2id');
@@ -130,7 +130,7 @@ class H2HController extends Controller
 				$cmd .= " | awk -F\"\\t\" '$24 == \"GS\"' ";
 				$ret['filter'] .= "\t" . __('h2h.selectBar.level.g');
 			} else if ($level == 'm') {
-				$cmd .= " | awk -F\"\\t\" '$24 == \"1000\" || $24 == \"PM\" || $24 == \"P5\" || $24 == \"SU\" || $24 == \"T1\"' ";
+				$cmd .= " | awk -F\"\\t\" '$24 == \"1000\" || $24 == \"PM\" || $24 == \"P5\" || $24 == \"SU\" || $24 == \"T1\"' || $24 == \"WTA1000\"' ";
 				$ret['filter'] .= "\t" . __('h2h.selectBar.level.m');
 			} else if ($level == 't') {
 				$cmd .= " | awk -F\"\\t\" '$24 != \"ITF\" && $24 != \"FU\" && $24 != \"CH\" && $24 != \"125K\"' ";
