@@ -710,10 +710,14 @@ function fetch_player_info($pid, $gender = "atp") {
 	if (!$headshot) {
 		$has_hs = false;
 		$headshot = url(env('CDN') . '/images/' . $gender . '_headshot/' . $gender . 'player.jpg');
+	} else if (strpos($headshot, "http") === false) {
+		$headshot = url(env('CDN') . '/images/' . $gender . '_headshot/' . $headshot);
 	}
 	if (!$portrait) {
 		$has_pt = false;
 		$portrait = url(env('CDN') . '/images/' . $gender . '_portrait/' . $gender . 'player.png');
+	} else if (strpos($portrait, "http") === false) {
+		$portrait = url(env('CDN') . '/images/' . $gender . '_portrait/' . $portrait);
 	}
 	return [
 		"pid" => $pid,
@@ -741,5 +745,5 @@ function fetch_rank($pid, $gender = "atp", $sd = "s") {
 	if (!$pid) return "-";
 	$cmd = "grep \"^$pid	\" " . join("/", [Config::get('const.root'), "data", "rank", $gender, $sd, "current"]) . " | cut -f3";
 	unset($r); exec($cmd, $r);
-	if ($r) $rank = $r[0]; else $rank = "-";
+	if ($r) return $r[0]; else return "-";
 }

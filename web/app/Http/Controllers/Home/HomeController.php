@@ -263,18 +263,7 @@ class HomeController extends Controller
 			}
 		}
 
-		$ps = new PanelSearch;
-		$ps->pid = $id;
-		$ps->gender = $gender == "atp" ? 1 : 2;
-		$ps->first = $first;
-		$ps->last = $last;
-		$ps->ioc = $ioc;
-		$ps->ip = $ip;
-		$ps->ua = $ua;
-		$ps->userid = Auth::id();
-		$ps->save();
-
-		// basic info
+		// 取个人资料
 		$info = fetch_player_info($id, $gender);
 		if (!$info) {
 			return view('home.card', [
@@ -282,8 +271,9 @@ class HomeController extends Controller
 			]);
 		}
 
-		$this->process_basic_data($ret, $info, $id, $gender);
-		$this->process_match_data($ret, $info);
+
+		$this->process_basic_data($ret, $info, $id, $gender, $ip, $ua);
+		$this->process_match_data($ret, $info, $id, $gender);
 
 
 		// GS data
@@ -676,13 +666,13 @@ class HomeController extends Controller
 				$ret['honor'][$sd] = [$win_titles, $tours];
 		} 
 
-		//		return json_encode($ret);
+		// return json_encode($ret);
 		return view('home.card', [
 			'ret' => $ret,
 		]);
 	}
 
-	private function process_basic_data(&$ret, &$info, $id, $gender) {
+	private function process_basic_data(&$ret, &$info, $id, $gender, $ip, $ua) {
 		$first = $info["first"];
 		$last = $info["last"];
 		$ioc = $info["ioc"];
@@ -694,6 +684,18 @@ class HomeController extends Controller
 		$proyear = $info["turnpro"];
 		$hand = $info["hand"][0];
 		$backhand = $info["hand"][1];
+
+		// 查询记录写入db
+		$ps = new PanelSearch;
+		$ps->pid = $id;
+		$ps->gender = $gender == "atp" ? 1 : 2;
+		$ps->first = $first;
+		$ps->last = $last;
+		$ps->ioc = $ioc;
+		$ps->ip = $ip;
+		$ps->ua = $ua;
+		$ps->userid = Auth::id();
+		$ps->save();
 
 		$name = translate2long($id, $first, $last, $ioc);
 		if ($birth == "0000-00-00" || $birth == "1753-01-01") {
@@ -770,7 +772,7 @@ class HomeController extends Controller
 		];
 	}
 
-	private function process_match_data(&$ret, &$info) {
+	private function process_match_data(&$ret, &$info, $id, $gender) {
 		// match data
 		$prize_c = $info["prize"][0];
 		$prize_y = $info["prize"][1];
