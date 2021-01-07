@@ -22,7 +22,7 @@ class Down extends DownBase {
 			$t = new DownTour;
 			$t->eventID = $arr[1];
 			$t->year = $arr[4];
-			$t->tourID = $arr[2];
+			$t->tourID = intval($arr[1]);
 			$t->city = $arr[9];
 			$t->monday = $arr[5];
 			$this->tourList[] = $t;

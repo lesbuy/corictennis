@@ -129,10 +129,10 @@ function get_tour_logo_by_id_type_name($id, $type, $city = "", $title = "", $yea
 	} else if ($type == "M25" || $type == "M15" || $type == "FU") {
 		return Config::get('const.logo')('ITF-men-2019');
 	} else {
-		if ($type == "WTA1000") return Config::get('const.logosvg')('WTA-1000-2021');
-		else if ($type == "WTA500") return Config::get('const.logosvg')('WTA-500-2021');
-		else if ($type == "WTA250") return Config::get('const.logosvg')('WTA-250-2021');
-		else if ($type == "WTA125") return Config::get('const.logosvg')('WTA-125-2021');
+		if ($type == "WTA1000") return Config::get('const.logo')('WTA-1000-2021');
+		else if ($type == "WTA500") return Config::get('const.logo')('WTA-500-2021');
+		else if ($type == "WTA250") return Config::get('const.logo')('WTA-250-2021');
+		else if ($type == "WTA125") return Config::get('const.logo')('WTA-125-2021');
 		else if (preg_match('/1000/', $type)) return Config::get('const.logo')('ATP-1000-2019');
 		else if (preg_match('/500/', $type)) return Config::get('const.logo')('ATP-500-2019');
 		else if (preg_match('/250/', $type)) return Config::get('const.logo')('ATP-250-2019');

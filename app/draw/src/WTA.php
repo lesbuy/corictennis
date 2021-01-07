@@ -57,86 +57,90 @@ class Event extends Base{
 			$sextip = $event["EventTypeCode"];
 			$sextip = self::transSextip($sextip, count($event["Draw"]["DrawLine"][0]["Players"]["Player"]) == 2 ? 2 : 1);
 
-			foreach ($event["Draw"]["DrawLine"] as $team) {
-				$pids = [];
+			foreach ($event["Results"]["Round"][0]["Match"] as $amatch) {
 
-				if (count($team["Players"]["Player"]) > 2) {
-					$team["Players"]["Player"] = [$team["Players"]["Player"]];
-				}
-				foreach ($team["Players"]["Player"] as $p) {
-					$pid = $p["id"];
-					if (!$pid) continue;
-					$pids[] = $pid;
-					$gender = "F";
-					$first = $p["FirstName"];
-					$last = $p["SurName"];
-					$ioc = $p["Country"];
-					$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
-					$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
+				foreach ($amatch["Players"]["PT"] as $team) {
+					if (count($team["Player"]) > 2) {
+						$team["Player"] = [$team["Player"]];
+					}
 
-					$players[$pid] = [
-						'p' => $pid,
-						'g' => $gender,
-						'f' => $first,
-						'l' => $last,
-						'i' => $ioc,
-						's' => $short3,
-						's2' => $last2,
-						'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
-						'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
-						
+					$pids = [];
+
+					foreach ($team["Player"] as $p) {
+						$pid = $p["id"];
+						if (!$pid) continue;
+						$pids[] = $pid;
+						$gender = "F";
+						$first = $p["FirstName"];
+						$last = $p["SurName"];
+						$ioc = $p["Country"];
+						$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+						$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
+
+						$players[$pid] = [
+							'p' => $pid,
+							'g' => $gender,
+							'f' => $first,
+							'l' => $last,
+							'i' => $ioc,
+							's' => $short3,
+							's2' => $last2,
+							'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
+							'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
+							
+						];
+						$this->players[$pid] = [
+							'p' => $pid,
+							'g' => $gender,
+							'f' => $first,
+							'l' => $last,
+							'i' => $ioc,
+							's' => $short3,
+							's2' => $last2,
+							'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
+							'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
+						];
+					}
+					if (count($pids) == 0) continue;
+
+					$entry = $team["eType"];
+					if ($entry == "LL") $entry = "L";
+					else if ($entry == "WC") $entry = "W";
+					else if ($entry == "Alt" || $entry == "ALT") $entry = "A";
+					else if ($entry == "PR") $entry = "P";
+					else if ($entry == "SE") $entry = "S";
+					else if ($entry == "ITF") $entry = "I";
+					else if ($entry == "JE") $entry = "J";
+					$seed = $team["seed"];
+
+					$seeds = [];
+					if ($seed) $seeds[] = $seed;
+					if ($entry) $seeds[] = $entry;
+
+					$uuid = $sextip . join("/", $pids);
+
+					$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : '-';
+
+					$this->teams[$uuid] = [
+						'uuid' => $uuid,
+						's' => $seed,
+						'e' => $entry,
+						'se' => join("/", $seeds),
+						'r' => $rank,
+						'p' => array_map(function ($d) use ($players) {
+							return $players[$d];
+						}, $pids),
+						'matches' => [],
+						'win' => 0,
+						'loss' => 0,
+						'streak' => 0,
+						'round' => '',
+						'point' => 0,
+						'prize' => 0,
+						'indraw' => 1,
+						'next' => null,
 					];
-					$this->players[$pid] = [
-						'p' => $pid,
-						'g' => $gender,
-						'f' => $first,
-						'l' => $last,
-						'i' => $ioc,
-						's' => $short3,
-						's2' => $last2,
-						'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
-						'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
-					];
 				}
-				if (count($pids) == 0) continue;
-
-				$entry = $team["EntryType"];
-				if ($entry == "LL") $entry = "L";
-				else if ($entry == "WC") $entry = "W";
-				else if ($entry == "Alt" || $entry == "ALT") $entry = "A";
-				else if ($entry == "PR") $entry = "P";
-				else if ($entry == "SE") $entry = "S";
-				else if ($entry == "ITF") $entry = "I";
-				else if ($entry == "JE") $entry = "J";
-				$seed = $team["Seed"];
-
-				$seeds = [];
-				if ($seed) $seeds[] = $seed;
-				if ($entry) $seeds[] = $entry;
-
-				$uuid = $sextip . join("/", $pids);
-
-				$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : '-';
-
-				$this->teams[$uuid] = [
-					'uuid' => $uuid,
-					's' => $seed,
-					'e' => $entry,
-					'se' => join("/", $seeds),
-					'r' => $rank,
-					'p' => array_map(function ($d) use ($players) {
-						return $players[$d];
-					}, $pids),
-					'matches' => [],
-					'win' => 0,
-					'loss' => 0,
-					'streak' => 0,
-					'round' => '',
-					'point' => 0,
-					'prize' => 0,
-					'indraw' => 1,
-					'next' => null,
-				];
 			}
 
 			// 在RR里，还要遍历每场比赛，看看有没有退赛的
@@ -572,6 +576,8 @@ class Event extends Base{
 			if ($ko_type == "KO") {
 				// 遍历签位
 				$drawlines = [];
+
+				// 从drawlines读取签表
 				$pre_pos = 0;
 				foreach ($Event["Draw"]["DrawLine"] as $line) {
 					$pids = [];
@@ -595,6 +601,30 @@ class Event extends Base{
 					else if ($pids[0] == "QUAL") $pids = ['QUAL'];
 					$drawlines[] = $event . join("/", $pids);
 					$pre_pos = $pos;
+				}
+
+				// 再从result补读一次
+				$pos = -1;
+				foreach ($Event["Results"]["Round"][0]["Match"] as $amatch) {
+					foreach ($amatch["Players"]["PT"] as $ateam) {
+						++$pos;
+						if (count($ateam["Player"]) > 2) $ateam["Player"] = [$ateam["Player"]];
+						$pids = [];
+						foreach ($ateam["Player"] as $p) {
+							$pid = $p["id"];
+							if (strpos($ateam["PTDisplayLine"], "Bye") !== false) {
+								$pid = "BYE";
+							} else if (strpos($ateam["PTDisplayLine"], "Quali") !== false || strpos($ateam["PTDisplayLine"], "Lucky") !== false || strpos($ateam["PTDisplayLine"], "Alter") !== false) {
+								$pid = "QUAL";
+							}
+							$pids[] = $pid;
+						}
+						if ($pids[0] == "BYE") $pids = ['BYE'];
+						else if ($pids[0] == "QUAL") $pids = ['QUAL'];
+						if ($drawlines[$pos] == $event || $drawlines[$pos] == $event . "QUAL") {
+							$drawlines[$pos] = $event . join("/", $pids);
+						}
+					}
 				}
 
 				// 组建首轮签表
@@ -1117,12 +1147,10 @@ class Event extends Base{
 		foreach ($Days as $aday) {
 			$day = $aday["Seq"];
 			$isodate = $aday["ISODate"];
-			if (!isset($this->oop[$day])) {
-				$this->oop[$day] = [
-					'date' => $isodate,
-					'courts' => [],
-				];
-			}
+			$this->oop[$day] = [
+				'date' => $isodate,
+				'courts' => [],
+			];
 
 			if (!isset($aday["Court"][0])) {
 				$aday["Court"] = [$aday["Court"]];
@@ -1335,7 +1363,7 @@ class Event extends Base{
 		foreach ([1, 2, 3, 4, 5] as $set) {
 			$a = $m["ScoreSet" . $set . "A"];
 			$b = $m["ScoreSet" . $set . "B"];
-			if ($a === '' && $b === '') break;
+			if ($a === '' || $b === '' || $a === null || $b === null) break;
 			$aa = @$m["ScoreSet" . ($set + 1) . "A"];
 			$bb = @$m["ScoreSet" . ($set + 1) . "B"];
 			if ($aa === '' && $bb === '' && strpos('FGHIJKLM', $mStatus) === false) { // 如果本盘是当前盘，则盘分胜负标记为0

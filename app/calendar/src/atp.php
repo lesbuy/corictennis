@@ -8,11 +8,11 @@ class Calendar extends CalendarBase {
 	private $mode = "";
 
 	private $mapLevel = [
-		"categorystamps_250.png" => "ATP250",
+		"categorystamps_250.png" => "250",
 		"categorystamps_atpcup.svg" => "AC",
 		"categorystamps_grandslam.png" => "GS",
-		"categorystamps_500.png" => "ATP500",
-		"categorystamps_1000.png" => "ATP1000",
+		"categorystamps_500.png" => "500",
+		"categorystamps_1000.png" => "1000",
 		"categorystamps_lvr.png" => "LC",
 		"categorystamps_finals.svg" => "WC",
 		"categorystamps_nextgen.svg" => "XXI",

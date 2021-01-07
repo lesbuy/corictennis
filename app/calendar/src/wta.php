@@ -53,8 +53,11 @@ class Calendar extends CalendarBase {
 			$t->surface = $tour['surface'];
 			$t->inOutdoor = $tour['inOutdoor'];
 			$t->city = ucwords(strtolower($tour['city']));
+			if (!$t->city) {
+				$t->city = ucwords(strtolower($tour['tournamentGroup']['name']));
+			}
 			$t->nation = ucwords(strtolower($tour['country']));
-			if (strpos($t->nation, "United States") !== false) $t->nation = "United States";
+			if (strpos($t->nation, "United States") !== false || strpos($t->nation, "USA") !== false || strpos($t->nation, "U.S.A") !== false) $t->nation = "United States";
 			if (preg_match('/^[A-Z]{3}$/', $t->nation)) {
 				$t->nation3 = $t->nation;
 			} else {
@@ -70,7 +73,7 @@ class Calendar extends CalendarBase {
 
 }
 
-$start = "2021-01-01";
-$end = "2021-12-31";
+$start = get_param($argv, 1, "2021-01-01");
+$end = get_param($argv, 2, "2021-12-31");
 
 $calendar = new Calendar("wta", $start, $end);

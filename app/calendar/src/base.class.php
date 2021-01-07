@@ -36,7 +36,7 @@ class TournamentInfo {
 		print_line(
 			$this->level,
 			$this->eventID,
-			$this->liveID,
+			$this->eventID, // $this->liveID,
 			$this->gender,
 			$this->year,
 			$this->monday,

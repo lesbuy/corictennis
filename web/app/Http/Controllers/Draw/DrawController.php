@@ -37,7 +37,8 @@ class DrawController extends Controller
 		$this->year = $year;
 		$tmp = [];
 		self::get_tour_info($tmp);
-		$title = __('frame.menu.draw') . '(' . $year . " " . join("/", array_map(function ($d) {return translate('tourname', strtolower($d));}, @$tmp['city'])) . ')';
+		if (!isset($tmp['city'])) $tmp['city'] = [];
+		$title = __('frame.menu.draw') . '(' . $year . " " . join("/", array_map(function ($d) {return translate('tourname', strtolower($d));}, $tmp['city'])) . ')';
 
 		return view('draw.index', [
 			'lang' => $lang, 
