@@ -764,25 +764,37 @@ abstract class Base{
 				$scores = join(" ", $scoresArr);
 			}
 
+			// 把双打team里两个人顺序调一下，确保id小的在前面
+			$teamWinner = $this->teams[$winnerTeamID];
+			$teamLoser = $this->teams[$loserTeamID];
+			if ($sd == "D") {
+				if ($this->idCmp($teamWinner['p'][0]['p'], $teamWinner['p'][1]['p'], $gender) > 0) {
+					swap($teamWinner['p'][0], $teamWinner['p'][1]);
+				}
+				if ($this->idCmp($teamLoser['p'][0]['p'], $teamLoser['p'][1]['p'], $gender) > 0) {
+					swap($teamLoser['p'][0], $teamLoser['p'][1]);
+				}
+			}
+
 			// output
 			echo join("\t", [
 				$sd,
-				$this->teams[$winnerTeamID]['p'][0]['p'],
-				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['p'],
-				$this->teams[$loserTeamID]['p'][0]['p'],
-				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['p'],
-				$this->teams[$winnerTeamID]['p'][0]['f'],
-				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['f'],
-				$this->teams[$loserTeamID]['p'][0]['f'],
-				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['f'],
-				$this->teams[$winnerTeamID]['p'][0]['l'],
-				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['l'],
-				$this->teams[$loserTeamID]['p'][0]['l'],
-				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['l'],
-				$this->teams[$winnerTeamID]['p'][0]['i'],
-				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['i'],
-				$this->teams[$loserTeamID]['p'][0]['i'],
-				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['i'],
+				$teamWinner['p'][0]['p'],
+				$sd == "S" ? "" : $teamWinner['p'][1]['p'],
+				$teamLoser['p'][0]['p'],
+				$sd == "S" ? "" : $teamLoser['p'][1]['p'],
+				$teamWinner['p'][0]['f'],
+				$sd == "S" ? "" : $teamWinner['p'][1]['f'],
+				$teamLoser['p'][0]['f'],
+				$sd == "S" ? "" : $teamLoser['p'][1]['f'],
+				$teamWinner['p'][0]['l'],
+				$sd == "S" ? "" : $teamWinner['p'][1]['l'],
+				$teamLoser['p'][0]['l'],
+				$sd == "S" ? "" : $teamLoser['p'][1]['l'],
+				$teamWinner['p'][0]['i'],
+				$sd == "S" ? "" : $teamWinner['p'][1]['i'],
+				$teamLoser['p'][0]['i'],
+				$sd == "S" ? "" : $teamLoser['p'][1]['i'],
 				$scores,
 				$year,
 				$date,
@@ -792,10 +804,10 @@ abstract class Base{
 				$_lev,
 				strtoupper($loc),
 				$surface,
-				$sd == "S" ? $this->teams[$winnerTeamID]['p'][0]['rs'] : $this->teams[$winnerTeamID]['p'][0]['rd'],
-				$sd == "S" ? "" : $this->teams[$winnerTeamID]['p'][1]['rd'],
-				$sd == "S" ? $this->teams[$loserTeamID]['p'][0]['rs'] : $this->teams[$loserTeamID]['p'][0]['rd'],
-				$sd == "S" ? "" : $this->teams[$loserTeamID]['p'][1]['rd'],
+				$sd == "S" ? $teamWinner['p'][0]['rs'] : $teamWinner['p'][0]['rd'],
+				$sd == "S" ? "" : $teamWinner['p'][1]['rd'],
+				$sd == "S" ? $teamLoser['p'][0]['rs'] : $teamLoser['p'][0]['rd'],
+				$sd == "S" ? "" : $teamLoser['p'][1]['rd'],
 				$recordday
 			]) . "\n";
 		}
@@ -932,7 +944,7 @@ abstract class Base{
 					$res['prediction'] = $predict;
 
 					$weeks = 1;
-					if (in_array($this->tour, ['AO', 'RG', 'WC', 'UO', 'M006', 'M007'])) {
+					if (in_array($this->tour, ['AO', 'RG', 'WC', 'UO', "0404", "0403", "0609", "0902", "1536", "1038" ])) {
 						$weeks = 2;
 					}
 					$recordday = date('Ymd', strtotime($this->first_day) + $weeks * 7 * 86400);
@@ -1267,6 +1279,16 @@ abstract class Base{
 
 		return strtoupper(preg_replace('/^(atp)|(wta0*)|(itf)/', "", strtolower($ori)));
 
+	}
+
+	protected function idCmp($a, $b, $gender) {
+		if ($gender == "atp") {
+			return strcmp($a, $b);
+		} else if ($gender == "wta") {
+			return intval($a) - intval($b);
+		} else {
+			return -1;
+		}
 	}
 
 	protected function reviseScore($sScore) {
