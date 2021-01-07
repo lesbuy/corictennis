@@ -181,8 +181,6 @@ function get_headshot($sex, $file) {
 	else return url(env('CDN') . '/images/' . $sex . '_headshot/' . $file);
 }
 
-
-
 function supper_score($score) {
 	return $score;
 //	return str_replace('(', '<sup>', str_replace(')', '</sup>', $score));
@@ -675,3 +673,73 @@ function fetch_player_image($gender, $pid, $size, $default = false) {
 	}
 }
 
+/* ----------------------头像处理系列-------------------------*/
+function fetch_portrait($pid, $gender = "atp") {
+	// gender = atp or wta
+	// 返回值 [0] 表示是否是自己头像，[1]表示头像url
+	$default = url(env('CDN') . '/images/' . $gender . '_portrait/' . $gender . 'player.png');
+	if (!$pid) return [false, $default];
+	$pt = Redis::hmget(join("_", [$gender, "profile", $pid]), 'pt');
+	if (!$pt || !$pt[0]) return [false, $default];
+	if (strpos($pt[0], "http") !== false) return [true, $pt[0]];
+	else return [true, url(env('CDN') . '/images/' . $gender . '_portrait/' . $pt[0])];
+}
+
+function fetch_headshot($pid, $gender = "atp") {
+	// gender = atp or wta
+	// 返回值 [0] 表示是否是自己头像，[1]表示头像url
+	$default = url(env('CDN') . '/images/' . $gender . '_headshot/' . $gender . 'player.jpg');
+	if (!$pid) return [false, $default];
+	$hs = Redis::hmget(join("_", [$gender, "profile", $pid]), 'hs');
+	if (!$hs || !$hs[0]) return [false, $default];
+	if (strpos($hs[0], "http") !== false) return [true, $hs[0]];
+	else return [true, url(env('CDN') . '/images/' . $gender . '_headshot/' . $hs[0])];
+}
+
+/* ----------------------个人信息系列-------------------------*/
+function fetch_player_info($pid, $gender = "atp") {
+	// gender = atp or wta
+	if (!$pid) return null;
+	$info = Redis::hmget(join("_", [$gender, "profile", $pid]), 'first', 'last', 'ioc', 'birthday', 'hs', 'pt', 'birthplace', 'residence', 'hand', 'backhand', 'turnpro', 'height', 'height_imp', 'weight', 'weight_imp', 'prize_c', 'prize_y', 'title_s_c', 'title_s_y', 'title_d_c', 'title_d_y');
+	if (!$info) return null;
+
+	$headshot = $info[4];
+	$portrait = $info[5];
+	$has_hs = true;
+	$has_pt = true;
+	if (!$headshot) {
+		$has_hs = false;
+		$headshot = url(env('CDN') . '/images/' . $gender . '_headshot/' . $gender . 'player.jpg');
+	}
+	if (!$portrait) {
+		$has_pt = false;
+		$portrait = url(env('CDN') . '/images/' . $gender . '_portrait/' . $gender . 'player.png');
+	}
+	return [
+		"pid" => $pid,
+		"first" => $info[0],
+		"last" => $info[1],
+		"ioc" => $info[2],
+		"birthday" => $info[3],
+		"headshot" => $headshot,
+		"portrait" => $portrait,
+		"hasHeadshot" => $has_hs,
+		"hasPortrait" => $has_pt,
+		"birthplace" => $info[6],
+		"residence" => $info[7],
+		"hand" => [$info[8], $info[9]],
+		"turnpro" => $info[10],
+		"height" => [$info[11], $info[12]], // 前者是公制，后者是英制
+		"weight" => [$info[13], $info[14]], // 前者是公制，后者是英制
+		"prize" => [$info[15], $info[16]],
+		"titleS" => [$info[17], $info[18]],
+		"titleD" => [$info[19], $info[20]],
+	];
+}
+
+function fetch_rank($pid, $gender = "atp", $sd = "s") {
+	if (!$pid) return "-";
+	$cmd = "grep \"^$pid	\" " . join("/", [Config::get('const.root'), "data", "rank", $gender, $sd, "current"]) . " | cut -f3";
+	unset($r); exec($cmd, $r);
+	if ($r) $rank = $r[0]; else $rank = "-";
+}
