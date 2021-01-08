@@ -190,6 +190,7 @@ class H2HController extends Controller
 					$tour = strtoupper(translate_tour(replace_letters(mb_strtolower($arr[22]))));
 					$year = $arr[18];
 					$grade = $arr[23];
+					if (strpos($grade, "WTA") === 0) $grade = substr($grade, 3);
 					$ground = __('frame.ground.' . reviseSurfaceWithIndoor($arr[25]));
 					$game = $arr[17];
 					if (strpos($game, 'W/O') !== false || strpos($game, 'w/o') !== false || strpos($game, 'w.o') !== false || strpos($game, 'W.O') !== false) {

@@ -33,6 +33,8 @@ class Calc {
 	protected $current_partner_pid = "";
 	protected $current_status = "";
 	protected $current_point = 0;
+
+	protected $redis_info = []; // 记录从redis查出的基本信息，作为缓存
 	
 
 	protected $result = [];
@@ -62,7 +64,7 @@ class Calc {
 			$this->sm[$v] = $k;
 		}
 
-		$this->redis = new redis_cli('127.0.0.1', 6379);
+		$this->redis = new_redis();
 
 		// 读取配置
 		$configs = [];
@@ -168,7 +170,7 @@ class Calc {
 				} else {
 					$me = $aplayer['pid'];
 				}
-				if ($aplayer['oppo']) {
+				if ($aplayer['oppo'] && $aplayer['oppo'] != "COMEUP" && $aplayer['oppo'] != "LIVE" && $aplayer['oppo'] != "QUAL" && $aplayer['oppo'] != "TBD") {
 					$h2h = "0:0";
 					$info = $this->redis->cmd('HGET', 'h2h', $me . "\t" . $aplayer['oppo'])->get();
 					if ($info) {
@@ -415,7 +417,11 @@ class Calc {
 		// 计算用于比较同分时先后顺序的量
 		$point4compare = sprintf("rank%05u%05u%05u%02u%04u%04u%04u", $point, $master_point, $tour_point, 99 - $total_plays, $max_1st, $max_2nd, $max_3rd);
 
-		$info = $this->redis->cmd('HMGET', join("_", [$this->gender, 'profile', $this->pre_pid]), 'first', 'last', 'ioc', 'birthday')->get();
+		if (!isset($this->redis_info[$this->pre_pid])) {
+			$info = $this->redis->cmd('HMGET', join("_", [$this->gender, 'profile', $this->pre_pid]), 'first', 'last', 'ioc', 'birthday')->get();
+		} else {
+			$info = $this->redis_info[$this->pre_pid];
+		}
 		$first = $info[0];
 		$last = $info[1];
 		$ioc = $info[2];

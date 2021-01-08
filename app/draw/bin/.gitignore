@@ -2,6 +2,9 @@ itf_completed
 completed
 1
 2
+3
+4
+5
 live
 itf_live
 tmp_live
@@ -19,3 +22,4 @@ PROGRESS.run.itf_schedule
 PROGRESS.run.itf_draw
 PROGRESS.run.itf_activity
 PROGRESS.run.h2h
+PROGRESS.run.tournament

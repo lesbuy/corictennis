@@ -40,6 +40,17 @@ function ceil_power($draw) {
 	return exp(ceil(log($draw, 2)) * log(2));
 }
 
+function tic() {
+	return microtime();
+}
+
+function toc($tic) {
+	$s = explode(" ", $tic);
+	if (count($s) != 2) return 0;
+	$t = explode(" ", microtime());
+	return intval($t[1]) - intval($s[1]) + floatval($t[0]) - floatval($s[0]);
+}
+
 function http($url, $post = NULL, $cookie = NULL, $headers = NULL){
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -72,6 +83,11 @@ function print_err() {
 function print_line() {
 	$argv = func_get_args();
 	echo join("\t", $argv) . "\n";
+}
+
+function output_content($content, $fp = STDOUT) {
+	// content 需要自己带\n
+	fputs($fp, $content);
 }
 
 function set_var_field($post) {

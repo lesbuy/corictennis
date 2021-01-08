@@ -98,13 +98,13 @@ abstract class Base{
 		}
 	}
 
-	public function outputDraws() {
+	public function outputDraws($fp = STDOUT) {
 		foreach ($this->draws as $event => $draw) {
-			$this->outputDraw($event);
+			$this->outputDraw($event, $fp);
 		}
 	}
 
-	public function outputDraw($event) {
+	public function outputDraw($event, $fp = STDOUT) {
 
 		$eventid = $this->draws[$event]['eventid'];
 
@@ -137,7 +137,7 @@ abstract class Base{
 							$team1 = $amatch['t1'] == $event ? [] : $this->teams[$amatch['t1']];
 							$team2 = $amatch['t2'] == $event ? [] : $this->teams[$amatch['t2']];
 
-							echo join("\t", [
+							output_content(join("\t", [
 								$event . ($draw_type == "RR" ? '/RR' . (isset($amatch['group_name']) ? '/' . $amatch['group_name'] : '') : ''),
 								$digital_matchid . '/' . $matchid,
 								$amatch['r2'],
@@ -165,7 +165,7 @@ abstract class Base{
 								$amatch['h2h'],
 								isset($amatch['odd1']) ? $amatch['odd1'] : '',
 								isset($amatch['odd2']) ? $amatch['odd2'] : '',
-							]) . "\n";
+							]) . "\n", $fp);
 						}
 					}
 				}
@@ -173,37 +173,16 @@ abstract class Base{
 		}
 	}
 
-	public function outputOOPs() {
-		$this->redis = new redis_cli('127.0.0.1', 6379);
-/*
-		$file = join("/", [ROOT, 'store', 'h2h', 'atp_summary']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$id1 = $arr[0]; $id2 = $arr[1];
-			$h1 = $arr[2]; $h2 = $arr[3];
-			$this->h2h[$id1."\t".$id2] = $h1.":".$h2;
-		}
-		fclose($fp);
-
-		$file = join("/", [ROOT, 'store', 'h2h', 'wta_summary']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$id1 = $arr[0]; $id2 = $arr[1];
-			$h1 = $arr[2]; $h2 = $arr[3];
-			$this->h2h[$id1."\t".$id2] = $h1.":".$h2;
-		}
-		fclose($fp);
-*/
+	public function outputOOPs($fp = STDOUT) {
+		$this->redis = new_redis();
 		foreach ($this->oop as $day => $oop) {
-			$this->outputOOP($day);
+			$this->outputOOP($day, $fp);
 		}
 
 		unset($this->redis); $this->redis = null;
 	}
 
-	public function outputOOP($day) {
+	public function outputOOP($day, $fp = STDOUT) {
 
 		$date_string = $this->oop[$day]['date'];
 		foreach ($this->oop[$day]['courts'] as $courtId => $court) {
@@ -277,7 +256,7 @@ abstract class Base{
 					}
 				}
 
-				echo join("\t", [
+				output_content(join("\t", [
 					$date_string,
 					$this->draws[$event]['eventid2'],
 					$this->draws[$event]['qm'] == 'M' ? 0 : 1,
@@ -324,12 +303,12 @@ abstract class Base{
 					isset($m['betsid']) ? $m['betsid'] : "",
 					isset($m['odd1']) ? $m['odd1'] : "",
 					isset($m['odd2']) ? $m['odd2'] : "",
-				]) . "\n";
+				]) . "\n", $fp);
 			}
 		}
 	}
 
-	public function outputLive() {
+	public function outputLive($fp = STDOUT) {
 		foreach ($this->live_matches as $matchid) {
 
 			if (!isset($this->matches[$matchid])) return false;
@@ -340,7 +319,7 @@ abstract class Base{
 			$bestof = $m['bestof'];
 			$tip_msg = isset($m['tipmsg']) ? $m['tipmsg'] : "";
 
-			echo join("\t", [
+			output_content(join("\t", [
 				$m['uuid'],
 				$this->tour,
 				"",
@@ -372,12 +351,12 @@ abstract class Base{
 				time(),
 				$tip_msg,
 				$bestof,
-			]) . "\n";
+			]) . "\n", $fp);
 		}
 	}
 
-	public function outputPlayers() {
-		$this->redis = new redis_cli('127.0.0.1', 6379);
+	public function outputPlayers($fp = STDOUT) {
+		$this->redis = new_redis();
 		foreach ($this->teams as $uuid => $t) {
 			$event = substr($uuid, 0, 2);
 			foreach ($t['p'] as $p) {
@@ -403,13 +382,13 @@ abstract class Base{
 				}
 				$key = join("_", [$gender, 'profile', $pid]);
 				$arr = $this->redis->cmd('HMGET', $key, 's_en', 'l_en', 's_zh', 'l_zh', 's_ja', 'l_ja')->get();
-				echo join("\t", array_merge([$gender, $sex, $pid, $ioc, $first, $last], $arr)) . "\n";
+				output_content(join("\t", array_merge([$gender, $sex, $pid, $ioc, $first, $last], $arr)) . "\n", $fp);
 			}
 		}
 		unset($this->redis); $this->redis = null;
 	}
 
-	public function outputRounds() {
+	public function outputRounds($fp = STDOUT) {
 		foreach ($this->draws as $event => $adraw) {
 			foreach ($adraw['round'] as $round => $around) {
 				$id = $around['id'];
@@ -418,13 +397,13 @@ abstract class Base{
 				$alias = $around['alias'];
 				$currency = $this->currency;
 
-				echo join("\t", [
+				output_content(join("\t", [
 					$event,
 					$id,
 					$alias,
 					$point,
 					$currency . $prize,
-				]) . "\n";
+				]) . "\n", $fp);
 			}
 		}
 	}
@@ -536,7 +515,7 @@ abstract class Base{
 	}
 
 	// 即将废弃
-	public function outputSummary() {
+	public function outputSummary($fp = STDOUT) {
 
 		$teams = [];
 		foreach ($this->teams as $ateam) {
@@ -667,7 +646,7 @@ abstract class Base{
 					if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
 					if (strpos($_lev, "CH ") === 0) $_lev = "CH";
 
-					echo join("\t", [
+					output_content(join("\t", [
 						$gender,
 						$sd,
 						$true_pid,
@@ -690,13 +669,13 @@ abstract class Base{
 						$res['streak'],
 						isset($res['partner']) ? $res['partner'] : '',
 						join("\1", $res['prediction']),
-					]) . "\n";
+					]) . "\n", $fp);
 				} // end foreach player
 			} // end foreach sd
 		} // end foreach gender
 	}
 
-	public function outputH2H() {
+	public function outputH2H($fp = STDOUT) {
 		foreach ($this->matches as $match) {
 			$event = $match["event"];
 			if (!in_array($event, ["MS", "WS", "MD", "WD", "QS", "PS", "QD", "PD"])) continue;
@@ -777,7 +756,8 @@ abstract class Base{
 			}
 
 			// output
-			echo join("\t", [
+			output_content(join("\t", [
+				$gender,
 				$sd,
 				$teamWinner['p'][0]['p'],
 				$sd == "S" ? "" : $teamWinner['p'][1]['p'],
@@ -809,12 +789,12 @@ abstract class Base{
 				$sd == "S" ? $teamLoser['p'][0]['rs'] : $teamLoser['p'][0]['rd'],
 				$sd == "S" ? "" : $teamLoser['p'][1]['rd'],
 				$recordday
-			]) . "\n";
+			]) . "\n", $fp);
 		}
 	}
 
-	public function outputActivity() {
-		$this->redis = new redis_cli('127.0.0.1', 6379);
+	public function outputActivity($fp = STDOUT) {
+		$this->redis = new_redis();
 
 		$teams = [];
 		foreach ($this->teams as $ateam) {
@@ -999,7 +979,7 @@ abstract class Base{
 					if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
 					if (strpos($_lev, "CH ") === 0) $_lev = "CH";
 
-					echo join("\t", [
+					output_content(join("\t", [
 						$gender,
 						$true_pid,
 						join("/", array_map(function ($d) use ($gender, $true_pid) {return $this->redis->cmd('HGET', join("_", [$gender, 'profile', $d]), 'ioc')->get();}, explode("/", $true_pid))), // ioc
@@ -1032,7 +1012,7 @@ abstract class Base{
 						$res['indraw'], 
 						$res['next'],
 						join("\1", $res['prediction']),
-					]) . "\n";
+					]) . "\n", $fp);
 				} // end foreach player
 			} // end foreach sd
 		} // end foreach gender
@@ -1042,7 +1022,7 @@ abstract class Base{
 
 	public function appendH2HandFS() {
 
-		$this->redis = new redis_cli('127.0.0.1', 6379);
+		$this->redis = new_redis();
 
 		foreach ($this->matches as $matchid => $amatch) {
 			$m = &$this->matches[$matchid];
@@ -1368,4 +1348,5 @@ abstract class Base{
 
 		return join(" ", $scores) . $aff;
 	}
+
 }
