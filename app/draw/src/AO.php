@@ -4,22 +4,31 @@ require_once('base.class.php');
 
 class Event extends Base{
 
-	public function  process() {
-		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'type']);
-		if (!file_exists($file)) return false;
+	private $eventID = "AO";
+	private $year = 2021;
+	private $start_date = "2021-02-08 05:00"; // 此日为第1日，后面的start,end 都是偏移量
+	private $quali_start_date = "2021-01-10 05:00"; // 此日为资格赛第1天
+	private $eventConf = [
+		"156126" => ["event" => "QS", "draw" => 128, "round" => 3, "eventid2" => 0, "start" => -30, "end" => -25],
+		"156131" => ["event" => "PS", "draw" => 128, "round" => 3, "eventid2" => 1, "start" => -30, "end" => -25],
+		"156216" => ["event" => "MS", "draw" => 128, "round" => 7, "eventid2" => 0, "start" => -3, "end" => 14],
+		"156236" => ["event" => "WS", "draw" => 128, "round" => 7, "eventid2" => 1, "start" => -3, "end" => 14],
+		"156211" => ["event" => "MD", "draw" => 64, "round" => 6, "eventid2" => 2, "start" => -3, "end" => 14],
+		"156231" => ["event" => "WD", "draw" => 64, "round" => 6, "eventid2" => 3, "start" => -3, "end" => 14],
+		"156256" => ["event" => "XD", "draw" => 32, "round" => 5, "eventid2" => 4, "start" => 0, "end" => 14],
+	];
 
+	public function  process() {
 		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
 
 		$this->preprocess();
 
-		$fp = fopen($file, "r");
-		while ($line = fgets($fp)) {
-			$line_arr = explode("\t", trim($line));
-			$event_raw = $line_arr[0];
-			$event = $line_arr[1];
-			$event_size = $line_arr[2];
-			$event_round = $line_arr[3];
-			$eventid4oop = $line_arr[4];
+		foreach ($this->eventConf as $eventUUID => $eventInfo) {
+			$event_raw = $eventUUID;
+			$event = $eventInfo["event"];
+			$event_size = $eventInfo["draw"];
+			$event_round = $eventInfo["round"];
+			$eventid4oop = $eventInfo["eventid2"];
 			$eventid = $web_const['grandslam']['type2id'][$event];
 
 			$this->draws[$event] = [
@@ -47,49 +56,23 @@ class Event extends Base{
 			$this->parseDraw($event, $event_size, $event_round, $event_raw);
 
 		}
-		fclose($fp);
 
-		for ($i = 1; $i <= 21; ++$i) {
+		for ($i = 1; $i <= 4; ++$i) {
+			$this->parseResult($i);
+			$this->parseExtra($i);
+			$this->parseSchedule($i);
+		}
+		for ($i = 31; $i <= 44; ++$i) {
 			$this->parseResult($i);
 			$this->parseExtra($i);
 			$this->parseSchedule($i);
 		}
 		$this->parseLive();
-		$this->reviseEntry();
+		//$this->reviseEntry();
 	}
 
 	public function preprocess() {
-		$file = join("/", [WORK, 'etl', $this->year, $this->tour, 'players']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$uuid = $arr[0];
-			$id = $arr[1];
-			$rank = @$arr[2];
-			$this->uuid2id[$uuid] = $id;
-			$this->rank[$id] = $rank;
-		}
-		fclose($fp);
-
-		$file = join("/", [WORK, 'etl', $this->year, $this->tour, 'h2hs']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("\t", $line);
-			$this->h2h[$arr[0] . "\t" . $arr[1]] = $arr[2];
-		}
-		fclose($fp);
-
-		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'conf']);
-		$fp = fopen($file, "r");
-		while ($line = trim(fgets($fp))) {
-			$arr = explode("=", $line);
-			if (count($arr) != 2 || substr($arr[0], 0, 1) == "#") continue;
-			if ($arr[0] == "qualifying_first_day") {
-				$this->quali_first_day = str_replace("\"", "", $arr[1]);
-				break;
-			}
-		}
-		fclose($fp);
+		$this->quali_first_day = date('Y-m-d', strtotime($this->quali_start_date));
 
 		$file = join("/", [WORK, 'etl', $this->year, $this->tour, 'wclist']);
 		$fp = fopen($file, "r");
@@ -101,9 +84,14 @@ class Event extends Base{
 		fclose($fp);
 	}
 
-	protected function parsePlayer() {
+	protected function parsePlayer() {}
+
+	protected function parseDraw() {
 		$args = func_get_args();
 		$event = $args[0];
+		$event_size = $args[1];
+		$event_round = $args[2];
+		$event_raw = $args[3];
 
 		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'draw', $event]);
 		if (!file_exists($file)) return false;
@@ -114,6 +102,9 @@ class Event extends Base{
 		$json = json_decode($html, true);
 		if (!$json) return false;
 
+		if ($json['event']['draw_availability'] == false) return false;
+
+		// 先解析player 
 		$players = [];
 
 		foreach ($json['players'] as $p) {
@@ -123,19 +114,38 @@ class Event extends Base{
 			$last = $p['last_name'];
 			$ioc = $p['nationality']['code'];
 			$gender = $p['gender'] == "M" ? "M" : "F";
+			$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+			$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
+			$rank_s = $rank_d = "";
+			foreach ($p["rankings"] as $rankInfo) {
+				if ($rankInfo["event"] == "cb9599e0-4478-4b4e-98aa-996a54313df6") {
+					$rank_s = $rankInfo["ranking"];
+				} else if ($rankInfo["event"] == "7639a625-a364-40e7-b958-5dac8a23d3f8") {
+					$rank_d = $rankInfo["ranking"];
+				}
+			}
 			$players[$uuid] = [
 				'p' => $pid, 
 				'g' => $gender, 
 				'f' => $first,
 				'l' => $last, 
 				'i' => $ioc,
+				's' => $short3,
+				's2' => $last2,
+				'rs' => $rank_s,
+				'rd' => $rank_d,
+				
 			];
 			$this->players[$pid] = [
-				'p' => $pid, 
-				'g' => $gender, 
+				'p' => $pid,
+				'g' => $gender,
 				'f' => $first,
-				'l' => $last, 
+				'l' => $last,
 				'i' => $ioc,
+				's' => $short3,
+				's2' => $last2,
+				'rs' => $rank_s,
+				'rd' => $rank_d,
 			];
 		}
 
@@ -177,28 +187,8 @@ class Event extends Base{
 		$this->teams[$event . 'COMEUP'] = ['uuid' => $event . 'COMEUP', 's' => '', 'r' => '', 'p' => [['p' => 'COMEUP', 'g' => '', 'f' => '', 'l' => '', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
 		$this->teams[$event . 'BYE'] = ['uuid' => $event . 'BYE', 's' => '', 'r' => '', 'p' => [['p' => 'BYE', 'g' => '', 'f' => '', 'l' => 'Bye', 'i' => '',],],'round'=>'','point'=>0,'prize'=>0];
 
-	}
-
-	protected function parseDraw() {
-		$args = func_get_args();
-		$event = $args[0];
-		$event_size = $args[1];
-		$event_round = $args[2];
-		$event_raw = $args[3];
-
-		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'draw', $event]);
-		if (!file_exists($file)) return false;
-
-		$html = file_get_contents($file);
-		if (!$html) return false;
-
-		$json = json_decode($html, true);
-		if (!$json) return false;
-
-		if ($json['event']['draw_availability'] == false) return false;
-
+		// event的基本信息
 		$draw_type = $json['event']['draw_type'];
-
 		$name = $json['event']['name'];
 		if (strpos($name, 'Single') !== false) $sd = "S"; else $sd = "D";
 		if (strpos($name, 'Qualify') !== false) $qm = 'Q'; else $qm = "M";
@@ -207,9 +197,6 @@ class Event extends Base{
 		$this->draws[$event]['type'] = $draw_type;
 		$this->draws[$event]['sd'] = $sd;
 		$this->draws[$event]['qm'] = $qm;
-
-		$players = [];
-
 		$this->draws[$event]['ct'] = count(@$json['matches']);
 
 		// 以上为获取该type的基本信息
@@ -245,14 +232,15 @@ class Event extends Base{
 		$unavailable = 0;
 		$RRperson2seq = [];
 		
+		// matches顺序是乱的，按后3位数字排序
 		usort($json['matches'], function ($a, $b) {return intval(substr($a['match_id'], 2)) < intval(substr($b['match_id'], 2)) ? -1 : 1;});
 
 		// 遍历所有的比赛
 		foreach ($json['matches'] as $m) {
 			$uuid = $m['uuid'];
 			$matchid = $m['match_id'];
-			$r1 = substr($matchid, 2, 1) + 0;
-			$order = substr($matchid, 3, 2) + 0;
+			$r1 = intval(substr($matchid, 2, 1));
+			$order = intval(substr($matchid, 3, 2));
 
 			$team1 = $event . ($m['teams'][0] !== null ? $m['teams'][0]['team_id'] . "" : ($qm == "M" && $draw_type == "KO" && $r1 == 1 ? 'QUAL' : ''));
 			$team2 = $event . ($m['teams'][1] !== null ? $m['teams'][1]['team_id'] . "" : ($qm == "M" && $draw_type == "KO" && $r1 == 1 ? 'QUAL' : ''));
@@ -315,27 +303,12 @@ class Event extends Base{
 					++$unavailable;
 				}
 			}
-
-/*
-			// 记录h2h
-			if ($team1 != $event && $team2 != $event) {
-				$pid1 = join("/", array_map(function ($d) {return $d['p'];}, $this->teams[$team1]['p']));
-				$pid2 = join("/", array_map(function ($d) {return $d['p'];}, $this->teams[$team2]['p']));
-				if (isset($this->h2h[$pid1 . "\t" . $pid2])) {
-					$h2h = $this->h2h[$pid1 . "\t" . $pid2];
-				} else {
-					$h2h = "0:0";
-				}
-			} else {
-				$h2h = "";
-			}
-*/
 			$h2h = "";
 
 			// 记录到match里
-			$this->matches[$m['match_id']] = [
-				'uuid' => $uuid,
-				'id' => $matchid,
+			$this->matches[$m['match_id']] = [  // key是该系统里认可的matchid
+				'uuid' => $uuid,  // 原系统里的唯一id
+				'id' => $matchid, // 我系统里规范化matchid
 				'event' => $event,
 				'r' => $r1,
 				'r1' => $r2,
@@ -364,7 +337,7 @@ class Event extends Base{
 		$args = func_get_args();
 		$day = $args[0];
 
-		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'result', $day]);
+		$file = join("/", [DATA, 'tour', "result", $this->year, $this->tour, $day]);
 		if (!file_exists($file)) return false;
 
 		$html = file_get_contents($file);
@@ -390,7 +363,7 @@ class Event extends Base{
 		$args = func_get_args();
 		$day = $args[0];
 
-		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'schedule', $day]);
+		$file = join("/", [DATA, 'tour', "oop", $this->year, $this->tour, $day]);
 		if (!file_exists($file)) return false;
 
 		$html = file_get_contents($file);
@@ -463,7 +436,7 @@ class Event extends Base{
 
 	protected function parseLive() {
 
-		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'live']);
+		$file = join("/", [SHARE, 'down_result', strtolower($this->tour) . '_live']);
 		if (!file_exists($file)) return false;
 
 		$html = file_get_contents($file);
