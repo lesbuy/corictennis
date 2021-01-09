@@ -625,7 +625,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		</tr></tbody></table>
 	</div>
 	<div>
-		{!! __('frame.menu.footer') !!} 2014-2019 <span id=iButtonMsg><div>{!! get_icon('yijianfankui') !!}</div>{!! __('help.msgboard.leave') !!}</span>
+		{!! __('frame.menu.footer') !!} 2014-2021 <span id=iButtonMsg><div>{!! get_icon('yijianfankui') !!}</div>{!! __('help.msgboard.leave') !!}</span>
 	</div>
 </div>
 <div id=iMask>

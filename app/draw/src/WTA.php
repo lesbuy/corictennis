@@ -1429,8 +1429,8 @@ class Event extends Base{
 
 		foreach ([1, 2, 3, 4, 5] as $set) {
 			if ($set > $match["bestof"]) break;
-			$a = $m["ScoreSet" . $set . "A"];
-			$b = $m["ScoreSet" . $set . "B"];
+			$a = trim($m["ScoreSet" . $set . "A"]);
+			$b = trim($m["ScoreSet" . $set . "B"]);
 			if ($a === '' || $b === '' || $a === null || $b === null) break;
 			$aa = @$m["ScoreSet" . ($set + 1) . "A"];
 			$bb = @$m["ScoreSet" . ($set + 1) . "B"];

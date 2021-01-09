@@ -11,10 +11,10 @@ $fp = fopen("chinese_name", "r");
 while ($line = trim(fgets($fp))) {
 	$arr = explode("\t", $line);
 	$pid = $arr[0];
-	$s_zh = $arr[2];
-	$l_zh = $arr[3];
-	$s_ja = @$arr[4];
-	$l_ja = @$arr[5];
+	$s_zh = $arr[4];
+	$l_zh = $arr[5];
+	$s_ja = @$arr[6];
+	$l_ja = @$arr[7];
 
 	if (preg_match('/^[A-Z0-9]{4}$/', $pid)) {
 		$gender = "atp";
