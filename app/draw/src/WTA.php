@@ -451,6 +451,9 @@ class Event extends Base{
 				}
 				if ($_round == "") $_round = $round;
 
+				// $round是规范化的轮次名
+				// id：1代表Winner，2代表Final，3代表Semifinals，以此增加
+				// alias表示按签位数的轮次名
 				$this->draws[$event]['round'][$round] = [
 					'id' => $placeid,
 					'point' => $point,
