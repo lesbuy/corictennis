@@ -439,7 +439,7 @@ class Activity {
 						$wl,
 						$games,	
 						$oppo_rank,
-						$oppo_seed, // 5
+						$oppo_seed, // 6
 						$oppo_entry,
 						$oppo_id,
 						$oppo_ioc,
