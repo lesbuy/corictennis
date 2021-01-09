@@ -37,12 +37,12 @@ class Down extends DownBase {
 
 	protected function downDrawFile() {
 		print_line("begin to down draws");
-		foreach ($this->$eventConf as $eventUUID => $eventInfo) {
-			print_line("down draw", $eventInfo["event"]);
+		foreach ($this->eventConf as $eventUUID => $eventInfo) {
 			$start_unix = strtotime($this->start_date . " " . $eventInfo["start"] . " days");
 			$end_unix = strtotime($this->start_date . " " . $eventInfo["end"] . " days");
 			if (time() < $start_unix || time() > $end_unix) continue;
 
+			print_line("down draw", $eventInfo["event"]);
 			$url = "https://prod-scores-api.ausopen.com/event/" . $eventUUID . "/draws";
 			$html = http($url, null, null, null);
 			if (!$html) {
@@ -68,8 +68,8 @@ class Down extends DownBase {
 		$qm = "MD";
 		$day = ceil((time() - strtotime($this->start_date)) / 86400);
 		foreach ([$day, $day + 1, $day + 2, $day + 3] as $day) {
-			if ($day < -30 || ($day >= -26 && $day < 1) || $day > 14) continue;
-			$originalDay = $day;
+			if ($day <= -30 || ($day >= -26 && $day < 1) || $day > 14) continue;
+			$originalDay = $day + 30;
 			if ($day < 15) {
 				$day += 30;
 				$qm = "Q";
@@ -78,12 +78,12 @@ class Down extends DownBase {
 			$url = "https://prod-scores-api.ausopen.com/year/$this->year/period/$qm/day/$day/schedule";
 			$html = http($url, null, null, null);
 			if (!$html) {
-				print_line("download $day oop page failed");
+				print_line("download $qm $day oop page failed");
 				continue;
 			}
 			$html_content = json_decode($html, true);
 			if (!$html_content || isset($html_content["error"])) {
-				print_line("parse $day oop page failed");
+				print_line("parse $qm $day oop page failed");
 				continue;
 			}
 
@@ -100,8 +100,8 @@ class Down extends DownBase {
 		$qm = "MD";
 		$day = ceil((time() - strtotime($this->start_date)) / 86400);
 		foreach ([$day - 1, $day] as $day) {
-			if ($day < -30 || ($day >= -26 && $day < 1) || $day > 14) continue;
-			$originalDay = $day;
+			if ($day <= -30 || ($day >= -26 && $day < 1) || $day > 14) continue;
+			$originalDay = $day + 30;
 			if ($day < 15) {
 				$day += 30;
 				$qm = "Q";
@@ -110,12 +110,12 @@ class Down extends DownBase {
 			$url = "https://prod-scores-api.ausopen.com/year/$this->year/period/$qm/day/$day/results";
 			$html = http($url, null, null, null);
 			if (!$html) {
-				print_line("download $day result page failed");
+				print_line("download $qm $day result page failed");
 				continue;
 			}
 			$html_content = json_decode($html, true);
 			if (!$html_content || isset($html_content["error"])) {
-				print_line("parse $day result page failed");
+				print_line("parse $qm $day result page failed");
 				continue;
 			}
 
