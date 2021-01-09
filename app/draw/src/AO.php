@@ -4,8 +4,6 @@ require_once('base.class.php');
 
 class Event extends Base{
 
-	private $eventID = "AO";
-	private $year = 2021;
 	private $start_date = "2021-02-08 05:00"; // 此日为第1日，后面的start,end 都是偏移量
 	private $quali_start_date = "2021-01-10 05:00"; // 此日为资格赛第1天
 	private $eventConf = [
@@ -68,12 +66,16 @@ class Event extends Base{
 			$this->parseSchedule($i);
 		}
 		$this->parseLive();
+		$this->appendH2HandFS();
+		$this->calaTeamFinal();
+
 		//$this->reviseEntry();
 	}
 
 	public function preprocess() {
 		$this->quali_first_day = date('Y-m-d', strtotime($this->quali_start_date));
 
+		/*
 		$file = join("/", [WORK, 'etl', $this->year, $this->tour, 'wclist']);
 		$fp = fopen($file, "r");
 		while ($line = trim(fgets($fp))) {
@@ -82,6 +84,7 @@ class Event extends Base{
 			$this->wclist[$arr[0]][$arr[2]] = $arr[1];
 		}
 		fclose($fp);
+		*/
 	}
 
 	protected function parsePlayer() {}
@@ -93,7 +96,7 @@ class Event extends Base{
 		$event_round = $args[2];
 		$event_raw = $args[3];
 
-		$file = join("/", [WORK, 'ori', $this->year, $this->tour, 'draw', $event]);
+		$file = join("/", [DATA, 'tour', "draw", $this->year, $this->tour, $event]);
 		if (!file_exists($file)) return false;
 
 		$html = file_get_contents($file);
