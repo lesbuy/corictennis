@@ -211,17 +211,21 @@ class Event extends Base{
 			if ($entry == "LL") $entry = "L";
 			else if ($entry == "WC") $entry = "W";
 			$seed = $t['seed'] . "";
-			if ($seed == "") $seed = $entry;
-			else if ($entry != "") $seed .= "/" . $entry;
+
+			$seeds = [];
+			if ($seed != "") $seeds[] = $seed;
+			if ($entry != "") $seeds[] = $entry;
 
 			$pids = join("/", array_map(function ($d) use ($players) {
 				return $players[$d]['p'];
 			}, $t['players']));
-			$rank = isset($this->rank[$pids]) ? $this->rank[$pids] : "";
+			$rank = count($t['players']) > 1 ? "" : $players[$t['players'][0]]['rs'];
 
 			$this->teams[$uuid] = [
 				'uuid' => $uuid,
 				's' => $seed,
+				'e' => $entry,
+				'se' => join("/", $seeds),
 				'r' => $rank,
 				'p' => array_map(function ($d) use ($players) {
 					return $players[$d];
