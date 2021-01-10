@@ -51,7 +51,7 @@ print_line($tour, $year, "draw", "done", toc($tic));
 $tic = tic();
 $file_temp_activity = "temp_activity";
 $fp_temp_activity = fopen($file_temp_activity, "w");
-$event->outputOOPs($fp_temp_activity);
+$event->outputActivity($fp_temp_activity);
 fclose($fp_temp_activity);
 
 $cmd = "grep atp $file_temp_activity | cut -f2- > " . $file_temp_activity . "_atp; grep wta $file_temp_activity | cut -f2- > " . $file_temp_activity . "_wta";
