@@ -18,8 +18,10 @@ monday4=`date -d "$current_monday +14 days" +%Y-%m-%d`
 
 cat /dev/null > tmp_live
 
+#php ../src/live.php AO $year >> tmp_live
+
 now=`date +%s`
-grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/GS $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 
+grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 
 while read line
 do
 	eid=`echo "$line" | cut -f2`
@@ -38,18 +40,15 @@ do
 		asso="atp"
 	fi
 
+	# 2周的比赛从上周1开始到结束后的周1
+	# 1周的比赛从上周4开始到结束后的周3
 	if [[ $weeks == "2" ]]
 	then
-		endtime=$((unix+86400*15))
+		starttime=$((unix-7*86400))
+		endtime=$((unix+15*86400))
 	else
-		endtime=$((unix+86400*8))
-	fi
-
-	if [[ $weeks == "2" ]]
-	then
-		starttime=$((unix-86400*7))
-	else
-		starttime=$((unix-86400*4))
+		starttime=$((unix-4*86400))
+		endtime=$((unix+9*86400))
 	fi
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]

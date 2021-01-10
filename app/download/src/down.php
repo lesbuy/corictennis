@@ -9,6 +9,8 @@ if ($asso == "wta") {
 	require_once('ATP.php');
 } else if ($asso == "itf-men" || $asso == "itf-women") {
 	require_once('ITF.php');
+} else if ($asso == "ao") {
+	require_once('AO.php');
 }
 
 $down = new Down($asso);

@@ -82,7 +82,7 @@ exec($cmd, $r);
 print_line($tour, $year, "h2h", "done", toc($tic));
 
 // 巡回赛需要输出round
-if ($level != "GS" && $level != "ITF") {
+if ($level != "ITF") {
 	$tic = tic();
 	$file_temp_round = "temp_round";
 	$fp_temp_round = fopen($file_temp_round, "w");

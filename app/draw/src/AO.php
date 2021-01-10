@@ -174,9 +174,9 @@ class Event extends Base{
 			$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
 			$rank_s = $rank_d = "";
 			foreach ($p["rankings"] as $rankInfo) {
-				if ($rankInfo["event"] == "cb9599e0-4478-4b4e-98aa-996a54313df6") {
+				if ($rankInfo["event"] == "cb9599e0-4478-4b4e-98aa-996a54313df6" || $rankInfo["event"] == "e529b2d6-8793-4a7c-8ca3-200d07ada2a0") {
 					$rank_s = $rankInfo["ranking"];
-				} else if ($rankInfo["event"] == "7639a625-a364-40e7-b958-5dac8a23d3f8") {
+				} else if ($rankInfo["event"] == "7639a625-a364-40e7-b958-5dac8a23d3f8" || $rankInfo["event"] == "81b68b69-97ba-4951-9dab-353b94b5acee") {
 					$rank_d = $rankInfo["ranking"];
 				}
 			}

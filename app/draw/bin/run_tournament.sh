@@ -24,13 +24,15 @@ monday4=`date -d "$current_monday +14 days" +%Y-%m-%d`
 # 隔5分钟才处理低级别比赛
 if [[ $((`date +%M | awk '{print $0 + 0}'`%5)) == 3 ]]
 then
-	tourList=`grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/GS $STORE/calendar/$year/WT $STORE/calendar/$year/CH $STORE/calendar/$year/ITF | grep -v ":J[0-9AB]"`
+	tourList=`grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/WT $STORE/calendar/$year/CH $STORE/calendar/$year/ITF | grep -v ":J[0-9AB]"`
 else
-	tourList=`grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/GS $STORE/calendar/$year/WT`
+	tourList=`grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/WT`
 fi
 
 now=`date +%s`
 nowNano=`date +%s%N`
+
+php ../src/process.php AO $year
 
 echo "$tourList" | while read line
 do
@@ -46,8 +48,6 @@ do
 	then
 		continue
 	fi
-
-	echo "++++++++++++++++ enter " $(((`date +%s%N`-nowNano)/1000000))ms
 
 	eid=`echo "$line" | cut -f2`
 	unix=`echo "$line" | cut -f7`
@@ -69,7 +69,6 @@ do
 	then
 		php ../src/process.php $eid $year $asso
 	fi
-	echo "++++++++++++++++ leave " $(((`date +%s%N`-nowNano)/1000000))ms
 done
 
 echo total $(((`date +%s%N`-nowNano)/1000000))ms
