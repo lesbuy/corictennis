@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TopPlayer;
 use App\Models\RocketPlayer;
 use App\Models\PanelSearch;
+use Illuminate\Support\Facades\Redis;
 use App;
 use DB;
 use Config;
@@ -276,7 +277,7 @@ class HomeController extends Controller
 		$this->process_match_data($ret, $info, $id, $gender);
 		$this->process_gs($ret, $id, $gender);
 		$this->process_rank_data($ret, $id, $gender);
-
+		$this->process_recent_match($ret, $id, $gender);
 
 
 
@@ -289,171 +290,7 @@ class HomeController extends Controller
 			$ret['stat']['start'] = 2009;
 		}
 
-		// recent data
 
-		$ids = []; // 记录那些需要去数据库查名字的人
-		$heads = []; // 需要查头像的人
-		foreach (['S', 'D'] as $sd) {
-			$cmd = "grep ^$id " . join("/", [Config::get('const.root'), $gender, 'points_' . strtolower($sd) . '_[lt]*']);
-			unset($r); exec($cmd, $r);
-
-			$matches = [];
-			foreach ($r as $row) {
-				$arr = explode("\t", $row);
-				$date = $arr[2];
-				$year = $arr[3];
-				$eid = $arr[4];
-				$level = $arr[5];
-				$city = translate_tour($arr[11]);
-				$sfc = $arr[13];
-
-				$cmd = "grep \"$gender$id	\" " . join("/", [Config::get('const.root'), 'store', 'draw', $year, $eid]);
-				unset($r1); exec($cmd, $r1);
-				foreach ($r1 as $row1) {
-					$arr1 = explode("\t", $row1);
-					if (strpos($row1, "BYE") !== false) continue;
-					if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
-					foreach (Config::get('const.schema_drawsheet') as $k => $v) {
-						$kvmap[$v] = @$arr1[$k];
-					}
-					if (substr($kvmap['sextip'], 1, 1) != $sd) continue;
-					$t = substr($kvmap['sextip'], 0, 1);
-					if ($gender == "wta" && $t != "P" && $t != "W") continue;
-					if ($gender == "atp" && $t != "Q" && $t != "M") continue;
-
-					$pos = 0; // pos记录这个人是在home还是away
-					if ($gender . $id == $kvmap['P1A'] || $gender . $id == $kvmap['P1B']) {
-						$pos = 1;
-						$oppo = [$kvmap['Seed2'], []];
-						$oppo[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], rename2short($kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']), ""];
-						if ($sd == "D") {
-							$oppo[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], rename2short($kvmap['P2BFirst'], $kvmap['P2BLast'], $kvmap['P2BNation']), ""];
-						}
-						$me = [$kvmap['Seed1'], []];
-						$me[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], rename2short($kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']), ""];
-						if ($sd == "D") {
-							$me[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], rename2short($kvmap['P1BFirst'], $kvmap['P1BLast'], $kvmap['P1BNation']), ""];
-						}
-					} else if ($gender . $id == $kvmap['P2A'] || $gender . $id == $kvmap['P2B']) {
-						$pos = 2;
-						$oppo = [$kvmap['Seed1'], []];
-						$oppo[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], rename2short($kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']), ""];
-						if ($sd == "D") {
-							$oppo[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], rename2short($kvmap['P1BFirst'], $kvmap['P1BLast'], $kvmap['P1BNation']), ""];
-						}
-						$me = [$kvmap['Seed2'], []];
-						$me[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], rename2short($kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']), ""];
-						if ($sd == "D") {
-							$me[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], rename2short($kvmap['P2BFirst'], $kvmap['P2BLast'], $kvmap['P2BNation']), ""];
-						}
-					}
-
-					$wltag = "";
-					if ($pos == 1 && in_array($kvmap['mStatus'], ['F', 'H', 'J', 'L'])) $wltag = "W";
-					else if ($pos == 2 && in_array($kvmap['mStatus'], ['F', 'H', 'J', 'L'])) $wltag = "L";
-					else if ($pos == 1 && in_array($kvmap['mStatus'], ['G', 'I', 'K', 'M'])) $wltag = "L";
-					else if ($pos == 2 && in_array($kvmap['mStatus'], ['G', 'I', 'K', 'M'])) $wltag = "W";
-
-					if ($wltag == "") {
-						$score = "";
-					} else {
-						$score = revise_gs_score($kvmap['mStatus'], $kvmap['score1'], $kvmap['score2']);
-					}
-
-					$round = $kvmap['round'];
-					$roundid = Config::get('const.round2id')[$round];
-
-					$matches[] = [$date, $city, $roundid, $level, $round, $me, $oppo, $score, $wltag];
-				}
-			}
-
-			$cmd = "awk -F\"\\t\" '$19 != 100 && $11 == \"$sd\" && $22 != \"0\"' " . join("/", [Config::get('const.root'), 'store', 'activity', $gender, $id]) . " | sort -t\"	\" -k4gr,4 | head -50";
-			unset($r); exec($cmd, $r);
-			if ($r) {
-				foreach ($r as $row) {
-					$arr = explode("\t", $row);
-					if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
-					foreach (Config::get('const.schema_activity_match') as $k => $v) {
-						$kvmap[$v] = @$arr[$k];
-					}
-					$me = [$kvmap['seed'], [[$kvmap['id'], $kvmap['ioc'], "", ""]]];
-					if ($sd == "D") {
-						$me[1][] = [$kvmap['partnerid'], $kvmap['partnerioc'], "", ""];
-					}
-					$oppo = [$kvmap['opposeed'], []];
-					if ($sd == "S") {
-						$oppo[1][] = [$kvmap['oppoid'], $kvmap['opponation'], "", ""];
-					} else {
-						$ar1 = explode("/", $kvmap['oppoid']);
-						$ar2 = explode("/", $kvmap['opponation']);
-						$oppo[1][] = [$ar1[0], $ar2[0], "", ""];
-						$oppo[1][] = [@$ar1[1], @$ar2[1], "", ""];
-					}
-					$date = $kvmap['time'];
-					$year = $kvmap['year'];
-					$eid = $kvmap['tourid'];
-					$city = translate_tour($kvmap['tourname']);
-					$level = $kvmap['level'];
-					$sfc = $kvmap['ground'];
-
-					$wltag = substr($kvmap['winorlose'], 0, 1);
-					$score = $kvmap['games'];
-					if ($score == "-") $score = "W/O";
-					$round = $kvmap['round'];
-					$roundid = Config::get('const.round2id')[$round];
-
-					$matches[] = [$date, $city, $roundid, $level, $round, $me, $oppo, $score, $wltag];
-				}
-			}
-
-			usort($matches, 'self::match_sort');
-			if ($sd == "S")	$matches = array_slice($matches, 0, 30);
-			else $matches = array_slice($matches, 0, 10);
-
-			foreach ($matches as $t_match) {
-				foreach ($t_match[5][1] as $t_person) {
-					if ($t_person[2] == "" && !in_array($t_person[0], $ids)) $ids[] = $t_person[0];
-					if (!in_array($t_person[0], $heads)) $heads[] = $t_person[0];
-				}
-				foreach ($t_match[6][1] as $t_person) {
-					if ($t_person[2] == "" && !in_array($t_person[0], $ids)) $ids[] = $t_person[0];
-					if (!in_array($t_person[0], $heads)) $heads[] = $t_person[0];
-				}
-			}
-
-			$ret['recent'][$sd] = $matches;
-		}
-
-		$id2name = [];
-		$id2ioc = [];
-		$rows = DB::table('profile_' . $gender)->whereIn('longid', $ids)->get();
-		foreach ($rows as $row) {
-			$id2name[$row->longid] = rename2short($row->first_name, $row->last_name, $row->nation3);
-			$id2ioc[$row->longid] = $row->nation3;
-		}
-
-		$id2head = [];
-		$rows = DB::table('headshot_' . $gender)->whereIn('id', $heads)->get();
-		foreach ($rows as $row) {
-			$id2head[$row->id] = $row->headshot;
-		}
-
-		foreach ($ret['recent'] as $sd => &$matches) {
-			foreach ($matches as &$match) {
-				foreach ($match[5][1] as &$person) {
-					if ($person[0] == "" || $person[0] === "0") continue;
-					if ($person[2] == "") $person[2] = @$id2name[$person[0]];
-					if ($person[1] == "") $person[1] = @$id2ioc[$person[0]];
-					$person[3] = isset($id2head[$person[0]]) ? url(join("/", ['images', $gender.'_headshot', $id2head[$person[0]]])) : url(join("/", ['images', $gender.'_headshot', $gender.'player.jpg']));
-				}
-				foreach ($match[6][1] as &$person) {
-					if ($person[0] == "" || $person[0] === "0") continue;
-					if ($person[2] == "") $person[2] = @$id2name[$person[0]];
-					$person[3] = isset($id2head[$person[0]]) ? url(join("/", ['images', $gender.'_headshot', $id2head[$person[0]]])) : url(join("/", ['images', $gender.'_headshot', $gender.'player.jpg']));
-				}
-				if ($match[8] == "L") swap($match[5], $match[6]); // 保持胜者在前，败者在后
-			}
-		}
 
 		// win rate of top N
 		$win_match = array_fill(0, 501, 0);
@@ -815,6 +652,174 @@ class HomeController extends Controller
 			$ret['rank']['ytdh'][$sd] = $ytdmaxrank == 9999 ? "-" : $ytdmaxrank;
 			$ret['rank']['ytdhdate'][$sd] = $ytdmaxrankdate;
 			$ret['rank']['maxpoint'][$sd] = $maxpoint;
+		}
+	}
+
+	private function process_recent_match(&$ret, $id, $gender) {
+		// recent data
+
+		$ids = []; // 记录那些需要去数据库查名字的人
+		$heads = []; // 需要查头像的人
+		foreach (['S', 'D'] as $sd) {
+			$cmd = "grep ^$id " . join("/", [Config::get('const.root'), "data", "calc", $gender, strtolower($sd), "unloaded"]);
+			unset($r); exec($cmd, $r);
+
+			$matches = [];
+			foreach ($r as $row) {
+				$arr = explode("\t", $row);
+				$date = $arr[5];
+				$year = $arr[4];
+				$eid = $arr[3];
+				$level = $arr[10];
+				$city = translate_tour($arr[8]);
+				$sfc = $arr[11];
+
+				$cmd = "grep \"$gender$id	\" " . join("/", [Config::get('const.root'), 'store', 'draw', $year, $eid]);
+				unset($r1); exec($cmd, $r1);
+				foreach ($r1 as $row1) {
+					$arr1 = explode("\t", $row1);
+					if (strpos($row1, "BYE") !== false) continue;
+					if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
+					foreach (Config::get('const.schema_drawsheet') as $k => $v) {
+						$kvmap[$v] = @$arr1[$k];
+					}
+					if (substr($kvmap['sextip'], 1, 1) != $sd) continue;
+					$t = substr($kvmap['sextip'], 0, 1);
+					if ($gender == "wta" && $t != "P" && $t != "W") continue;
+					if ($gender == "atp" && $t != "Q" && $t != "M") continue;
+
+					$pos = 0; // pos记录这个人是在home还是away
+					if ($gender . $id == $kvmap['P1A'] || $gender . $id == $kvmap['P1B']) {
+						$pos = 1;
+						$oppo = [$kvmap['Seed2'], []];
+						$oppo[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], translate2short(get_ori_id($kvmap['P2A']), $kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']), ""];
+						if ($sd == "D") {
+							$oppo[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], translate2short(get_ori_id($kvmap['P2B']), $kvmap['P2BFirst'], $kvmap['P2BLast'], $kvmap['P2BNation']), ""];
+						}
+						$me = [$kvmap['Seed1'], []];
+						$me[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], translate2short(get_ori_id($kvmap['P1A']), $kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']), ""];
+						if ($sd == "D") {
+							$me[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], translate2short(get_ori_id($kvmap['P1B']), $kvmap['P1BFirst'], $kvmap['P1BLast'], $kvmap['P1BNation']), ""];
+						}
+					} else if ($gender . $id == $kvmap['P2A'] || $gender . $id == $kvmap['P2B']) {
+						$pos = 2;
+						$oppo = [$kvmap['Seed1'], []];
+						$oppo[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], translate2short(get_ori_id($kvmap['P1A']), $kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']), ""];
+						if ($sd == "D") {
+							$oppo[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], translate2short(get_ori_id($kvmap['P1B']), $kvmap['P1BFirst'], $kvmap['P1BLast'], $kvmap['P1BNation']), ""];
+						}
+						$me = [$kvmap['Seed2'], []];
+						$me[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], translate2short(get_ori_id($kvmap['P2A']), $kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']), ""];
+						if ($sd == "D") {
+							$me[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], translate2short(get_ori_id($kvmap['P2B']), $kvmap['P2BFirst'], $kvmap['P2BLast'], $kvmap['P2BNation']), ""];
+						}
+					}
+
+					$wltag = "";
+					if ($pos == 1 && in_array($kvmap['mStatus'], ['F', 'H', 'J', 'L'])) $wltag = "W";
+					else if ($pos == 2 && in_array($kvmap['mStatus'], ['F', 'H', 'J', 'L'])) $wltag = "L";
+					else if ($pos == 1 && in_array($kvmap['mStatus'], ['G', 'I', 'K', 'M'])) $wltag = "L";
+					else if ($pos == 2 && in_array($kvmap['mStatus'], ['G', 'I', 'K', 'M'])) $wltag = "W";
+
+					if ($wltag == "") {
+						$score = "";
+					} else {
+						$score = revise_gs_score($kvmap['mStatus'], $kvmap['score1'], $kvmap['score2']);
+					}
+
+					$round = $kvmap['round'];
+					$roundid = Config::get('const.round2id')[$round];
+
+					$matches[] = [$date, $city, $roundid, $level, $round, $me, $oppo, $score, $wltag];
+				}
+			}
+
+			$cmd = "awk -F\"\\t\" '$15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " | sort -t\"	\" -k8gr,8 | head -30";
+			unset($r); exec($cmd, $r);
+			if ($r) {
+				foreach ($r as $row) {
+					$arr = explode("\t", $row);
+					if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
+					foreach (Config::get('const.schema_activity') as $k => $v) {
+						$kvmap[$v] = @$arr[$k];
+					}
+					$date = $kvmap['start_date'];
+					$year = $kvmap['year'];
+					$eid = $kvmap['joineid'];
+					$city = translate_tour($kvmap['city']);
+					$level = $kvmap['level'];
+					$sfc = $kvmap['sfc'];
+
+					// [seed, [pid, ioc, name, headshot]]
+					$me = [$kvmap['seed'], [[$kvmap['pid'], $kvmap['ioc'], "", ""]]];
+					if ($sd == "D") {
+						$me[1][] = [$kvmap['partner_id'], $kvmap['partner_ioc'], "", ""];
+					}
+
+					$matches = explode("@", $kvmap["matches"]);
+					foreach ($matches as $amatch) {
+						$arr2 = explode("!", $amatch);
+						foreach (Config::get('const.schema_activity_matches') as $k => $v) {
+							$match_kvmap[$v] = @$arr2[$k + 1];
+						}
+						$oppo = [$match_kvmap['opposeed'], []];
+						$oppo[1][] = [$match_kvmap['oid'], $match_kvmap['oioc'], "", ""];
+						if ($sd == "D") {
+							$oppo[1][] = [$match_kvmap['opartner_id'], $match_kvmap['opartner_ioc'], "", ""];
+						}
+
+						$wltag = substr($match_kvmap['wl'], 0, 1);
+						$score = $match_kvmap['games'];
+						if ($score == "-") $score = "W/O";
+						$round = $match_kvmap['round'];
+						$roundid = Config::get('const.round2id')[$round];
+
+						if ($sd == "D" && $match_kvmap['partner_id']) {
+							$me[1][1] = [$kvmap['partner_id'], $kvmap['partner_ioc'], "", ""];
+						}
+
+						$matches[] = [$date, $city, $roundid, $level, $round, $me, $oppo, $score, $wltag];
+					}
+				}
+			}
+
+			usort($matches, 'self::match_sort');
+			if ($sd == "S")	$matches = array_slice($matches, 0, 30);
+			else $matches = array_slice($matches, 0, 10);
+
+			foreach ($matches as $t_match) {
+				foreach ($t_match[5][1] as $t_person) {
+					if (!in_array($t_person[0], $ids)) $ids[] = $t_person[0];
+				}
+				foreach ($t_match[6][1] as $t_person) {
+					if (!in_array($t_person[0], $ids)) $ids[] = $t_person[0];
+				}
+			}
+
+			$ret['recent'][$sd] = $matches;
+		}
+
+		$id2name = [];
+		$id2head = [];
+		foreach ($ids as $id) {
+			$id2name[$id] = translate2short($id);
+			$id2head[$id] = fetch_headshot($id, $gender);
+		}
+
+		foreach ($ret['recent'] as $sd => &$matches) {
+			foreach ($matches as &$match) {
+				foreach ($match[5][1] as &$person) {
+					if ($person[0] == "" || $person[0] === "0") continue;
+					if ($person[2] == "") $person[2] = @$id2name[$person[0]];
+					$person[3] = $id2head[$person[0]];
+				}
+				foreach ($match[6][1] as &$person) {
+					if ($person[0] == "" || $person[0] === "0") continue;
+					if ($person[2] == "") $person[2] = @$id2name[$person[0]];
+					$person[3] = $id2head[$person[0]];
+				}
+				if ($match[8] == "L") swap($match[5], $match[6]); // 保持胜者在前，败者在后
+			}
 		}
 	}
 
