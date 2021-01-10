@@ -851,7 +851,11 @@ class Event extends Base{
 		}
 		$event = self::transSextip($event_raw, intval($m->attributes()->isDoubles) + 1);
 
-		if (!isset($this->matches[$matchid])) $this->matches[$matchid] = [];
+		if (!isset($this->matches[$matchid])) {
+			$this->matches[$matchid] = [];
+			$this->matches[$matchid]['uuid'] = $matchid;
+			$this->matches[$matchid]['bestof'] = 3;
+		}
 		$match = &$this->matches[$matchid];
 		$match['tipmsg'] = $m->attributes()->msg . '';
 

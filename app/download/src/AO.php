@@ -16,17 +16,6 @@ class Down extends DownBase {
 	}
 
 	protected function downPlayerFile() {
-		print_line("begin to down players");
-		$url = "https://ausopen.com/event/all/players";
-		$html = http($url, null, null, null);
-		if (!$html) {
-			print_line("download players failed");
-			return [false, "download players failed"];
-		}
-		$fp = fopen(join("/", [DATA, "tour", "player", $this->year, $this->eventID, "players"]), "w");
-		output_content($html, $fp); 
-		fclose($fp);
-		sleep(2);
 		return [true, ""];
 	}
 
@@ -63,10 +52,10 @@ class Down extends DownBase {
 		$qm = "MD";
 		$day = ceil((time() - strtotime($this->start_date)) / 86400);
 		foreach ([$day, $day + 1, $day + 2, $day + 3] as $day) {
-			if ($day <= -30 || ($day >= -26 && $day < 1) || $day > 14) continue;
-			$originalDay = $day + 30;
+			if ($day <= -29 || ($day > -25 && $day < 1) || $day > 14) continue;
+			$originalDay = $day + 29;
 			if ($day < 15) {
-				$day += 30;
+				$day += 29;
 				$qm = "Q";
 			}
 
@@ -95,10 +84,10 @@ class Down extends DownBase {
 		$qm = "MD";
 		$day = ceil((time() - strtotime($this->start_date)) / 86400);
 		foreach ([$day - 1, $day] as $day) {
-			if ($day <= -30 || ($day >= -26 && $day < 1) || $day > 14) continue;
-			$originalDay = $day + 30;
+			if ($day <= -29 || ($day > -25 && $day < 1) || $day > 14) continue;
+			$originalDay = $day + 29;
 			if ($day < 15) {
-				$day += 30;
+				$day += 29;
 				$qm = "Q";
 			}
 

@@ -53,6 +53,7 @@ do
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]
 	then
+		echo $eid $year $asso
 		php ../src/live.php $eid $year $asso >> tmp_live
 	fi
 done

@@ -317,9 +317,9 @@ class Event extends Base{
 			$h2h = "";
 
 			// 记录到match里
-			$this->matches[$m['match_id']] = [  // key是该系统里认可的matchid
-				'uuid' => $uuid,  // 原系统里的唯一id
-				'id' => $matchid, // 我系统里规范化matchid
+			$this->matches[$matchid] = [  // key是该系统里认可的matchid
+				'uuid' => $matchid,  // 原系统里的唯一id
+				'id' => $event . substr($matchid, 2), // 我系统里规范化matchid
 				'event' => $event,
 				'r' => $r1,
 				'r1' => $r2,
@@ -472,19 +472,20 @@ class Event extends Base{
 
 	protected function getResult($matchid, &$m, $match_time = "", $match_court = "") {
 
-		$event = substr($matchid, 0, 2);
 		//if (!isset($this->draws[$event])) return false;
 		$r1 = substr($matchid, 2, 1) + 0;
 		$order = substr($matchid, 3, 2) + 0;
 
-/*
-		if (!isset($this->draws[$event]['matches'][$r1][$order])) return false;
-		$match = &$this->draws[$event]['matches'][$r1][$order];
-*/
-		if (!isset($this->matches[$matchid])) $this->matches[$matchid] = [];
-		
+		if (!isset($this->matches[$matchid])) {
+			$this->matches[$matchid] = [];
+			$this->matches[$matchid]['uuid'] = $matchid;
+			$event_raw = substr($matchid, 0, 2);
+			$this->matches[$matchid]["bestof"] = $event_raw == "MS" ? 5 : 3;
+		}
+
 		$match = &$this->matches[$matchid];
 		$match['tipmsg'] = "";
+		$event = @$match["event"];
 
 		$status = $m['match_status']['name'];
 
@@ -531,7 +532,7 @@ class Event extends Base{
 
 		$match['mStatus'] = $mStatus;
 		if ($mStatus != "A") {
-			$match['dura'] = $m['duration'];
+			$match['dura'] = date('H:i:s', strtotime($m['duration']));
 			$match['s1'] = $score1;
 			$match['s2'] = $score2;
 		} else {

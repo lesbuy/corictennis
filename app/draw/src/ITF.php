@@ -461,7 +461,10 @@ class Event extends Base{
 
 		//if (!isset($this->matches[$matchid])) return;
 
-		if (!isset($this->matches[$matchid])) $this->matches[$matchid] = [];
+		if (!isset($this->matches[$matchid])) {
+			$this->matches[$matchid] = [];
+			$this->matches[$matchid]['uuid'] = $matchid;
+		}
 		$match = &$this->matches[$matchid];
 		$event = @$match['event'];
 

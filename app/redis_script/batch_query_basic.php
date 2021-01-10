@@ -6,9 +6,9 @@ $redis = new redis_cli($db_conf['redis']['host'], $db_conf['redis']['port']);
 $file = "name_list";
 $fp = fopen($file, "r");
 while ($pid = trim(fgets($fp))) {
-	if (preg_match('/[A-Z0-9]{4}/', $pid)) {
+	if (preg_match('/^[A-Z0-9]{4}$/', $pid)) {
 		$gender = "atp";
-	} else if (preg_match('/[0-9]{5,6}/', $pid)) {
+	} else if (preg_match('/^[0-9]{5,6}$/', $pid)) {
 		$gender = "wta";
 	} else {
 		$gender = "itf";

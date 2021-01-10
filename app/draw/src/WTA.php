@@ -1402,7 +1402,10 @@ class Event extends Base{
 		$event_raw = substr($matchid, 0, 2);
 		$event = self::transSextip($event_raw, $m["DrawMatchType"] == "D" ? 2 : 1);
 
-		if (!isset($this->matches[$matchid])) $this->matches[$matchid] = [];
+		if (!isset($this->matches[$matchid])) {
+			$this->matches[$matchid] = [];
+			$this->matches[$matchid]['uuid'] = $matchid;
+		}
 		$match = &$this->matches[$matchid];
 		$match['tipmsg'] = '';
 		$match['bestof'] = 3;
