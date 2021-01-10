@@ -209,8 +209,8 @@ class Bio {
 							'l_en', $ret['l_en'],
 							's_en', $ret['s_en']
 						)->set();
+						fputs(STDERR, $pid . " new added\n");
 					}
-					fputs(STDERR, $pid . " new added\n");
 				} // if redis
 			} // if xml
 		} // if res1

@@ -1051,7 +1051,9 @@ abstract class Base{
             $odd1 = $odd2 = ""; 
 			if (isset($m['date'])) {
 				$res1 = $this->redis->cmd('HMGET', join("_", ['fs', $name1, $name2, $sd, $m['date']]), 'fsid', 'unix')->get();
+				//print_err(join("_", ['fs', $name1, $name2, $sd, $m['date']]));
 				$res2 = $this->redis->cmd('HMGET', join("_", ['fs', $name1s, $name2s, $sd, $m['date']]), 'betsid', 'betsp1', 'betsp2')->get();
+				//print_err(join("_", ['fs', $name1s, $name2s, $sd, $m['date']]));
 			} else {
 				$key_arr = $this->redis->cmd('KEYS', join("_", ['fs', $name1, $name2, $sd, '*']))->get();
 				if ($key_arr) {
@@ -1072,6 +1074,7 @@ abstract class Base{
 
 			if ($betsp1) $this->teams[$m['t1']]['b'] = $betsp1;
 			if ($betsp2) $this->teams[$m['t2']]['b'] = $betsp2;
+
 
 			$res = [];
 			if ($betsid) {

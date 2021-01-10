@@ -436,6 +436,7 @@ class Event extends Base{
 							'time' => $time,
 							'event' => $this->matches[$matchid]['event'],
 						];
+						$this->matches[$matchid]["date"] = $date;
 					}
 
 					self::getResult($matchid, $m, $time, $this->oop[$day]['courts'][$order]['name']);
