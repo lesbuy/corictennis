@@ -23,6 +23,9 @@ class Event extends Base{
 	protected function preprocess() {
 	}
 
+	public function processLive() {
+	}
+
 	protected function parsePlayer() {
 		$file = join("/", [DATA, 'tour', 'draw', $this->year, $this->tour]);
 		if (!file_exists($file)) return false;

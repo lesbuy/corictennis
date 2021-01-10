@@ -5,69 +5,10 @@ require_once('base.class.php');
 class Event extends Base{
 
 	protected $currency = "A$";
-	private $start_date = "2021-02-08 05:00"; // 此日为第1日，后面的start,end 都是偏移量
-	private $quali_start_date = "2021-01-10 05:00"; // 此日为资格赛第1天
-	private $eventConf = [
-		"156126" => ["event" => "QS", "draw" => 128, "round" => 3, "eventid2" => 0, "start" => -30, "end" => -25],
-		"156131" => ["event" => "PS", "draw" => 128, "round" => 3, "eventid2" => 1, "start" => -30, "end" => -25],
-		"156216" => ["event" => "MS", "draw" => 128, "round" => 7, "eventid2" => 0, "start" => -3, "end" => 14],
-		"156236" => ["event" => "WS", "draw" => 128, "round" => 7, "eventid2" => 1, "start" => -3, "end" => 14],
-		"156211" => ["event" => "MD", "draw" => 64, "round" => 6, "eventid2" => 2, "start" => -3, "end" => 14],
-		"156231" => ["event" => "WD", "draw" => 64, "round" => 6, "eventid2" => 3, "start" => -3, "end" => 14],
-		"156256" => ["event" => "XD", "draw" => 32, "round" => 5, "eventid2" => 4, "start" => 0, "end" => 14],
-	];
-	private $roundConf = [
-		"MS" => [
-			"W" => ["id" => 1, "point" => 2000, "prize" => 4120000, 'alias' => "W"],
-			"F" => ["id" => 2, "point" => 1200, "prize" => 2065000, 'alias' => "F"],
-			"SF" => ["id" => 3, "point" => 720, "prize" => 1040000, 'alias' => "SF"],
-			"QF" => ["id" => 4, "point" => 360, "prize" => 525000, 'alias' => "QF"],
-			"R4" => ["id" => 5, "point" => 180, "prize" => 300000, 'alias' => "R16"],
-			"R3" => ["id" => 6, "point" => 90, "prize" => 180000, 'alias' => "R32"],
-			"R2" => ["id" => 7, "point" => 45, "prize" => 128000, 'alias' => "R64"],
-			"R1" => ["id" => 8, "point" => 10, "prize" => 100000, 'alias' => "R128"],
-		],
-		"WS" => [
-			"W" => ["id" => 1, "point" => 2000, "prize" => 4120000, 'alias' => "W"],
-			"F" => ["id" => 2, "point" => 1300, "prize" => 2065000, 'alias' => "F"],
-			"SF" => ["id" => 3, "point" => 780, "prize" => 1040000, 'alias' => "SF"],
-			"QF" => ["id" => 4, "point" => 430, "prize" => 525000, 'alias' => "QF"],
-			"R4" => ["id" => 5, "point" => 240, "prize" => 300000, 'alias' => "R16"],
-			"R3" => ["id" => 6, "point" => 130, "prize" => 180000, 'alias' => "R32"],
-			"R2" => ["id" => 7, "point" => 70, "prize" => 128000, 'alias' => "R64"],
-			"R1" => ["id" => 8, "point" => 10, "prize" => 100000, 'alias' => "R128"],
-		],
-		"MD" => [
-			"W" => ["id" => 1, "point" => 2000, "prize" => 760000, 'alias' => "W"],
-			"F" => ["id" => 2, "point" => 1200, "prize" => 380000, 'alias' => "F"],
-			"SF" => ["id" => 3, "point" => 720, "prize" => 200000, 'alias' => "SF"],
-			"QF" => ["id" => 4, "point" => 360, "prize" => 110000, 'alias' => "QF"],
-			"R3" => ["id" => 5, "point" => 180, "prize" => 62000, 'alias' => "R16"],
-			"R2" => ["id" => 6, "point" => 90, "prize" => 38000, 'alias' => "R32"],
-			"R1" => ["id" => 7, "point" => 0, "prize" => 25000, 'alias' => "R64"],
-		],
-		"WD" => [
-			"W" => ["id" => 1, "point" => 2000, "prize" => 760000, 'alias' => "W"],
-			"F" => ["id" => 2, "point" => 1300, "prize" => 380000, 'alias' => "F"],
-			"SF" => ["id" => 3, "point" => 780, "prize" => 200000, 'alias' => "SF"],
-			"QF" => ["id" => 4, "point" => 430, "prize" => 110000, 'alias' => "QF"],
-			"R3" => ["id" => 5, "point" => 240, "prize" => 62000, 'alias' => "R16"],
-			"R2" => ["id" => 6, "point" => 130, "prize" => 38000, 'alias' => "R32"],
-			"R1" => ["id" => 7, "point" => 10, "prize" => 25000, 'alias' => "R64"],
-		],
-		"QS" => [
-			"Qualify" => ["id" => 1, "point" => 25, "prize" => 0, 'alias' => "Qualify"],
-			"Q3" => ["id" => 2, "point" => 16, "prize" => 50000, 'alias' => "Q3"],
-			"Q2" => ["id" => 3, "point" => 8, "prize" => 32500, 'alias' => "Q2"],
-			"Q1" => ["id" => 4, "point" => 0, "prize" => 20000, 'alias' => "Q1"],
-		],
-		"PS" => [
-			"Qualify" => ["id" => 1, "point" => 40, "prize" => 0, 'alias' => "Qualify"],
-			"Q3" => ["id" => 2, "point" => 30, "prize" => 50000, 'alias' => "Q3"],
-			"Q2" => ["id" => 3, "point" => 20, "prize" => 32500, 'alias' => "Q2"],
-			"Q1" => ["id" => 4, "point" => 2, "prize" => 20000, 'alias' => "Q1"],
-		],
-	];
+	private $config;
+	private $start_date; // 此日为第1日，并不一定是星期一，后面的start,end 都是偏移量
+	private $eventConf;
+	private $roundConf;
 
 	public function process() {
 		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
@@ -125,9 +66,17 @@ class Event extends Base{
 		//$this->reviseEntry();
 	}
 
-	public function preprocess() {
-		$this->quali_first_day = date('Y-m-d', strtotime($this->quali_start_date));
+	public function processLive() {
+		$this->parseLive();
+	}
 
+	public function preprocess() {
+
+		$this->config = json_decode(file_get_contents(join("/", [APP, "draw", "conf", "GS", $this->year, $this->tour . ".json"])), true);
+		$this->quali_first_day = $this->config["qualiStartDate"];
+		$this->start_date = $this->config["startDate"];
+		$this->eventConf = $this->config["eventConf"];
+		$this->roundConf = $this->config["roundConf"];
 		/*
 		$file = join("/", [WORK, 'etl', $this->year, $this->tour, 'wclist']);
 		$fp = fopen($file, "r");
@@ -524,7 +473,7 @@ class Event extends Base{
 	protected function getResult($matchid, &$m, $match_time = "", $match_court = "") {
 
 		$event = substr($matchid, 0, 2);
-		if (!isset($this->draws[$event])) return false;
+		//if (!isset($this->draws[$event])) return false;
 		$r1 = substr($matchid, 2, 1) + 0;
 		$order = substr($matchid, 3, 2) + 0;
 
@@ -532,6 +481,8 @@ class Event extends Base{
 		if (!isset($this->draws[$event]['matches'][$r1][$order])) return false;
 		$match = &$this->draws[$event]['matches'][$r1][$order];
 */
+		if (!isset($this->matches[$matchid])) $this->matches[$matchid] = [];
+		
 		$match = &$this->matches[$matchid];
 		$match['tipmsg'] = "";
 

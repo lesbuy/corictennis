@@ -1102,7 +1102,8 @@ abstract class Base{
 	public function outputRawQ() {print_r($this->qlist);}
 	public function outputRawW() {print_r($this->wclist);}
 
-	abstract protected function process();
+	abstract public function process();
+	abstract public function processLive();
 	abstract protected function preprocess();
 	abstract protected function parsePlayer();
 	abstract protected function parseDraw();

@@ -7,7 +7,7 @@ class Event extends Base{
 	protected $eventCodeReset = [];
 	protected $otherSextip = 0;
 
-	public function  process() {
+	public function process() {
 		$this->preprocess();
 		$this->parsePlayer();
 		$this->parseDraw();
@@ -17,6 +17,10 @@ class Event extends Base{
 		$this->appendH2HandFS();
 		$this->calaTeamFinal();
 
+	}
+
+	public function processLive() {
+		$this->parseLive();
 	}
 
 	protected function preprocess() {
@@ -847,6 +851,7 @@ class Event extends Base{
 		}
 		$event = self::transSextip($event_raw, intval($m->attributes()->isDoubles) + 1);
 
+		if (!isset($this->matches[$matchid])) $this->matches[$matchid] = [];
 		$match = &$this->matches[$matchid];
 		$match['tipmsg'] = $m->attributes()->msg . '';
 

@@ -10,7 +10,7 @@ class Event extends Base{
 		'MD' => ['R1' => 0, 'R2' => 90, 'QF' => 180, 'SF' => 360, 'F' => 600, 'W' => 1000],
 	];
 
-	public function  process() {
+	public function process() {
 		$file = join("/", [SCRIPT, 'gs', 'ori', $this->year, $this->tour, 'type']);
 		if (!file_exists($file)) return false;
 
@@ -63,6 +63,9 @@ class Event extends Base{
 		$this->parseLive();
 		//$this->reviseEntry();
 		$this->appendH2HandFS();
+	}
+
+	public function processLive() {
 	}
 
 	public function preprocess() {

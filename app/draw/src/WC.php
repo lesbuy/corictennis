@@ -1,8 +1,14 @@
 <?php
 
-require_once('GS.class.php');
+require_once('base.class.php');
 
-class eGS extends GS{
+class Event extends GS{
+
+	public function process() {
+	}
+
+	public function processLive() {
+	}
 
 	protected function parsePlayer($event) {
 		$file = join("/", [$this->root, 'ori', $this->year, $this->tour, 'draw', $event]);

@@ -1,0 +1,306 @@
+{
+    "eid": "AO",
+    "year": 2021,
+    "startDate": "2021-02-08 05:00",
+    "qualiStartDate": "2021-01-10 05:00",
+	"eventConf": {
+		"156126": {
+			"event": "QS",
+			"draw": 128,
+			"round": 3,
+			"eventid2": 0,
+			"start": -30,
+			"end": -25
+		},
+		"156131": {
+			"event": "PS",
+			"draw": 128,
+			"round": 3,
+			"eventid2": 1,
+			"start": -30,
+			"end": -25
+		},
+		"156216": {
+			"event": "MS",
+			"draw": 128,
+			"round": 7,
+			"eventid2": 0,
+			"start": -3,
+			"end": 14
+		},
+		"156236": {
+			"event": "WS",
+			"draw": 128,
+			"round": 7,
+			"eventid2": 1,
+			"start": -3,
+			"end": 14
+		},
+		"156211": {
+			"event": "MD",
+			"draw": 64,
+			"round": 6,
+			"eventid2": 2,
+			"start": -3,
+			"end": 14
+		},
+		"156231": {
+			"event": "WD",
+			"draw": 64,
+			"round": 6,
+			"eventid2": 3,
+			"start": -3,
+			"end": 14
+		},
+		"156256": {
+			"event": "XD",
+			"draw": 32,
+			"round": 5,
+			"eventid2": 4,
+			"start": 0,
+			"end": 14
+		}
+	},
+	"roundConf": {
+		"MS": {
+			"W": {
+				"id": 1,
+				"point": 2000,
+				"prize": 4120000,
+				"alias": "W"
+			},
+			"F": {
+				"id": 2,
+				"point": 1200,
+				"prize": 2065000,
+				"alias": "F"
+			},
+			"SF": {
+				"id": 3,
+				"point": 720,
+				"prize": 1040000,
+				"alias": "SF"
+			},
+			"QF": {
+				"id": 4,
+				"point": 360,
+				"prize": 525000,
+				"alias": "QF"
+			},
+			"R4": {
+				"id": 5,
+				"point": 180,
+				"prize": 300000,
+				"alias": "R16"
+			},
+			"R3": {
+				"id": 6,
+				"point": 90,
+				"prize": 180000,
+				"alias": "R32"
+			},
+			"R2": {
+				"id": 7,
+				"point": 45,
+				"prize": 128000,
+				"alias": "R64"
+			},
+			"R1": {
+				"id": 8,
+				"point": 10,
+				"prize": 100000,
+				"alias": "R128"
+			}
+		},
+		"WS": {
+			"W": {
+				"id": 1,
+				"point": 2000,
+				"prize": 4120000,
+				"alias": "W"
+			},
+			"F": {
+				"id": 2,
+				"point": 1300,
+				"prize": 2065000,
+				"alias": "F"
+			},
+			"SF": {
+				"id": 3,
+				"point": 780,
+				"prize": 1040000,
+				"alias": "SF"
+			},
+			"QF": {
+				"id": 4,
+				"point": 430,
+				"prize": 525000,
+				"alias": "QF"
+			},
+			"R4": {
+				"id": 5,
+				"point": 240,
+				"prize": 300000,
+				"alias": "R16"
+			},
+			"R3": {
+				"id": 6,
+				"point": 130,
+				"prize": 180000,
+				"alias": "R32"
+			},
+			"R2": {
+				"id": 7,
+				"point": 70,
+				"prize": 128000,
+				"alias": "R64"
+			},
+			"R1": {
+				"id": 8,
+				"point": 10,
+				"prize": 100000,
+				"alias": "R128"
+			}
+		},
+		"MD": {
+			"W": {
+				"id": 1,
+				"point": 2000,
+				"prize": 760000,
+				"alias": "W"
+			},
+			"F": {
+				"id": 2,
+				"point": 1200,
+				"prize": 380000,
+				"alias": "F"
+			},
+			"SF": {
+				"id": 3,
+				"point": 720,
+				"prize": 200000,
+				"alias": "SF"
+			},
+			"QF": {
+				"id": 4,
+				"point": 360,
+				"prize": 110000,
+				"alias": "QF"
+			},
+			"R3": {
+				"id": 5,
+				"point": 180,
+				"prize": 62000,
+				"alias": "R16"
+			},
+			"R2": {
+				"id": 6,
+				"point": 90,
+				"prize": 38000,
+				"alias": "R32"
+			},
+			"R1": {
+				"id": 7,
+				"point": 0,
+				"prize": 25000,
+				"alias": "R64"
+			}
+		},
+		"WD": {
+			"W": {
+				"id": 1,
+				"point": 2000,
+				"prize": 760000,
+				"alias": "W"
+			},
+			"F": {
+				"id": 2,
+				"point": 1300,
+				"prize": 380000,
+				"alias": "F"
+			},
+			"SF": {
+				"id": 3,
+				"point": 780,
+				"prize": 200000,
+				"alias": "SF"
+			},
+			"QF": {
+				"id": 4,
+				"point": 430,
+				"prize": 110000,
+				"alias": "QF"
+			},
+			"R3": {
+				"id": 5,
+				"point": 240,
+				"prize": 62000,
+				"alias": "R16"
+			},
+			"R2": {
+				"id": 6,
+				"point": 130,
+				"prize": 38000,
+				"alias": "R32"
+			},
+			"R1": {
+				"id": 7,
+				"point": 10,
+				"prize": 25000,
+				"alias": "R64"
+			}
+		},
+		"QS": {
+			"Qualify": {
+				"id": 1,
+				"point": 25,
+				"prize": 0,
+				"alias": "Qualify"
+			},
+			"Q3": {
+				"id": 2,
+				"point": 16,
+				"prize": 50000,
+				"alias": "Q3"
+			},
+			"Q2": {
+				"id": 3,
+				"point": 8,
+				"prize": 32500,
+				"alias": "Q2"
+			},
+			"Q1": {
+				"id": 4,
+				"point": 0,
+				"prize": 20000,
+				"alias": "Q1"
+			}
+		},
+		"PS": {
+			"Qualify": {
+				"id": 1,
+				"point": 40,
+				"prize": 0,
+				"alias": "Qualify"
+			},
+			"Q3": {
+				"id": 2,
+				"point": 30,
+				"prize": 50000,
+				"alias": "Q3"
+			},
+			"Q2": {
+				"id": 3,
+				"point": 20,
+				"prize": 32500,
+				"alias": "Q2"
+			},
+			"Q1": {
+				"id": 4,
+				"point": 2,
+				"prize": 20000,
+				"alias": "Q1"
+			}
+		}
+	}
+}

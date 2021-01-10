@@ -7,7 +7,7 @@ class Event extends Base{
 
 	protected $itf_point_prize;
 
-	public function  process() {
+	public function process() {
 		$this->preprocess();
 		$this->parsePlayer();
 		$this->parseDraw();
@@ -17,6 +17,10 @@ class Event extends Base{
 		$this->appendH2HandFS();
 		$this->calaTeamFinal();
 
+	}
+
+	public function processLive() {
+		$this->parseLive();
 	}
 
 	protected function preprocess() {
@@ -445,7 +449,7 @@ class Event extends Base{
 	
 		foreach ($xml['doc'][0]['data'] as $amatch) {
 			$matchid = $amatch['matchid'];
-			if (!isset($this->matches[$matchid])) continue;
+			//if (!isset($this->matches[$matchid])) continue;
 
 			self::getResult($matchid, $amatch['match']);
 
@@ -455,10 +459,11 @@ class Event extends Base{
 
 	protected function getResult($matchid, &$m, $match_time = "", $match_court = "") {
 
-		if (!isset($this->matches[$matchid])) return;
+		//if (!isset($this->matches[$matchid])) return;
 
+		if (!isset($this->matches[$matchid])) $this->matches[$matchid] = [];
 		$match = &$this->matches[$matchid];
-		$event = $match['event'];
+		$event = @$match['event'];
 
 		$match['tipmsg'] = '';
 
@@ -470,7 +475,7 @@ class Event extends Base{
 			else if ($winner == "away") $winner = 2;
 		}
 
-		$mStatus = $match['mStatus'];
+		$mStatus = @$match['mStatus'];
 		if ($mStatus != "" && in_string("FGHIJKLM", $mStatus)) { // 已经决出结果了，不更改
 			//  do nothing
 		} else if ($winner) { // 有winner 说明比完了

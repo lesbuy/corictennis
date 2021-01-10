@@ -72,6 +72,9 @@ class Event extends Base{
 		$this->calaTeamFinal();
 	}
 
+	public function processLive() {
+	}
+
 	public function preprocess() {
 		$file = join("/", [SCRIPT, 'gs', 'etl', $this->year, $this->tour, 'players']);
 		$fp = fopen($file, "r");
