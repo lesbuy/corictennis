@@ -275,67 +275,10 @@ class HomeController extends Controller
 		$this->process_basic_data($ret, $info, $id, $gender, $ip, $ua);
 		$this->process_match_data($ret, $info, $id, $gender);
 		$this->process_gs($ret, $id, $gender);
+		$this->process_rank_data($ret, $id, $gender);
 
 
 
-		// rank data
-		foreach (['S', 'D'] as $sd) {
-			$cmd = "cd " . join("/", [Config::get('const.root'), $gender, "player_all_ranks" . ($sd == 'D' ? '_d' : '')]) . "; grep \"^$id	\" *";
-			unset($r); exec($cmd, $r);
-			$maxrank = 9999;
-			$maxrankdate = "-";
-			$maxrankdura = 0;
-			$maxrankdatestart = "-";
-			$ytdmaxrank = 9999;
-			$ytdmaxrankdate = "-";
-			$maxpoint = 0;
-			if ($r) {
-				foreach ($r as $row) {
-					$arr = explode("\t", $row);
-					$rank = $arr[2];
-					$point = intval($arr[3]);
-					$date = date('Y-m-d', strtotime($arr[5]));
-					$ret['rank']['dot'][$sd][] = [$date, $rank + 0];
-					if (strtotime($arr[5]) < strtotime("2009-01-01")) $point *= 2;
-
-					if ($rank < $maxrank) {
-						$maxrank = $rank;
-						$maxrankdate = $date;
-						$maxrankdatestart = $date;
-						$maxrankdura = 0;
-					} else {
-						if ($maxrankdatestart != "-") {
-							$maxrankdura += round((strtotime($date) - strtotime($maxrankdatestart)) / 86400 / 7, 0);
-						}
-						if ($rank == $maxrank) {
-							$maxrankdatestart = $date;
-						} else {
-							$maxrankdatestart = "-";
-						}
-					}
-
-					if ($point > $maxpoint) {
-						$maxpoint = $point;
-					}
-
-					if ($this->current_year == substr($date, 0, 4)) {
-						if ($rank < $ytdmaxrank) {
-							$ytdmaxrank = $rank;
-							$ytdmaxrankdate = $date;
-						}
-					}
-				}
-				if ($maxrankdatestart != "-") {
-					$maxrankdura += ceil((time() - strtotime($maxrankdatestart)) / 86400 / 7);
-				}
-			}
-			$ret['rank']['ch'][$sd] = $maxrank == 9999 ? "-" : $maxrank;
-			$ret['rank']['chdate'][$sd] = $maxrankdate;
-			$ret['rank']['chdura'][$sd] = $maxrankdura;
-			$ret['rank']['ytdh'][$sd] = $ytdmaxrank == 9999 ? "-" : $ytdmaxrank;
-			$ret['rank']['ytdhdate'][$sd] = $ytdmaxrankdate;
-			$ret['rank']['maxpoint'][$sd] = $maxpoint;
-		}
 
 		// stat data
 		if ($gender == "atp") {
@@ -811,6 +754,67 @@ class HomeController extends Controller
 		} else {
 			$keys = array_keys($ret['gs']['detail']);
 			$ret['gs']['info'] = [min($keys), max($keys)];
+		}
+	}
+
+	private function process_rank_data(&$ret, $id, $gender) {
+		// rank data
+		foreach (['S', 'D'] as $sd) {
+			$cmd = "cd " . join("/", [Config::get('const.root'), "data", "rank", $gender, strtolower($sd), "history"]) . "; grep \"^$id	\" *";
+			unset($r); exec($cmd, $r);
+			$maxrank = 9999;
+			$maxrankdate = "-";
+			$maxrankdura = 0;
+			$maxrankdatestart = "-";
+			$ytdmaxrank = 9999;
+			$ytdmaxrankdate = "-";
+			$maxpoint = 0;
+			if ($r) {
+				foreach ($r as $row) {
+					$arr = explode("\t", $row);
+					$rank = $arr[2];
+					$point = intval($arr[3]);
+					$date = date('Y-m-d', strtotime($arr[5]));
+					$ret['rank']['dot'][$sd][] = [$date, $rank + 0];
+					if (strtotime($arr[5]) < strtotime("2009-01-01")) $point *= 2;
+
+					if ($rank < $maxrank) {
+						$maxrank = $rank;
+						$maxrankdate = $date;
+						$maxrankdatestart = $date;
+						$maxrankdura = 0;
+					} else {
+						if ($maxrankdatestart != "-") {
+							$maxrankdura += round((strtotime($date) - strtotime($maxrankdatestart)) / 86400 / 7, 0);
+						}
+						if ($rank == $maxrank) {
+							$maxrankdatestart = $date;
+						} else {
+							$maxrankdatestart = "-";
+						}
+					}
+
+					if ($point > $maxpoint) {
+						$maxpoint = $point;
+					}
+
+					if ($this->current_year == substr($date, 0, 4)) {
+						if ($rank < $ytdmaxrank) {
+							$ytdmaxrank = $rank;
+							$ytdmaxrankdate = $date;
+						}
+					}
+				}
+				if ($maxrankdatestart != "-") {
+					$maxrankdura += ceil((time() - strtotime($maxrankdatestart)) / 86400 / 7);
+				}
+			}
+			$ret['rank']['ch'][$sd] = $maxrank == 9999 ? "-" : $maxrank;
+			$ret['rank']['chdate'][$sd] = $maxrankdate;
+			$ret['rank']['chdura'][$sd] = $maxrankdura;
+			$ret['rank']['ytdh'][$sd] = $ytdmaxrank == 9999 ? "-" : $ytdmaxrank;
+			$ret['rank']['ytdhdate'][$sd] = $ytdmaxrankdate;
+			$ret['rank']['maxpoint'][$sd] = $maxpoint;
 		}
 	}
 
