@@ -274,54 +274,9 @@ class HomeController extends Controller
 
 		$this->process_basic_data($ret, $info, $id, $gender, $ip, $ua);
 		$this->process_match_data($ret, $info, $id, $gender);
+		$this->process_gs($ret, $id, $gender);
 
 
-		// GS data
-		$cmd = "cd " . join("/", [Config::get('const.root'), 'store', 'draw']) . "; grep \"	$gender$id	\" */[ARWU][OGC]";
-		unset($r); exec($cmd, $r);
-
-		if ($r) {
-			foreach ($r as $row) {
-				$arr = explode("\t", $row);
-				foreach (Config::get('const.schema_drawsheet') as $k => $v) {$kvmap[$v] = @$arr[$k];}
-				$year = substr($kvmap['sextip'], 0, 4);
-				$eid = substr($kvmap['sextip'], 5, 2);
-				$sextip = substr($kvmap['sextip'], 8, 2);
-				$status = $kvmap['mStatus'];
-				if (in_array($status, ['F', 'H', 'J', 'L'])) $winner = 1; else if (in_array($status, ['G', 'I', 'K', 'M'])) $winner = 2; else $winner = 0;
-
-				if ($sextip == "MS" || $sextip == "WS") {
-					$sd = "S";
-				} else if ($sextip == "MD" || $sextip == "WD") {
-					$sd = "D";
-				} else {
-					continue;
-				}
-				$round = "R" . floor((intval($kvmap['id']) % 1000) / 100);
-				if (in_array($kvmap['round'], ['QF', 'SF', 'F'])) {
-					$round = $kvmap['round'];
-				}
-				if ($round == "F" && ((in_array($gender . $id, [$kvmap['P1A'], $kvmap['P1B']]) && $winner == 1) || (in_array($gender . $id, [$kvmap['P2A'], $kvmap['P2B']]) && $winner == 2))) $round = "W";
-				$ret['gs']['detail'][$year][$eid][$sd]['round'] = $round;
-
-				if ((in_array($gender . $id, [$kvmap['P1A'], $kvmap['P1B']]) && in_array($status, ['F', 'H', 'J']))
-						|| (in_array($gender . $id, [$kvmap['P2A'], $kvmap['P2B']]) && in_array($status, ['G', 'I', 'M']))) {
-					$ret['gs']['all'][$eid][$sd]['win'] = @$ret['gs']['all'][$eid][$sd]['win'] + 1;
-					$ret['gs']['all']['all'][$sd]['win'] = @$ret['gs']['all']['all'][$sd]['win'] + 1;
-				} else if ((in_array($gender . $id, [$kvmap['P2A'], $kvmap['P2B']]) && in_array($status, ['F', 'H', 'J']))
-						|| (in_array($gender . $id, [$kvmap['P1A'], $kvmap['P1B']]) && in_array($status, ['G', 'I', 'M']))) {
-					$ret['gs']['all'][$eid][$sd]['loss'] = @$ret['gs']['all'][$eid][$sd]['loss'] + 1;
-					$ret['gs']['all']['all'][$sd]['loss'] = @$ret['gs']['all']['all'][$sd]['loss'] + 1; 
-				}
-			}
-		}
-
-		if (!isset($ret['gs']['detail'])) {
-			$ret['gs']['info'] = [0, 0];
-		} else {
-			$keys = array_keys($ret['gs']['detail']);
-			$ret['gs']['info'] = [min($keys), max($keys)];
-		}
 
 		// rank data
 		foreach (['S', 'D'] as $sd) {
@@ -810,6 +765,54 @@ class HomeController extends Controller
 		$ret['match']['count']['ytd'] = [$win_count + $loss_count, $win_count, $loss_count, $win_count];
 	}
 
+	private function process_gs(&$ret, $id, $gender) {
+		// GS data
+		$cmd = "cd " . join("/", [Config::get('const.root'), 'store', 'draw']) . "; grep \"	$gender$id	\" */[ARWU][OGC]";
+		unset($r); exec($cmd, $r);
+
+		if ($r) {
+			foreach ($r as $row) {
+				$arr = explode("\t", $row);
+				foreach (Config::get('const.schema_drawsheet') as $k => $v) {$kvmap[$v] = @$arr[$k];}
+				$year = substr($kvmap['sextip'], 0, 4);
+				$eid = substr($kvmap['sextip'], 5, 2);
+				$sextip = substr($kvmap['sextip'], 8, 2);
+				$status = $kvmap['mStatus'];
+				if (in_array($status, ['F', 'H', 'J', 'L'])) $winner = 1; else if (in_array($status, ['G', 'I', 'K', 'M'])) $winner = 2; else $winner = 0;
+
+				if ($sextip == "MS" || $sextip == "WS") {
+					$sd = "S";
+				} else if ($sextip == "MD" || $sextip == "WD") {
+					$sd = "D";
+				} else {
+					continue;
+				}
+				$round = "R" . floor((intval($kvmap['id']) % 1000) / 100);
+				if (in_array($kvmap['round'], ['QF', 'SF', 'F'])) {
+					$round = $kvmap['round'];
+				}
+				if ($round == "F" && ((in_array($gender . $id, [$kvmap['P1A'], $kvmap['P1B']]) && $winner == 1) || (in_array($gender . $id, [$kvmap['P2A'], $kvmap['P2B']]) && $winner == 2))) $round = "W";
+				$ret['gs']['detail'][$year][$eid][$sd]['round'] = $round;
+
+				if ((in_array($gender . $id, [$kvmap['P1A'], $kvmap['P1B']]) && in_array($status, ['F', 'H', 'J']))
+						|| (in_array($gender . $id, [$kvmap['P2A'], $kvmap['P2B']]) && in_array($status, ['G', 'I', 'M']))) {
+					$ret['gs']['all'][$eid][$sd]['win'] = @$ret['gs']['all'][$eid][$sd]['win'] + 1;
+					$ret['gs']['all']['all'][$sd]['win'] = @$ret['gs']['all']['all'][$sd]['win'] + 1;
+				} else if ((in_array($gender . $id, [$kvmap['P2A'], $kvmap['P2B']]) && in_array($status, ['F', 'H', 'J']))
+						|| (in_array($gender . $id, [$kvmap['P1A'], $kvmap['P1B']]) && in_array($status, ['G', 'I', 'M']))) {
+					$ret['gs']['all'][$eid][$sd]['loss'] = @$ret['gs']['all'][$eid][$sd]['loss'] + 1;
+					$ret['gs']['all']['all'][$sd]['loss'] = @$ret['gs']['all']['all'][$sd]['loss'] + 1; 
+				}
+			}
+		}
+
+		if (!isset($ret['gs']['detail'])) {
+			$ret['gs']['info'] = [0, 0];
+		} else {
+			$keys = array_keys($ret['gs']['detail']);
+			$ret['gs']['info'] = [min($keys), max($keys)];
+		}
+	}
 
 	public function stat(Request $req, $lang, $gender, $id, $year) {
 
