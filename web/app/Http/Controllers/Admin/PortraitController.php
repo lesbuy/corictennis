@@ -28,16 +28,6 @@ class PortraitController extends Controller
 			$path = "headshot";
 		}
 
-		$file = join("/", [Config::get('const.root'), 'app', 'redis_script', $path]);
-		$fp = fopen($file, "r");
-		while ($line = fgets($fp)) {
-			$arr = explode("\t", trim($line));
-			if ($arr[0] == $gender) {
-				$por[$arr[1]] = $arr[3];
-			}
-		}
-		fclose($fp);
-
 		$file = join("/", [Config::get('const.root'), 'temp', 'activity', $gender, $path]);
 		if (file_exists($file)) {
 			$fp = fopen($file, "r");

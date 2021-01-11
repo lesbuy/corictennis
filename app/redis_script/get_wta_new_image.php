@@ -36,9 +36,9 @@ foreach ($r as $pid) {
 			$height = $line['originalDetails']['height'];
 
 			if (in_string($line['title'], 'Full')) {
-				fputs($fp1, join("\t", [$pid, $url . "?height=603&width=379", $name, $width, $height]) . "\n");
+				fputs($fp1, join("\t", [$pid, $url . "?height=603", $name, $width, $height]) . "\n");
 			} else if (in_string($line['title'], 'Crop')) {
-				fputs($fp2, join("\t", [$pid, $url . "?height=300&width=225", $name, $width, $height]) . "\n");
+				fputs($fp2, join("\t", [$pid, $url . "?height=300", $name, $width, $height]) . "\n");
 			}
 		}
 		$pids = [];

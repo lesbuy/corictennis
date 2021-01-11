@@ -237,13 +237,13 @@ abstract class Base{
 						$psb_t1 = $this->teams[$prev_match['t1']];
 						$psb_t2 = $this->teams[$prev_match['t2']];
 						if ($this->draws[$event]['sd'] == 'S') {
-							${'t' . $side . 'id'} = 'TBD';
+							${'t' . $side . 'id'} = join('|', ['', $psb_t1['p'][0]['p'], $psb_t2['p'][0]['p']]);;
 							${'t' . $side . 'first'} = join('|', ['', $psb_t1['p'][0]['f'], $psb_t2['p'][0]['f']]);
 							${'t' . $side . 'last'} = join('|', ['', $psb_t1['p'][0]['l'], $psb_t2['p'][0]['l']]);
 							${'t' . $side . 'ioc'} = join('|', ['', $psb_t1['p'][0]['i'], $psb_t2['p'][0]['i']]);
 							${'team' . $side . 'full'} = join('|', ['', $psb_t1['p'][0]['l'] . $psb_t1['p'][0]['f'], $psb_t2['p'][0]['l'] . $psb_t2['p'][0]['f']]);
 						} else {
-							${'t' . $side . 'id'} = 'TBD';
+							${'t' . $side . 'id'} = join('/', [join('|', ['', $psb_t1['p'][0]['p'], $psb_t2['p'][0]['p']]), join('|', ['', @$psb_t1['p'][1]['p'], @$psb_t2['p'][1]['p']])]);;
 							${'t' . $side . 'first'} = join('/', [join('|', ['', $psb_t1['p'][0]['f'], $psb_t2['p'][0]['f']]), join('|', ['', @$psb_t1['p'][1]['f'], @$psb_t2['p'][1]['f']])]);
 							${'t' . $side . 'last'} = join('/', [join('|', ['', $psb_t1['p'][0]['l'], $psb_t2['p'][0]['l']]), join('|', ['', @$psb_t1['p'][1]['l'], @$psb_t2['p'][1]['l']])]);
 							${'t' . $side . 'ioc'} = join('/', [join('|', ['', $psb_t1['p'][0]['i'], $psb_t2['p'][0]['i']]), join('|', ['', @$psb_t1['p'][1]['i'], @$psb_t2['p'][1]['i']])]);
