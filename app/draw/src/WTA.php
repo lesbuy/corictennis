@@ -1279,7 +1279,9 @@ class Event extends Base{
 								'type' => 'KO',
 							];
 						}
-						$this->matches[$matchid]["t" . $seq] = $teamID;
+						if (in_array(substr($this->matches[$matchid]["t" . $seq], 2), ["", "COMEUP", "LIVE", "TBD", "QUAL"])) {
+							$this->matches[$matchid]["t" . $seq] = $teamID;
+						}
 					}
 
 					if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过

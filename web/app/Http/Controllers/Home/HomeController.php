@@ -401,7 +401,7 @@ class HomeController extends Controller
 				$ret['honor'][$sd] = [$win_titles, $tours];
 		} 
 
-		// return json_encode($ret);
+		//return json_encode($ret);
 		return view('home.card', [
 			'ret' => $ret,
 		]);
@@ -661,7 +661,7 @@ class HomeController extends Controller
 		$ids = []; // 记录那些需要去数据库查名字的人
 		$heads = []; // 需要查头像的人
 		foreach (['S', 'D'] as $sd) {
-			$cmd = "grep ^$id " . join("/", [Config::get('const.root'), "data", "calc", $gender, strtolower($sd), "unloaded"]);
+			$cmd = "grep ^$id " . join("/", [Config::get('const.root'), "data", "calc", $gender, strtolower($sd), "year", "unloaded"]);
 			unset($r); exec($cmd, $r);
 
 			$matches = [];
@@ -690,28 +690,30 @@ class HomeController extends Controller
 
 					$pos = 0; // pos记录这个人是在home还是away
 					if ($gender . $id == $kvmap['P1A'] || $gender . $id == $kvmap['P1B']) {
+						if (in_array($kvmap['P2A'], ["BYE", "", "0", "-"])) continue;
 						$pos = 1;
 						$oppo = [$kvmap['Seed2'], []];
-						$oppo[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], translate2short(get_ori_id($kvmap['P2A']), $kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']), ""];
+						$oppo[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], "", ""];
 						if ($sd == "D") {
-							$oppo[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], translate2short(get_ori_id($kvmap['P2B']), $kvmap['P2BFirst'], $kvmap['P2BLast'], $kvmap['P2BNation']), ""];
+							$oppo[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], "", ""];
 						}
 						$me = [$kvmap['Seed1'], []];
-						$me[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], translate2short(get_ori_id($kvmap['P1A']), $kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']), ""];
+						$me[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], "", ""];
 						if ($sd == "D") {
-							$me[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], translate2short(get_ori_id($kvmap['P1B']), $kvmap['P1BFirst'], $kvmap['P1BLast'], $kvmap['P1BNation']), ""];
+							$me[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], "", ""];
 						}
 					} else if ($gender . $id == $kvmap['P2A'] || $gender . $id == $kvmap['P2B']) {
+						if (in_array($kvmap['P1A'], ["BYE", "", "0", "-"])) continue;
 						$pos = 2;
 						$oppo = [$kvmap['Seed1'], []];
-						$oppo[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], translate2short(get_ori_id($kvmap['P1A']), $kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']), ""];
+						$oppo[1][] = [get_ori_id($kvmap['P1A']), $kvmap['P1ANation'], "", ""];
 						if ($sd == "D") {
-							$oppo[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], translate2short(get_ori_id($kvmap['P1B']), $kvmap['P1BFirst'], $kvmap['P1BLast'], $kvmap['P1BNation']), ""];
+							$oppo[1][] = [get_ori_id($kvmap['P1B']), $kvmap['P1BNation'], "", ""];
 						}
 						$me = [$kvmap['Seed2'], []];
-						$me[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], translate2short(get_ori_id($kvmap['P2A']), $kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']), ""];
+						$me[1][] = [get_ori_id($kvmap['P2A']), $kvmap['P2ANation'], "", ""];
 						if ($sd == "D") {
-							$me[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], translate2short(get_ori_id($kvmap['P2B']), $kvmap['P2BFirst'], $kvmap['P2BLast'], $kvmap['P2BNation']), ""];
+							$me[1][] = [get_ori_id($kvmap['P2B']), $kvmap['P2BNation'], "", ""];
 						}
 					}
 
@@ -756,13 +758,14 @@ class HomeController extends Controller
 						$me[1][] = [$kvmap['partner_id'], $kvmap['partner_ioc'], "", ""];
 					}
 
-					$matches = explode("@", $kvmap["matches"]);
-					foreach ($matches as $amatch) {
+					$_matches = explode("@", $kvmap["matches"]);
+					foreach ($_matches as $amatch) {
 						$arr2 = explode("!", $amatch);
 						foreach (Config::get('const.schema_activity_matches') as $k => $v) {
 							$match_kvmap[$v] = @$arr2[$k + 1];
 						}
-						$oppo = [$match_kvmap['opposeed'], []];
+						if (in_array($match_kvmap['oid'], ["", "BYE", "-", "0"])) continue;
+						$oppo = [$match_kvmap['oseed'], []];
 						$oppo[1][] = [$match_kvmap['oid'], $match_kvmap['oioc'], "", ""];
 						if ($sd == "D") {
 							$oppo[1][] = [$match_kvmap['opartner_id'], $match_kvmap['opartner_ioc'], "", ""];
@@ -803,7 +806,7 @@ class HomeController extends Controller
 		$id2head = [];
 		foreach ($ids as $id) {
 			$id2name[$id] = translate2short($id);
-			$id2head[$id] = fetch_headshot($id, $gender);
+			$id2head[$id] = fetch_headshot($id, $gender)[1];
 		}
 
 		foreach ($ret['recent'] as $sd => &$matches) {
