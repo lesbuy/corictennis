@@ -788,6 +788,15 @@ class Event extends Base{
 						}
 					}
 
+					if (isset($amatch->Official)) {
+						$match["umpire"] = [
+							"p" => $amatch->Official->attributes()->OfficialItfId . "",
+							"f" => $amatch->Official->attributes()->FirstName . "",
+							"l" => $amatch->Official->attributes()->SurName . "",
+							"i" => $amatch->Official->attributes()->Country . ""
+						];
+					}
+
 					// 如果赛程中能读到选手名字，就读
 					if ($match['t1'] == $event && $amatch->Players[0]->attributes()->isKnown . '' == 1) {
 						$pids = [];

@@ -54,11 +54,6 @@ class Event extends Base{
 			$this->parseExtra($i);
 			$this->parseSchedule($i);
 		}
-		for ($i = 31; $i <= 44; ++$i) {
-			$this->parseResult($i);
-			$this->parseExtra($i);
-			$this->parseSchedule($i);
-		}
 		$this->parseLive();
 		$this->appendH2HandFS();
 		$this->calaTeamFinal();
@@ -334,8 +329,14 @@ class Event extends Base{
 				'y' => $y,
 				'type' => (!$group ? 'KO' : 'RR'),
 			];
+		} // end foreach
 
-		} // end foreach 
+		foreach ($json['matches'] as $m) {
+			if ($m["match_status"] !== null && $m["match_status"]["abbr"] == "W/O") {
+				$matchid = $m["match_id"];
+				self::getResult($matchid, $m);
+			}
+		} 
 
 		if ($unavailable > $event_size / 2) {
 			$this->draws[$event]['status'] = -1;

@@ -303,6 +303,10 @@ abstract class Base{
 					isset($m['betsid']) ? $m['betsid'] : "",
 					isset($m['odd1']) ? $m['odd1'] : "",
 					isset($m['odd2']) ? $m['odd2'] : "",
+					isset($m['umpire']['p']) ? $m['umpire']['p'] : "",
+					isset($m['umpire']['f']) ? $m['umpire']['f'] : "",
+					isset($m['umpire']['l']) ? $m['umpire']['l'] : "",
+					isset($m['umpire']['i']) ? $m['umpire']['i'] : "",
 				]) . "\n", $fp);
 			}
 		}

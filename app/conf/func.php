@@ -51,13 +51,16 @@ function toc($tic) {
 	return intval($t[1]) - intval($s[1]) + floatval($t[0]) - floatval($s[0]);
 }
 
-function http($url, $post = NULL, $cookie = NULL, $headers = NULL){
+function http($url, $post = NULL, $cookie = NULL, $headers = NULL, $userpassword = NULL){
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	curl_setopt($ch, CURLOPT_HEADER, 0); 
 	if ($headers != NULL) {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	}
+	if ($userpassword != NULL) {
+		curl_setopt($ch, CURLOPT_USERPWD, $userpassword);
 	}
 	if(!empty($cookie)){
         curl_setopt($ch, CURLOPT_COOKIE, $cookie);

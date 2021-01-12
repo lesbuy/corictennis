@@ -502,10 +502,16 @@ class ResultController extends Controller
 								$f_arr = explode("|", $first_arr[$k]);
 								$l_arr = explode("|", $last_arr[$k]);
 								$i_arr = explode("|", @$ioc_arr[$k]);
+								$p_arr = explode("|", @$id_arr[$k]);
 								foreach ($f_arr as $k1 => $v1) {
 									if ($k1 == 0) continue;
 //									$tmp[] = rename2short($v1, $l_arr[$k1], @$i_arr[$k1]);
-									$tmp[] = translate2short(null, $v1, $l_arr[$k1], @$i_arr[$k1]);
+									$possiblePid = @$p_arr[$k1];
+									if (preg_match('/^[A-Z0-9]{4,6}$/', $possiblePid)) {
+										$tmp[] = translate2short($possiblePid, $v1, $l_arr[$k1], @$i_arr[$k1]);
+									} else {
+										$tmp[] = translate2short(null, $v1, $l_arr[$k1], @$i_arr[$k1]);
+									}
 								}
 								$tmpP[] = join(__('result.notice.or'), $tmp);
 							}
@@ -663,6 +669,16 @@ class ResultController extends Controller
 					$odds = '';
 				}
 
+				$umpire = null;
+				if (isset($kvmap["umpireid"]) && $kvmap["umpireid"] != "") {
+					$umpire = [
+						'p' => $kvmap["umpireid"],
+						'f' => $kvmap["umpirefirst"],
+						'l' => $kvmap["umpirelast"],
+						'i' => $kvmap["umpireioc"],
+					];
+				}
+
 				@$courts[$courtname][] = [
 					$matchId, //0
 					$sex, 
@@ -694,6 +710,7 @@ class ResultController extends Controller
 					$wholeLink, 
 					$matchid_bets,
 					$odds,
+					$umpire, // 30
 				];
 
 			}

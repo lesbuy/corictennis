@@ -13,10 +13,9 @@ class Down extends DownBase {
 		unset($r); exec($cmd, $r);
 		foreach ($r as $row) {
 			$arr = explode("\t", $row);
-			// 前一周周五开始算，一直到下一周周三0点结束
+			// 前一周周五开始算，一直到下一周周四0点结束
 			$start = $arr[6] - 3 * 86400;
-			$end = $arr[6] + $arr[21] * 7 * 86400 + 2 * 86400 + 50 * 86400;
-//			$end = $arr[6] + $arr[21] * 7 * 86400 + 2 * 86400;
+			$end = $arr[6] + $arr[21] * 7 * 86400 + 3 * 86400;
 			if (time() < $start || time() >= $end) continue;
 			$t = new DownTour;
 			$t->eventID = $arr[1];
@@ -262,7 +261,7 @@ class Down extends DownBase {
 		$file = join("/", [APP, "download", "bin", "wta_portrait"]);
 
 		$fp = fopen($file, "r");
-		$fp2 = fopen(join("/", [APP, "redis_script", "portrait"]), "w");
+		$fp2 = fopen(join("/", [APP, "redis_script", "portrait"]), "a");
 		while ($line = trim(fgets($fp))) {
 			$arr = explode("\t", $line);
 			$pid = $arr[0];
@@ -274,8 +273,19 @@ class Down extends DownBase {
 			} else if (strpos($img, ".jpg") !== false) {
 				$suffix = ".jpg";
 			}
-			$imgFile = str_replace(" ", "-", strtolower($name));
-			echo "curl \"" . $img . "\" > " . STORE . "/images/wta_portrait/original/" . $imgFile . $suffix . "\n";
+			$imgFile = str_replace(" ", "-", replace_letters(mb_strtolower($name)));
+			$desFile = STORE . "/images/wta_portrait/compressed/" . $imgFile . $suffix;
+			$data = [
+				"source" => [
+					"url" => $img
+				]
+			];
+			$res = http("https://api.tinify.com/shrink", json_encode($data), null, ["Content-Type: application/json"], "api:k44v850Kdkpnn9VdpHKRsYbVG2txGkxs");
+			sleep(1);
+			$resJson = json_decode($res, true);
+			if (!$resJson) continue;
+			$compressUrl = $resJson["output"]["url"];
+			echo "curl \"" . $compressUrl . "\" > " . $desFile . "\n";
 			fputs($fp2, join("\t", [
 				"wta",
 				$pid,

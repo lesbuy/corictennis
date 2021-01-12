@@ -14,10 +14,9 @@ class Down extends DownBase {
 		unset($r); exec($cmd, $r);
 		foreach ($r as $row) {
 			$arr = explode("\t", $row);
-			// 前一周周五开始算，一直到下一周周三0点结束
+			// 前一周周五开始算，一直到下一周周五0点结束
 			$start = $arr[6] - 3 * 86400;
-//			$end = $arr[6] + $arr[21] * 7 * 86400 + 2 * 86400 + 50 * 86400;
-			$end = $arr[6] + $arr[21] * 7 * 86400 + 2 * 86400;
+			$end = $arr[6] + $arr[21] * 7 * 86400 + 4 * 86400;
 			if (time() < $start || time() >= $end) continue;
 			$t = new DownTour;
 			$t->eventID = $arr[1];

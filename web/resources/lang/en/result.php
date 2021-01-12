@@ -17,6 +17,7 @@ return [
 		'replay' => 'Replay',
 		'draw' => 'Draw',
 		'byEvent' => 'OOPs',
+		'umpire' => 'Umpire',
 		'noOOP' => 'No OOP yet',
 		'wait' => 'OOP of 2020 Season will show after Jan 8th, for site admin traveling abroad',
 	],

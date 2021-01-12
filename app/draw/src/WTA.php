@@ -1307,6 +1307,15 @@ class Event extends Base{
 							$match['s2'] = $name;
 						}
 					}
+
+					if (isset($amatch["Official"])) {
+						$match["umpire"] = [
+							'p' => $amatch["Official"]["OfficialItfId"],
+							'f' => $amatch["Official"]["FirstName"],
+							'l' => $amatch["Official"]["SurName"],
+							'i' => $amatch["Official"]["Country"],
+						];
+					}
 		
 					$_next_match = self::findNextMatchIdAndPos($matchid, $event);
 					if ($_next_match !== null) {
@@ -1409,7 +1418,7 @@ class Event extends Base{
 			$this->matches[$matchid]['uuid'] = $matchid;
 		}
 		$match = &$this->matches[$matchid];
-		$match['tipmsg'] = '';
+		$match['tipmsg'] = $m["Message"];
 		$match['bestof'] = 3;
 
 		$winner = $m["Winner"];

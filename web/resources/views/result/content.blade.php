@@ -39,6 +39,11 @@ $(function() {
 						@endif
 					</div>
 				</div>
+				@if ($match[30])
+					<div class=cResultMatchUmpire>
+						{{ __('result.notice.umpire') }}&nbsp;{!! get_flag($match[30]['i']) !!}&nbsp{{ translate2long(null, $match[30]['f'], $match[30]['l'], $match[30]['i']) }}
+					</div>
+				@endif
 
 				<div class=cResultMatchMid>
 					<div class=cResultMatchMidPointFlag {{ $match[18] != "" ? "" : "style=display:none" }}>{{ $match[18] }}</div>
