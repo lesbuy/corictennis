@@ -22,7 +22,7 @@ mv $TEMP/tmp_calendar_CH2 $STORE/calendar/$year/CH
 cat /dev/null > $TEMP/tmp_calendar_ITF
 php ../src/itf-men.php >> $TEMP/tmp_calendar_ITF
 php ../src/itf-women.php >> $TEMP/tmp_calendar_ITF
-php ../src/itf-junior.php >> $TEMP/tmp_calendar_ITF
+#php ../src/itf-junior.php >> $TEMP/tmp_calendar_ITF
 
 cat $TEMP/tmp_calendar_ITF $STORE/calendar/$year/ITF | awk -F"\t" -v year=$year '$5 == year' | sort -u -s -k1,1 -k2,2 | sort -s -t"	" -k7g,7 -k21gr,21 -k2,2 > $TEMP/tmp_calendar_ITF2
 mv $TEMP/tmp_calendar_ITF2 $STORE/calendar/$year/ITF

@@ -1656,4 +1656,5 @@ return [
 	'haabneeme' => 'Haabneeme',
 	'selva gardena' => 'Selva Gardena',
 	'fujairah tennis & country club' => 'Fujairah',
+	'las palmas' => 'Las Palmas',
 ];

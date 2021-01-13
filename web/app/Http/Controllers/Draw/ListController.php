@@ -102,16 +102,17 @@ class ListController extends Controller
 					$date = $arr[5];
 					$prize = @$arr[20];
 					$ioc = $arr[10];
-					if ($arr[0] == "GS") {
-						$ret['WT']['GS'][] = [$eid, explode("/", $arr[0]), $city, -$arr[6], $arr[3], 0, $ioc];
-					} else {
+					//if ($arr[0] == "GS") {
+					//	$ret['WT']['GS'][] = [$eid, explode("/", $arr[0]), $city, -$arr[6], $arr[3], 0, $ioc];
+					//} else {
 						$ret['WT'][$date][] = [$eid, explode("/", $arr[0]), $city, $prize, $arr[3], 0, $ioc];
-					}
+					//}
 				}
 				if (isset($ret['WT'])) {
 					foreach ($ret['WT'] as $k => $v) {
 						usort($ret['WT'][$k], "self::prizeSort");
 					}
+					ksort($ret['WT']);
 				}
 			} else {
 				$file = join('/', [Config::get('const.root'), 'store', 'calendar', $year, "[CI]*"]);

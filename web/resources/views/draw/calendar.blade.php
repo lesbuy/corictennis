@@ -93,7 +93,6 @@
 		<input type=radio name="_sex" id=iCalendarAll value=all /><label class="unselected" for=iCalendarAll>{{ __('draw.calendar.ALL') }}</label>
 		<input type=radio name="_sex" id=iCalendarM value=m /><label class="unselected" for=iCalendarM>{{ __('draw.calendar.M') }}</label>
 		<input type=radio name="_sex" id=iCalendarW value=w /><label class="unselected" for=iCalendarW>{{ __('draw.calendar.W') }}</label>
-		<input type=radio name="_sex" id=iCalendarMW value=mw /><label class="unselected" for=iCalendarMW>{{ __('draw.calendar.MW') }}</label>
 	</div>
 
 	@foreach (['WT', 'CH', 'ITF', 'J'] as $type)
