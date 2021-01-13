@@ -282,6 +282,7 @@ class HomeController extends Controller
 		$this->process_rank_data($ret, $id, $gender);
 		$this->process_recent_match($ret, $id, $gender);
 		$this->process_honor($ret, $id, $gender);
+		$this->process_win_rate($ret, $id, $gender);
 
 
 
@@ -296,30 +297,7 @@ class HomeController extends Controller
 
 
 
-		// win rate of top N
-		$win_match = array_fill(0, 501, 0);
-		$loss_match = array_fill(0, 501, 0);
-		$winloss_match = array_fill(0, 501, [0, 0]);
-		$cmd = "awk -F\"\\t\" '$19 != 100 && $11 == \"S\" && $22 != \"0\" && $28 != \"-\" && $28 != \"W/O\"' " . join("/", [Config::get('const.root'), 'store', 'activity', $gender, $id]);
-		unset($r); exec($cmd, $r);
-		if ($r) {
-			foreach ($r as $row) {
-				$arr = explode("\t", $row);
-				if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
-				foreach (Config::get('const.schema_activity_match') as $k => $v) {
-					$kvmap[$v] = @$arr[$k];
-				}
-				if ($kvmap['opporank'] > 500 || $kvmap['opporank'] == "-" || $kvmap['opporank'] == "") continue;
-				if ($kvmap['winorlose'] == "W") $win_match[$kvmap['opporank']] += 1;
-				if ($kvmap['winorlose'] == "L") $loss_match[$kvmap['opporank']] += 1;
-			}
-		}
 
-		for ($i = 1; $i <= 500; ++$i) {
-			$winloss_match[$i] = [$winloss_match[$i - 1][0] + $win_match[$i], $winloss_match[$i - 1][1] + $loss_match[$i]];
-		}
-
-		$ret['winrate'] = $winloss_match;
 
 
 
@@ -834,6 +812,36 @@ class HomeController extends Controller
 			}
 			$ret['honor'][$sd] = [$win_titles, $tours];
 		} 
+	}
+
+	private function process_win_rate(&$ret, $id, $gender) {
+		// win rate of top N
+		$win_match = array_fill(0, 501, 0);
+		$loss_match = array_fill(0, 501, 0);
+		$winloss_match = array_fill(0, 501, [0, 0]);
+		$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"s\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'unloaded']);
+		unset($r); exec($cmd, $r);
+		if ($r) {
+			foreach ($r as $row) {
+				$arr = explode("\t", $row);
+				$matches_string = $arr[count(Config::get('const.schema_activity')) - 1];
+
+				if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
+				foreach (Config::get('const.schema_activity_matches') as $k => $v) {
+					$kvmap[$v] = @$arr[$k + 1];
+				}
+				if (in_array($kvmap["oid"], ["", "0", "-", "BYE"]) || $kvmap["games"] == "W/O") continue;
+				if (in_array($kvmap['orank'], ["-", "", "0", "9999"]) || intval($kvmap['orank']) > 500) continue;
+				if ($kvmap['wl'] == "W") $win_match[$kvmap['orank']] += 1;
+				if ($kvmap['wl'] == "L") $loss_match[$kvmap['orank']] += 1;
+			}
+		}
+
+		for ($i = 1; $i <= 500; ++$i) {
+			$winloss_match[$i] = [$winloss_match[$i - 1][0] + $win_match[$i], $winloss_match[$i - 1][1] + $loss_match[$i]];
+		}
+
+		$ret['winrate'] = $winloss_match;
 	}
 
 	public function stat(Request $req, $lang, $gender, $id, $year) {
