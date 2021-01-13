@@ -281,6 +281,7 @@ class HomeController extends Controller
 		$this->process_gs($ret, $id, $gender);
 		$this->process_rank_data($ret, $id, $gender);
 		$this->process_recent_match($ret, $id, $gender);
+		$this->process_honor($ret, $id, $gender);
 
 
 
@@ -321,88 +322,7 @@ class HomeController extends Controller
 		$ret['winrate'] = $winloss_match;
 
 
-		// honor
-		foreach (['S', 'D'] as $sd) {
-			$titles = [
-				'W' => ['AO' => [0,[]], 'RG' => [0,[]], 'WC' => [0,[]], 'UO' => [0,[]], 'GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]], 'Hard' => [0,[]], 'Clay' => [0,[]], 'Grass' => [0,[]], 'Carpet' => [0,[]], 'Indoor' => [0,[]]],
-				'F' => ['AO' => [0,[]], 'RG' => [0,[]], 'WC' => [0,[]], 'UO' => [0,[]], 'GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
-				'SF' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
-				'QF' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
-				'Attend' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
-			];
-				$cmd = "awk -F\"\\t\" '$19 == 100 && $11 == \"$sd\" && $20 != \"\" && $20 !~ /^Q[R1-9]/' " . join("/", [Config::get('const.root'), 'store', 'activity', $gender, $id]) . " | sort -t\"	\" -k4gr,4";
-				unset($r); exec($cmd, $r);
 
-				if ($r) {
-					foreach ($r as $row) {
-						$arr = explode("\t", $row);
-						if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
-						foreach (Config::get('const.schema_activity_summary') as $k => $v) {
-							$kvmap[$v] = @$arr[$k];
-						}
-
-						if (in_array($kvmap['level'], ['DC', 'FC'])) continue;
-
-						if ($kvmap['level'] == "YEC" && in_array($kvmap['tourname'], ['bali', 'sofia', 'zhuhai'])) $kvmap['level'] = "TOUR";
-						if ($kvmap['level'] == "WC") $kvmap['level'] = "YEC";
-						if (in_array($kvmap['level'], ['T1', 'PM', 'P5'])) $kvmap['level'] = "1000";
-						if (in_array($kvmap['level'], ['T2', 'P700'])) $kvmap['level'] = "500";
-						if (in_array($kvmap['level'], ['T3', 'T4', 'T5', 'Int'])) $kvmap['level'] = "250";
-						if (in_array($kvmap['level'], ['500', 'ISG', 'CS', 'CSD'])) $kvmap['level'] = "500";
-						if (in_array($kvmap['level'], ['250', 'IS', 'WSD', 'WSF', 'WS'])) $kvmap['level'] = "250";
-						if (in_array($kvmap['level'], ['ATP', 'GP', 'WCT', 'WT', 'WTA', 'XXI', 'GC'])) $kvmap['level'] = "TOUR";
-						if (in_array($kvmap['level'], ['CH', '125K', 'FU', 'ITF'])) $kvmap['level'] = "NONTOUR";
-						$is_indoor = strpos($kvmap['ground'], "(I)") !== false ? 'Indoor' : '';
-						$kvmap['ground'] = str_replace("(I)", "", $kvmap['ground']);
-						if ($kvmap['tourname'] == "australian open") $kvmap['tourname'] = "AO";
-						if ($kvmap['tourname'] == "roland garros" || $kvmap['tourname'] == "french open") $kvmap['tourname'] = "RG";
-						if ($kvmap['tourname'] == "wimbledon") $kvmap['tourname'] = "WC";
-						if ($kvmap['tourname'] == "us open") $kvmap['tourname'] = "UO";
-
-						if ($kvmap['finalround'] == "OB") $kvmap['finalround'] = "SF";
-						if ($kvmap['level'] == "YEC") {
-							if ($kvmap['finalround'] == "RR" || $kvmap['finalround'] == "R1") $kvmap['finalround'] = "QF";
-						}
-
-						if (isset($titles[$kvmap['finalround']][$kvmap['level']])) {
-							++$titles[$kvmap['finalround']][$kvmap['level']][0];
-							if (in_array($kvmap['level'], ['YEC', 'OL'])) {
-								$titles[$kvmap['finalround']][$kvmap['level']][1][] = $kvmap['year'];
-							} else {
-								$titles[$kvmap['finalround']][$kvmap['level']][1][] = translate_tour($kvmap['tourname']) . '(' . $kvmap['year'] . ')';
-							}
-						}
-						if (isset($titles[$kvmap['finalround']][$kvmap['ground']]) && $kvmap['level'] != "NONTOUR") {
-							++$titles[$kvmap['finalround']][$kvmap['ground']][0];
-							$titles[$kvmap['finalround']][$kvmap['ground']][1][] = translate_tour($kvmap['tourname']) . '(' . $kvmap['year'] . ')';
-						}
-						if (isset($titles[$kvmap['finalround']][$kvmap['tourname']])) {
-							++$titles[$kvmap['finalround']][$kvmap['tourname']][0];
-							$titles[$kvmap['finalround']][$kvmap['tourname']][1][] = $kvmap['year'];
-						}
-						if (isset($titles[$kvmap['finalround']][$is_indoor])) {
-							++$titles[$kvmap['finalround']][$is_indoor][0];
-							$titles[$kvmap['finalround']][$is_indoor][1][] = translate_tour($kvmap['tourname']) . '(' . $kvmap['year'] . ')';
-						}
-
-						if (isset($titles['Attend'][$kvmap['level']])) {
-							++$titles['Attend'][$kvmap['level']][0];
-						}
-					}
-				}
-
-				$win_titles = ['W' => $titles['W'], 'F' => $titles['F']];
-
-				$tours = [];
-				foreach (['GS', '1000', '500', '250', 'OL', 'YEC', 'TOUR', 'NONTOUR'] as $level) {
-					if (isset($titles['W'][$level])) $tours['W'][] = $titles['W'][$level];
-					if (isset($titles['F'][$level])) $tours['F'][] = $titles['F'][$level];
-					if (isset($titles['SF'][$level])) $tours['SF'][] = $titles['SF'][$level];
-					if (isset($titles['QF'][$level])) $tours['QF'][] = $titles['QF'][$level];
-					if (isset($titles['Attend'][$level])) $tours['Attend'][] = $titles['Attend'][$level];
-				}
-				$ret['honor'][$sd] = [$win_titles, $tours];
-		} 
 
 		//return json_encode($ret);
 		return view('home.card', [
@@ -827,6 +747,92 @@ class HomeController extends Controller
 				if ($match[8] == "L") swap($match[5], $match[6]); // 保持胜者在前，败者在后
 			}
 		}
+	}
+
+	private function process_honor(&$ret, $id, $gender) {
+		// honor
+		foreach (['S', 'D'] as $sd) {
+			$titles = [
+				'W' => ['AO' => [0,[]], 'RG' => [0,[]], 'WC' => [0,[]], 'UO' => [0,[]], 'GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]], 'Hard' => [0,[]], 'Clay' => [0,[]], 'Grass' => [0,[]], 'Carpet' => [0,[]], 'Indoor' => [0,[]]],
+				'F' => ['AO' => [0,[]], 'RG' => [0,[]], 'WC' => [0,[]], 'UO' => [0,[]], 'GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
+				'SF' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
+				'QF' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
+				'Attend' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
+			];
+			$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'unloaded']) . " | sort -t\"	\" -k8gr,8";
+			unset($r); exec($cmd, $r);
+
+			if ($r) {
+				foreach ($r as $row) {
+					$arr = explode("\t", $row);
+					if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
+					foreach (Config::get('const.schema_activity') as $k => $v) {
+						$kvmap[$v] = @$arr[$k];
+					}
+
+					if (in_array($kvmap['level'], ['DC', 'FC'])) continue;
+
+					//if ($kvmap['level'] == "YEC" && in_array(strtolower($kvmap['tourname']), ['bali', 'sofia', 'zhuhai'])) $kvmap['level'] = "TOUR";
+					if ($kvmap['level'] == "WC") $kvmap['level'] = "YEC";
+					if (in_array($kvmap['level'], ['T1', 'PM', 'P5', "WTA1000"])) $kvmap['level'] = "1000";
+					if (in_array($kvmap['level'], ['T2', 'P700', "WTA500"])) $kvmap['level'] = "500";
+					if (in_array($kvmap['level'], ['T3', 'T4', 'T5', 'Int', "WTA250"])) $kvmap['level'] = "250";
+					if (in_array($kvmap['level'], ['500', 'ISG', 'CS', 'CSD'])) $kvmap['level'] = "500";
+					if (in_array($kvmap['level'], ['250', 'IS', 'WSD', 'WSF', 'WS'])) $kvmap['level'] = "250";
+					if (in_array($kvmap['level'], ['ATP', 'GP', 'WCT', 'WT', 'WTA', 'XXI', 'GC'])) $kvmap['level'] = "TOUR";
+					if (in_array($kvmap['level'], ['CH', '125K', 'FU', 'ITF'])) $kvmap['level'] = "NONTOUR";
+					$is_indoor = strpos($kvmap['sfc'], "(I)") !== false ? 'Indoor' : '';
+					$kvmap['sfc'] = str_replace("(I)", "", $kvmap['sfc']);
+					$kvmap['city'] = strtolower($kvmap['city']);
+					if ($kvmap['city'] == "australian open") $kvmap['city'] = "AO";
+					if ($kvmap['city'] == "roland garros" || $kvmap['city'] == "french open") $kvmap['city'] = "RG";
+					if ($kvmap['city'] == "wimbledon") $kvmap['city'] = "WC";
+					if ($kvmap['city'] == "us open") $kvmap['city'] = "UO";
+
+					if ($kvmap['final_round'] == "OB") $kvmap['final_round'] = "SF";
+					if ($kvmap['level'] == "YEC") {
+						if ($kvmap['final_round'] == "RR" || $kvmap['final_round'] == "R1") $kvmap['final_round'] = "QF";
+					}
+
+					if (isset($titles[$kvmap['final_round']][$kvmap['level']])) {
+						++$titles[$kvmap['final_round']][$kvmap['level']][0];
+						if (in_array($kvmap['level'], ['YEC', 'OL'])) {
+							$titles[$kvmap['final_round']][$kvmap['level']][1][] = $kvmap['year'];
+						} else {
+							$titles[$kvmap['final_round']][$kvmap['level']][1][] = translate_tour($kvmap['city']) . '(' . $kvmap['year'] . ')';
+						}
+					}
+					if (isset($titles[$kvmap['final_round']][$kvmap['sfc']]) && $kvmap['level'] != "NONTOUR") {
+						++$titles[$kvmap['final_round']][$kvmap['sfc']][0];
+						$titles[$kvmap['final_round']][$kvmap['sfc']][1][] = translate_tour($kvmap['city']) . '(' . $kvmap['year'] . ')';
+					}
+					if (isset($titles[$kvmap['final_round']][$kvmap['city']])) {
+						++$titles[$kvmap['final_round']][$kvmap['city']][0];
+						$titles[$kvmap['final_round']][$kvmap['city']][1][] = $kvmap['year'];
+					}
+					if (isset($titles[$kvmap['final_round']][$is_indoor])) {
+						++$titles[$kvmap['final_round']][$is_indoor][0];
+						$titles[$kvmap['final_round']][$is_indoor][1][] = translate_tour($kvmap['city']) . '(' . $kvmap['year'] . ')';
+					}
+
+					if (isset($titles['Attend'][$kvmap['level']])) {
+						++$titles['Attend'][$kvmap['level']][0];
+					}
+				}
+			}
+
+			$win_titles = ['W' => $titles['W'], 'F' => $titles['F']];
+
+			$tours = [];
+			foreach (['GS', '1000', '500', '250', 'OL', 'YEC', 'TOUR', 'NONTOUR'] as $level) {
+				if (isset($titles['W'][$level])) $tours['W'][] = $titles['W'][$level];
+				if (isset($titles['F'][$level])) $tours['F'][] = $titles['F'][$level];
+				if (isset($titles['SF'][$level])) $tours['SF'][] = $titles['SF'][$level];
+				if (isset($titles['QF'][$level])) $tours['QF'][] = $titles['QF'][$level];
+				if (isset($titles['Attend'][$level])) $tours['Attend'][] = $titles['Attend'][$level];
+			}
+			$ret['honor'][$sd] = [$win_titles, $tours];
+		} 
 	}
 
 	public function stat(Request $req, $lang, $gender, $id, $year) {
