@@ -56,6 +56,11 @@ abstract class DownBase {
 		if (!$res[0]) {print_line($res[1]); exit;}
 	}
 
+	public function process_bio() {
+		$res = $this->downBio();
+		if (!$res[0]) {print_line($res[1]); exit;}
+	}
+
 	public function printTourList() {
 		foreach ($this->tourList as $t) {
 			print_line($t->eventID, $t->year, $t->city, $t->monday);
@@ -72,4 +77,6 @@ abstract class DownBase {
 	protected function downPortrait() {}
 
 	protected function updatePortrait() {}
+
+	protected function downBio() {}
 }

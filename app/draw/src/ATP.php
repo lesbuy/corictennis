@@ -879,12 +879,16 @@ class Event extends Base{
 				$mStatus = "F";
 			} else if ($winner == 3) {
 				$mStatus = "G";
-			} else if (strpos($sScore, 'Ret') !== false) {
-				if ($winner == 4) $mStatus = "H"; else if ($winner == 5) $mStatus = "I";
-			} else if (strpos($sScore, 'Def') !== false) {
-				if ($winner == 6) $mStatus = "J"; else if ($winner == 7) $mStatus = "K";
-			} else if (strpos($sScore, 'W/O') !== false) {
-				if ($winner == 4) $mStatus = "L"; else if ($winner == 5) $mStatus = "M";
+			} else if ($winner == 4) {
+				$mStatus = "H";
+				if (strpos($sScore, 'W/O') !== false) $mStatus = "L";
+			} else if ($winner == 5) {
+				$mStatus = "I";
+				if (strpos($sScore, 'W/O') !== false) $mStatus = "M";
+			} else if ($winner == 6) {
+				$mStatus = "J";
+			} else if ($winner == 7) {
+				$mStatus = "K";
 			} else if ($winner == 0) {
 				$mStatus = "B";
 			} else {

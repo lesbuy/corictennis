@@ -885,10 +885,18 @@ class medoo
 		}
 		else
 		{
-			$columns =' (' . implode(', ', $schema) . ')';
+			$columns =' (' . implode(', ', array_map(function ($d) {return "`" . $d . "`";}, $schema)) . ')';
 		}
 
 		$insert_prefix = 'INSERT INTO ' . $this->table_quote($table) . $columns . ' VALUES ';
+		$insert_suffix = " ON DUPLICATE KEY UPDATE ";
+		if ($columns != "") {
+			$insert_suffix .= join(", ", array_map(function ($d) {
+				return "`" . $d . "` = VALUES(`" . $d . "`)";
+			}, $schema));
+		} else {
+			$insert_suffix .= "1=1";
+		}
 
 		$inserts = array();
 
@@ -923,7 +931,8 @@ class medoo
 
 			if (count($inserts) == $group)
 			{
-				$insert_string = $insert_prefix . implode(', ', $inserts) . ';';
+				$insert_string = $insert_prefix . implode(', ', $inserts) . $insert_suffix . ";";
+
 				$ret = $this->exec($insert_string, true);
 				if ($ret === false)
 				{
@@ -941,7 +950,7 @@ class medoo
 
 		if (isset($inserts) && count($inserts) > 0)
 		{
-			$insert_string = $insert_prefix . implode(', ', $inserts) . ';';
+			$insert_string = $insert_prefix . implode(', ', $inserts) . $insert_suffix . ';';
 			$ret = $this->exec($insert_string, true);
 			if ($ret === false)
 			{

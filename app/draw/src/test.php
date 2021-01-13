@@ -27,7 +27,7 @@ if ($level == "GS") require_once($tour . '.php');
 else require_once($level . '.php');
 
 $event = new Event($tour, $year);
-$event->process();
+$event->processLive();
 
 #$event->calaTeamFinal();
 $event->outputRawDraws();

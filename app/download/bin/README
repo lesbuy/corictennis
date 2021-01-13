@@ -3,3 +3,5 @@
 2. 下载赛事logo
 
 3. 下载atp/wta的头像。先运行../src/down_portrait.php 再运行 ../src/update_portrait.php 。根据curl命令下载文件到指定的original目录，然后把原始图片压缩一下放到compressed目录，然后mv到images目录下。最后去app/redis_script下update_portrait更新到redis中
+
+4. 周一时候更新一下 atp_bio.sh  wta_bio.sh 下载最新的bio，写到redis，写入到all_name_* 表里用于查人

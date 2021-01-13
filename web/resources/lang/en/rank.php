@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'tips' => 'ITF M25, M15 and W15 will offer ATP and WTA points again since Aug 5th, 2019.',
+	'tips' => '',
 
 	'table' => [
 		'head' => [

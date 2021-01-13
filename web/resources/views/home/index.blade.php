@@ -229,11 +229,13 @@ $(function() {
 					<tbody>
 						<tr><td colspan=3>{{ strtoupper($gender) }}</td></tr>
 						@for ($i = 0; $i < 10; ++$i)
-							<tr>
-								<td>{{ $ret['rank'][$gender][$i][0] }}</td>
-								<td>{!! get_flag($ret['rank'][$gender][$i][1]) !!}</td>
-								<td>{{ $ret['rank'][$gender][$i][2] }}</td>
-							</tr>
+							@isset ($ret['rank'][$gender][$i])
+								<tr>
+									<td>{{ $ret['rank'][$gender][$i][0] }}</td>
+									<td>{!! get_flag($ret['rank'][$gender][$i][1]) !!}</td>
+									<td>{{ $ret['rank'][$gender][$i][2] }}</td>
+								</tr>
+							@endisset
 						@endfor
 					</tbody>
 				</table>

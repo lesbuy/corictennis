@@ -1,6 +1,9 @@
-wta_rank.sh #每周一运行，下载本周最新排名
+atp_rank.sh wta_rank.sh #每周一运行，下载本周最新排名
 
-wta_activity.sh #每周初运行，从官网下载最新赛事纪录，pid list从list_wta_activity获得，失败信息写入 err_wta_activity
+然后去 ~/app/conf/calc 修改liveranking_end和this_weeks，liveranking_end表示下次公布排名的那个周一（当前需要计算的排名是哪个周一的），this_weeks表示从官方排名到下个周一中间的周数
+
+wta_activity.sh #从官网下载最新赛事纪录，需要的时候就跑一下。pid list从list_wta_activity获得，失败信息写入 err_wta_activity
+	list_wta_activity 首次可以从 DATA/wta_bio_down_list 获取
 reload_list_wta_activity.sh #下载完成之后运行，以下载失败的和新加的pid，形成新的list_wta_activity
-all_wta_activity.sh #从all_wta_pid列表下载此人全部的赛事
-
+#all_wta_activity.sh #从all_wta_pid列表下载此人全部的赛事
+下载完activity之后要去  ~/app/conf/calc 修改activity_end 到当前的周一

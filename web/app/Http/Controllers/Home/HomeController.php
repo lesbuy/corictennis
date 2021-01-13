@@ -27,6 +27,9 @@ class HomeController extends Controller
 
 		// Rank
 		foreach (['atp', 'wta'] as $type) {
+			if (!isset($ret['rank'][$type])) {
+				$ret['rank'][$type] = [];
+			}
 			$tbname = "calc_" . $type . "_s_year";
 			$rows = DB::table($tbname)->limit(10)->get();
 			foreach ($rows as $row) {
@@ -214,7 +217,7 @@ class HomeController extends Controller
 		}
 		$ret['hot'] = $hot_player;
 
-//		return json_encode($ret);
+		//return json_encode($ret);
 
 		return view('home.index', [
 			'ret' => $ret,

@@ -392,6 +392,7 @@ class H2HController extends Controller
 //			return view('h2h.query_new', ['ret' => $ret]);
 		}
 
+		//return json_encode($ret);
 		if ($ajax) {
 			return $ret;
 		} else {

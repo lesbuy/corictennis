@@ -59,27 +59,13 @@ class PbPController extends Controller
 		$join_id = explode('/', join('/', [$this->id1, $this->id2]));
 
 		foreach ($join_id as $id) {
-
-			if (preg_match('/^[A-Z][A-Z0-9]{3}$/', $id)) {
-				$type = "atp";
-			} else if (preg_match('/^[0-9]{5,6}$/', $id)) {
-				$type = "wta";
+			if (preg_match('/^[0-9]{5,6}$/', $id)) {
+				$gender = "wta";
 			} else {
-				$type = "atp";
+				$gender = "atp";
 			}
-
-			$cmd = "grep '^$id\t' " . join('/', [Config::get('const.root'), $type, "player_headshot"]) . " | cut -f3";
-			unset($r); exec($cmd, $r);
-			if ($r && isset($r[0])) {
-				if (strpos($r[0], "http") === 0) {
-					$ret['head'][] = $r[0];
-				} else {
-					$ret['head'][] = url(env('CDN') . '/images/' . $type . '_headshot/' . preg_replace('/^.*\//', '', $r[0]));
-				}
-			} else {
-				$ret['head'][] = url(env('CDN') . '/images/' . $type . '_headshot/' . $type . 'player.jpg');
-			}
-
+			$res = fetch_headshot($id, $gender);
+			$ret['head'][] = $res[1];
 		}
 
 		$ret['player'] = [$this->p1, $this->p2];

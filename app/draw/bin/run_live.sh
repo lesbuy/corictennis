@@ -48,7 +48,7 @@ do
 		endtime=$((unix+15*86400))
 	else
 		starttime=$((unix-4*86400))
-		endtime=$((unix+9*86400))
+		endtime=$((unix+11*86400))
 	fi
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]

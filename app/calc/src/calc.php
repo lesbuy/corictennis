@@ -179,48 +179,48 @@ class Calc {
 				}
 
 				$arecord = [
-					$aplayer['pid'],
-					$aplayer['official_rank'], // official rank
-					$rank,
-					$aplayer['official_rank'] - $rank, // change
-					$aplayer['career_high'],
-					$aplayer['point'],
-					$aplayer['alt'],
-					0, // flop分
-					$aplayer['first'],
-					$aplayer['last'],
-					$aplayer['ioc'],
-					$aplayer['first'] . " " . $aplayer['last'],
-					$aplayer['birth'] ? floor((time() - strtotime($aplayer['birth'])) / 86400 / 365.25 * 10) / 10 : 0, // age
-					$aplayer['birth'], // birth
-					count($aplayer['tours']) + count($aplayer['alt_tours']), // plays
-					$aplayer['mand0'],
-					$aplayer['win'],
-					$aplayer['loss'],
-					$aplayer['win'] + $aplayer['loss'] == 0 ? 0 : $aplayer['win'] / ($aplayer['win'] + $aplayer['loss']),
-					$aplayer['streak'],
-					$aplayer['prize'],
-					"", // 起计分赛事
-					0, // 起计分
-					0, // 冠军数
-					$aplayer['partner'],
-					$partner_first,
-					$partner_last,
-					$partner_ioc,
-					$aplayer['oppo'],
-					join("/", $oppo_first),
-					join("/", $oppo_last),
-					join("/", $oppo_ioc),
-					$h2h,
-					$aplayer['city'],
-					$aplayer['round'],
-					$aplayer['this_week_point'],
-					$aplayer['status'],
-					$aplayer['prediction'],
+					"id" => $aplayer['pid'],
+					"f_rank" => $aplayer['official_rank'], // official rank
+					"c_rank" => $rank,
+					"change" => $aplayer['official_rank'] - $rank, // change
+					"highest" => $aplayer['career_high'],
+					"point" => $aplayer['point'],
+					"alt_point" => $aplayer['alt'],
+					"flop" => 0, // flop分
+					"first" => $aplayer['first'],
+					"last" => $aplayer['last'],
+					"ioc" => $aplayer['ioc'],
+					"engname" => $aplayer['first'] . " " . $aplayer['last'],
+					"age" => $aplayer['birth'] ? floor((time() - strtotime($aplayer['birth'])) / 86400 / 365.25 * 10) / 10 : 0, // age
+					"birth" => $aplayer['birth'], // birth
+					"tour_c" => count($aplayer['tours']) + count($aplayer['alt_tours']), // plays
+					"mand_0" => $aplayer['mand0'],
+					"win" => $aplayer['win'],
+					"lose" => $aplayer['loss'],
+					"win_r" => $aplayer['win'] + $aplayer['loss'] == 0 ? 0 : $aplayer['win'] / ($aplayer['win'] + $aplayer['loss']),
+					"streak" => $aplayer['streak'],
+					"prize" => $aplayer['prize'],
+					"q_tour" => "", // 起计分赛事
+					"q_point" => 0, // 起计分
+					"titles" => 0, // 冠军数
+					"partner_id" => $aplayer['partner'],
+					"partner_first" => $partner_first,
+					"partner_last" => $partner_last,
+					"partner_ioc" => $partner_ioc,
+					"oppo_id" => $aplayer['oppo'],
+					"oppo_first" => join("/", $oppo_first),
+					"oppo_last" => join("/", $oppo_last),
+					"oppo_ioc" => join("/", $oppo_ioc),
+					"next_h2h" => $h2h,
+					"w_tour" => $aplayer['city'],
+					"w_round" => $aplayer['round'],
+					"w_point" => $aplayer['this_week_point'],
+					"w_in" => $aplayer['status'],
+					"predict" => $aplayer['prediction'],
 				];
 
 				$output_rank_for_db[] = $arecord;
-				$output_rank .= join("\t", $arecord) . "\n";
+				$output_rank .= join("\t", array_values($arecord)) . "\n";
 					
 
 				// 计分赛事按级别排序
@@ -284,7 +284,7 @@ class Calc {
 			print_err("===========================上行删除sql ERROR==============================");
 			return;
 		} else {
-			if (!$db->multi_insert($tbname, $output_rank_for_db, "")) {
+			if (!$db->multi_insert($tbname, $output_rank_for_db, array_keys($output_rank_for_db[0]))) {
 				print_err("===========================上行插入ERROR==============================");
 				return;
 			}

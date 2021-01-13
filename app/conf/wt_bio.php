@@ -42,7 +42,7 @@ class Bio {
 				$ret['s_en'] = self::rename2short($ret['first'], $ret['last'], $ret['ioc']);
 
                 $_birth = explode("/", str_replace(")", "", preg_replace('/^.*\(/', '', $a['age'])));
-                $ret['birthday'] = date('Y-m-d', strtotime(join("-", [$_birth[2], $_birth[0], $_birth[1]])));
+                $ret['birthday'] = date('Y-m-d', strtotime(join("-", [@$_birth[2], @$_birth[0], @$_birth[1]])));
 				if ($ret['birthday'] == "0000-00-00" || $ret['birthday'] == "1970-01-01" || $ret['birthday'] == "1753-01-01") $ret['birthday'] = "1970-01-01";
 				$ret['birthplace'] = $a['bcity'];
 				$ret['residence'] = $a['res'];

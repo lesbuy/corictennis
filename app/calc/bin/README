@@ -4,4 +4,4 @@ wta_calc.sh #实时运行。根据 $APP/conf/calc 里面的当前已下载activi
 wta_calc里面还会运行../src/wta_calc.php 把loaded和unloaded的结果进行汇总计算，得出分数列表入DB，也得到积分明细写到compose文件
 
 
-php ../src/update_live_time.php $gender $this_monday $next_monday   每周一需要变更时运行
+sh update_live_time.sh $gender $this_monday $next_monday   每周一需要变更时运行
