@@ -771,6 +771,7 @@ class HomeController extends Controller
 					}
 
 					if (in_array($kvmap['level'], ['DC', 'FC'])) continue;
+					if (in_array($kvmap['final_round'], ["Q1", "Q2", "Q3", "Q4"])) continue;
 
 					//if ($kvmap['level'] == "YEC" && in_array(strtolower($kvmap['tourname']), ['bali', 'sofia', 'zhuhai'])) $kvmap['level'] = "TOUR";
 					if ($kvmap['level'] == "WC") $kvmap['level'] = "YEC";
