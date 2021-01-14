@@ -200,13 +200,14 @@ $(function() {
 			</tr>
 		</table>
 	</form>
+	@php $latest_year = 2021; @endphp
 	<div id="iActivityInput" class="cH2HInput">
 		<div id="iActivityInput1" class="cH2HInput1"></div>
 		<div id="iActivitySubmit" class="cH2HSubmit selected">{!! get_icon('chaxun') !!}</div>
 		<select id=iActivityInput2 class="cH2HInput2">
 			<option value="-1">{{ __('h2h.selectBar.allYear') }}</option>
-			@for ($i = 2020; $i >= 1968; --$i)
-				<option value="{{ $i }}" {{ $i == 2020 ? 'selected' : '' }}>{{ $i }}</option>
+			@for ($i = $latest_year; $i >= 1968; --$i)
+				<option value="{{ $i }}" {{ $i == $latest_year ? 'selected' : '' }}>{{ $i }}</option>
 			@endfor
 		</select>
 	</div>

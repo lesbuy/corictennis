@@ -111,7 +111,7 @@ class HomeController extends Controller
 			date('Y-m-*', time() - 0 * 86400),
 			date('Y-m-*', time() + 30 * 86400),
 		]);
-		$cmd = "cd " . join("/", [Config::get('const.root'), 'share', 'completed']) . " && grep \"	[MLW]S[07]01\" " . join(" ", $months) . " | grep -v Challenger | grep -v 125K";
+		$cmd = "cd " . join("/", [Config::get('const.root'), 'share', 'completed']) . " && grep \"	[MLW]S[07]01\" " . join(" ", $months) . " | grep -v Challenger | grep -v 125K | grep -v -E \"\\tCH \" | grep -v WTA125 ";
 		unset($r); exec($cmd, $r); unset($kvmap);
 		foreach ($r as $row) {
 			$arr = explode("\t", $row);
@@ -294,13 +294,6 @@ class HomeController extends Controller
 			$ret['stat']['career'] = false;
 			$ret['stat']['start'] = 2009;
 		}
-
-
-
-
-
-
-
 
 		//return json_encode($ret);
 		return view('home.card', [
@@ -637,7 +630,7 @@ class HomeController extends Controller
 				}
 			}
 
-			$cmd = "awk -F\"\\t\" '$15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " | sort -t\"	\" -k8gr,8 | head -30";
+			$cmd = "awk -F\"\\t\" '$15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " | sort -t\"	\" -k6gr,6 | head -30";
 			unset($r); exec($cmd, $r);
 			if ($r) {
 				foreach ($r as $row) {
@@ -737,7 +730,7 @@ class HomeController extends Controller
 				'QF' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
 				'Attend' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
 			];
-			$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'unloaded']) . " | sort -t\"	\" -k8gr,8";
+			$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'unloaded']) . " | sort -t\"	\" -k6gr,6";
 			unset($r); exec($cmd, $r);
 
 			if ($r) {
@@ -819,21 +812,24 @@ class HomeController extends Controller
 		$win_match = array_fill(0, 501, 0);
 		$loss_match = array_fill(0, 501, 0);
 		$winloss_match = array_fill(0, 501, [0, 0]);
-		$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"s\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'unloaded']);
+		$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"s\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, "s", 'year', 'unloaded']);
 		unset($r); exec($cmd, $r);
+		foreach (Config::get('const.schema_activity_matches') as $k => $v) {
+			$kvmap[$v] = $k + 1;
+		}
 		if ($r) {
 			foreach ($r as $row) {
 				$arr = explode("\t", $row);
 				$matches_string = $arr[count(Config::get('const.schema_activity')) - 1];
-
-				if (isset($kvmap)) {unset($kvmap); $kvmap = [];}
-				foreach (Config::get('const.schema_activity_matches') as $k => $v) {
-					$kvmap[$v] = @$arr[$k + 1];
+				$matches = explode("@", $matches_string);
+				foreach ($matches as $match) {
+					$arr = explode("!", $match);
+					if (in_array($arr[$kvmap["oid"]], ["", "0", "-", "BYE"]) || $arr[$kvmap["games"]] == "W/O") continue;
+					$rank = intval($arr[$kvmap['orank']]);
+					if ($rank == 0 || $rank > 500) continue;
+					if ($arr[$kvmap['wl']] == "W") $win_match[$rank] += 1;
+					if ($arr[$kvmap['wl']] == "L") $loss_match[$rank] += 1;
 				}
-				if (in_array($kvmap["oid"], ["", "0", "-", "BYE"]) || $kvmap["games"] == "W/O") continue;
-				if (in_array($kvmap['orank'], ["-", "", "0", "9999"]) || intval($kvmap['orank']) > 500) continue;
-				if ($kvmap['wl'] == "W") $win_match[$kvmap['orank']] += 1;
-				if ($kvmap['wl'] == "L") $loss_match[$kvmap['orank']] += 1;
 			}
 		}
 

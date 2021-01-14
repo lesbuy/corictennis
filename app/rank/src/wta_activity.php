@@ -582,11 +582,11 @@ class Activity {
 						$this->recordday = date('Ymd', strtotime($this->recordday) + 7 * 86400);
 					}
 					if ($this->eid == 1081 && $this->year >= 2019) { // 2019年之后的小年终隔周再计
-						$this->recordday = date('Ymd', strtotime($this->recordday) - 7 * 86400);
+						$this->recordday = date('Ymd', strtotime($this->recordday) + 7 * 86400);
 					}
-					if ($this->year >= 2019 && $this->level == "YEC") {
-						$this->recordday = date('Ymd', strtotime($this->recordday) - 2 * 7 * 86400);
-					}
+					//if ($this->year >= 2019 && $this->level == "YEC") {
+					//	$this->recordday = date('Ymd', strtotime($this->recordday) - 2 * 7 * 86400);
+					//}
 
 					$this->point = $line['points_1'];
 					if ($line['points_bonus_1']) {

@@ -31,8 +31,8 @@ class Bio {
 				$array = json_decode(json_encode($xml), true);
 				$a = $array['Bio']['@attributes'];
 				$ret = [];
-				$ret['first'] = $a['fNam'];
-				$ret['last'] = $a['lNam'];
+				$ret['first'] = replace_letters($a['fNam']);
+				$ret['last'] = replace_letters($a['lNam']);
 				$firsts[] = $ret['first'];
 				$lasts[] = $ret['last'];
 

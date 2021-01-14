@@ -299,6 +299,13 @@ class Activity {
 						$this->weeks = 2;
 					}
 				}
+				$this->pre_eid = $this->eid;
+				$this->pre_year = $et_unix ? date('Y', $et_unix) : date('Y', strtotime($this->st) + 4 * 86400);
+
+				if ($this->level == "ATP" && $this->pre_year <= 2008) {
+					$fetch_level = $redis->cmd('HGET', 'atp_level', $this->pre_eid . '_' . $this->pre_year)->get();
+					if ($fetch_level) $this->level = $fetch_level;
+				}
 
 				$sfc = $infos->find('.tourney-details', 1)->find('.info-area .item-value', 0);
 				$this->sfc = trim($sfc->innertext);
@@ -311,12 +318,12 @@ class Activity {
 				if ($this->level == "ITF") { // 如果是ITF低级别，再延一周
 					$this->recordday = date('Ymd', strtotime($this->recordday) + 7 * 86400);
 				}
-				if ($this->year >= 2014 && $this->level == "WC") {
-					$this->recordday = date('Ymd', strtotime($this->recordday) - 2 * 7 * 86400);
-				}
-				if ($this->level == "XXI") {
-					$this->recordday = date('Ymd', strtotime($this->recordday) - 1 * 7 * 86400);
-				}
+				//if ($this->year >= 2014 && $this->level == "WC") {
+				//	$this->recordday = date('Ymd', strtotime($this->recordday) - 2 * 7 * 86400);
+				//}
+				//if ($this->level == "XXI") {
+				//	$this->recordday = date('Ymd', strtotime($this->recordday) - 1 * 7 * 86400);
+				//}
 
 				$extra = trim($tournament->find('.activity-tournament-caption', 0)->innertext);
 				$arr = explode(", ", $extra);
@@ -443,8 +450,6 @@ class Activity {
 					];
 				}
 
-				$this->pre_eid = $this->eid;
-				$this->pre_year = $et_unix ? date('Y', $et_unix) : date('Y', strtotime($this->st) + 4 * 86400);
 				self::output();
 				self::clear();
 			}

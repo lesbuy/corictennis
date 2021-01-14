@@ -22,7 +22,7 @@ do
 	sleep 2
 
 	cat $TEMP/activity_wta_d_$line >> $TEMP/activity_wta_s_$line
-	cat $TEMP/activity_wta_s_$line $DATA/activity/wta/$line | sort -t"	" -k15r,15 -k8gr,8 -k3,3 -s -u > $TEMP/activity_wta_d_$line
+	cat $TEMP/activity_wta_s_$line $DATA/activity/wta/$line | sort -t"	" -k15r,15 -k6gr,6 -k3,3 -s -u > $TEMP/activity_wta_d_$line
 	mv $TEMP/activity_wta_d_$line $DATA/activity/wta/$line
 	/bin/rm $TEMP/activity_wta_*_$line
 done
