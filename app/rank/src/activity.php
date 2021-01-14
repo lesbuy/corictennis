@@ -285,9 +285,13 @@ class Activity {
 				} else if (strpos($imgurl, "_itf_") !== false) {
 					$this->level = "ITF";
 				} else {
-					$fetch_level = $this->redis->cmd('HGET', 'atp_level', $this->eid . '_' . $this->pre_year)->get();
-					if ($fetch_level) {
-						$this->level = $fetch_level;
+					if ($this->pre_year < 2009) {
+						$fetch_level = $this->redis->cmd('HGET', 'atp_level', $this->eid . '_' . $this->pre_year)->get();
+						if ($fetch_level) {
+							$this->level = $fetch_level;
+						} else {
+							$this->level = "ATP";
+						}
 					} else {
 						$this->level = "ATP";
 					}
@@ -318,12 +322,14 @@ class Activity {
 				if ($this->level == "ITF") { // 如果是ITF低级别，再延一周
 					$this->recordday = date('Ymd', strtotime($this->recordday) + 7 * 86400);
 				}
+				/*
 				if ($this->year >= 2014 && $this->level == "WC") {
 					$this->recordday = date('Ymd', strtotime($this->recordday) - 2 * 7 * 86400);
 				}
 				if ($this->level == "XXI") {
 					$this->recordday = date('Ymd', strtotime($this->recordday) - 1 * 7 * 86400);
 				}
+				*/
 
 				$extra = trim($tournament->find('.activity-tournament-caption', 0)->innertext);
 				$arr = explode(", ", $extra);
@@ -590,9 +596,11 @@ class Activity {
 					if ($this->eid == 1081 && $this->year >= 2019) { // 2019年之后的小年终隔周再计
 						$this->recordday = date('Ymd', strtotime($this->recordday) + 7 * 86400);
 					}
+					/*
 					if ($this->year >= 2019 && $this->level == "YEC") {
 						$this->recordday = date('Ymd', strtotime($this->recordday) - 2 * 7 * 86400);
 					}
+					*/
 
 					$this->point = $line['points_1'];
 					if ($line['points_bonus_1']) {
@@ -743,13 +751,3 @@ class Activity {
 		return join(" ", $scores) . $aff;
 	}
 }
-
-$gender = get_param($argv, 1, 'atp', ' atp wta ');
-$sd = get_param($argv, 2, 's', ' s d ');
-$pid = get_param($argv, 3, null);
-$year = get_param($argv, 4, 'all');
-$page = get_param($argv, 5, 'all');
-
-if (!$pid) exit(-1);
-
-$activity = new Activity($gender, $sd, $pid, $year, $page);
