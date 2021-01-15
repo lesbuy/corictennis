@@ -85,9 +85,9 @@ class PbPController extends Controller
 		$smallDot = 1;
 		$bigDot = 3;
 
-		foreach ($json['sd'] as $SET) {
+		foreach ($json['setData'] as $SET) {
 
-			$set = $SET['s'];
+			$set = $SET['set'];
 			if ($set == 0) {
 				return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 			}
@@ -102,21 +102,21 @@ class PbPController extends Controller
 //			$serve[$set] = [];
 /*---------------------------------------------------------------------*/
 
-			foreach ($SET['gd'] as $GAME) {
+			foreach ($SET['gameData'] as $GAME) {
 				$is_broken = false;
-				foreach ($GAME['pd'] as $POINT) {
+				foreach ($GAME['pointData'] as $POINT) {
 					++$x;
 
-					$win_person = $POINT['scr'];
-					$serve_person = $POINT['svr']; 
+					$win_person = $POINT['scorer'];
+					$serve_person = $POINT['server']; 
 					if ($win_person == 1) { // p1得分，y自增，反之自减
 						++$y;
 					} else {
 						--$y;
 					}
-					$point1 = $POINT['t1gs'];
-					$point2 = $POINT['t2gs'];
-					$pointflag = $POINT['r'];
+					$point1 = $POINT['tm1GameScore'];
+					$point2 = $POINT['tm2GameScore'];
+					$pointflag = $POINT['result'];
 					$flag1 = ''; $flag2 = '';
 					$bsm1 = []; $bsm2 = [];
 					if (in_array($pointflag, ['A', 'W'])) { // ace, winner 记在得分者头上
@@ -128,16 +128,16 @@ class PbPController extends Controller
 					} else {
 						${'flag' . $win_person} = $pointflag;
 					}
-					$shot = $POINT['t1r'] + $POINT['t2r'];
-					$serve_speed = $POINT['ss'];
+					$shot = $POINT['tm1Rally'] + $POINT['tm2Rally'];
+					$serve_speed = $POINT['serveSpeed'];
 
-					if (isset($POINT['bps'])) {
-						$bp_num = $POINT['bps'];
+					if (isset($POINT['brkPts'])) {
+						$bp_num = $POINT['brkPts'];
 						${'bsm' . (3 - $serve_person)}[] = ($bp_num > 1 ? $bp_num : '') . 'BP';
 					} else {
 						$bp_num = null;
 					}
-					if (isset($POINT['bp']) && $POINT['bp'] === true && ($point1 == "GAME" || $point2 == "GAME")) {
+					if (isset($POINT['isBrkPt']) && $POINT['isBrkPt'] === true && ($point1 == "GAME" || $point2 == "GAME")) {
 						$is_broken = true;
 					}
 
@@ -163,22 +163,22 @@ class PbPController extends Controller
 					];
 				}
 
-				if (!$GAME['tb']) {
+				if (!$GAME['isTieBreak']) {
 					$game_serve_person = $serve_person;
 				} else {
 					$game_serve_person = 0;
 				}
 
-				$game_win_person = $GAME['gw'];
-				$game1 = $GAME['t1ss'];
-				$game2 = $GAME['t2ss'];
+				$game_win_person = $GAME['gameWinner'];
+				$game1 = $GAME['tm1SetScore'];
+				$game2 = $GAME['tm2SetScore'];
 				$param[$set][] = [
 					'x' => ($x + 0.5) * 2, // 划分一局的线,
 					'g1' => $game1,
 					'g2' => $game2,
 					's' => $game_serve_person,
 					'w' => $game_win_person,
-					'tb' => $GAME['tb'],
+					'tb' => $GAME['isTieBreak'],
 					'b' => $is_broken,
 				];
 					
