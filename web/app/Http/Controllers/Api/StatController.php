@@ -727,6 +727,7 @@ class StatController extends Controller
 		*/
 
 		ksort($stat);
+		$this->unset_nodata_stat_item($stat);
 		//print_r($stat);
 
 		$ratio = self::convertToRatio($stat);
@@ -904,6 +905,7 @@ class StatController extends Controller
 		}
 
 		ksort($stat);
+		$this->unset_nodata_stat_item($stat);
 			
 		$ratio = self::convertToRatio($stat);
 
@@ -1079,6 +1081,7 @@ class StatController extends Controller
 		}
 		*/
 		ksort($stat);
+		$this->unset_nodata_stat_item($stat);
 			
 		$ratio = self::convertToRatio($stat);
 
@@ -1427,6 +1430,8 @@ class StatController extends Controller
 			}
 		}
 
+		$this->unset_nodata_stat_item($stat);
+
 		$ratio = self::convertToRatio($stat);
 		return [
 			'status' => 0,
@@ -1618,5 +1623,28 @@ class StatController extends Controller
 			];
 		}
 		return $ret;
+	}
+
+	private function unset_nodata_stat_item(&$stat) {
+		foreach ($stat as $set => &$setData) {
+			foreach (array_keys($setData[0]) as $key) {
+				if (in_array($key, ["dura", "ace", "df", "s1%", "s1", "s2", "tp", "bp%"])) continue;
+				$val1 = $setData[0][$key];
+				$val2 = $setData[1][$key];
+				if (in_array($key, ["wi", "ue", "fe", "mgr", "mpr"])) {
+					if ($val1 == 0 && $val2 == 0) {
+						unset($setData[$key]);
+					}
+				} else if (in_array($key, ["f1a", "f1f", "f2a", "f2f", "dis"])) {
+					if ($val1[0] == 0 && $val2[0] == 0) {
+						unset($setData[$key]);
+					}
+				} else if (in_array($key, ["np%", "rp%", "as", "ds", "gs", "os", "ps", "l", "v", "sg"])) {
+					if ($val1 == "0% (0/0)" && $val2 == "0% (0/0)") {
+						unset($setData[$key]);
+					}
+				}
+			}
+		}
 	}
 }
