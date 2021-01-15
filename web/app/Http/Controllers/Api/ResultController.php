@@ -717,6 +717,7 @@ class ResultController extends Controller
 						'f' => $kvmap["umpirefirst"],
 						'l' => $kvmap["umpirelast"],
 						'i' => $kvmap["umpireioc"],
+						'name' => translate2long(null, $kvmap["umpirefirst"], $kvmap["umpirelast"], $kvmap["umpireioc"]),
 					];
 				}
 
