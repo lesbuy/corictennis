@@ -237,6 +237,7 @@ class PbPController extends Controller
 
 		//$html = file_get_contents("/home/ubuntu/web/1.php");
 		if (!$html) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
+		if (strlen($html) < 5000) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 		$DOM = str_get_html($html);
 		if (!$DOM) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 
