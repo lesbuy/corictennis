@@ -408,7 +408,7 @@ class PbPController extends Controller
 		$param = [];
 		$serve = [];
 
-		$json = file_get_contents("https://ls.sportradar.com/ls/feeds/?/itf/en/Europe:Berlin/gismo/match_timeline/" . $this->matchid);
+		$json = file_get_contents("https://ls.fn.sportradar.com/itf/en/Europe:Berlin/gismo/match_timeline/" . $this->matchid);
 		if (!$json) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 
 		$json = json_decode($json, true);
