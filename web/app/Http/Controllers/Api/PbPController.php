@@ -718,20 +718,29 @@ class PbPController extends Controller
 				$point2 = intval($ep["game_points"]['away']);
 
 				if ($ptrans == "Game won" || $ptrans == "Break won" || $ptrans == "Set won" || $ptrans == "Match won") { // 一局结束
-
-					$in_progress = false; // 表示一局已结束
-					$tb_begin = false;
-
-					$point1 = $point2 = '';
+					$p1 = $p2 = '';
 					if ($winner == 1) {
 						//$color = Config::get('const.sideColor.home');
 						++$game1;
-						$point1 = '🎾';
+						if ($tb_begin) {
+							$p1 = $point1 + 1;
+							$p2 = $point2;
+						} else {
+							$p1 = '🎾';
+						}
 					} else {
 						//$color = Config::get('const.sideColor.away');
 						++$game2;
-						$point2 = '🎾';
+						if ($tb_begin) {
+							$p2 = $point2 + 1;
+							$p1 = $point1;
+						} else {
+							$p2 = '🎾';
+						}
 					}
+
+					$in_progress = false; // 表示一局已结束
+					$tb_begin = false;
 
 					/*----------------------每一局结束时输出pbp,输出markArea---------------------*/
 					//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
@@ -742,8 +751,8 @@ class PbPController extends Controller
 						'y' => $y,
 						's' => $server,
 						'w' => $winner,
-						'p1' => $point1,
-						'p2' => $point2,
+						'p1' => $p1,
+						'p2' => $p2,
 						'b1' => [],
 						'b2' => [],
 						'f1' => "",
@@ -781,6 +790,11 @@ class PbPController extends Controller
 					// 新开始一盘
 					if ($ptrans == "Set won" || $ptrans == "Match won") {
 
+						// 一盘结束多加两个虚拟点，用以容纳最后一条得分线
+						foreach (range(0, 1) as $r) {
+							$pbp[$set][] = ['x' => (++$x) * 2, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						}
+
 						/*
 						$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
 						if ($m < 10) $m = 10;
@@ -788,7 +802,6 @@ class PbPController extends Controller
 						$param[$set]['max'] = $m;
 						*/
 
-						if ($tb_begin) $tb_begin = false;
 						$game1 = $game2 = 0;
 
 						if ($ptrans != "Match won") {
