@@ -259,9 +259,9 @@ class PbPController extends Controller
 			$x = 0; $y = 0; // x表示第几分，y增大或者减少，表示p1或者p2得分
 
 /*----------------------第一次输出pbp,param,serve---------------------*/
-			$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
-			$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
-			$serve[$set] = [];
+			//$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
+			//$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
+			//$serve[$set] = [];
 /*---------------------------------------------------------------------*/
 
 			$last_x = 0;
@@ -361,8 +361,8 @@ class PbPController extends Controller
 								++$y;
 							}
 						}
-						if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
-						else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
+						//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
+						//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
 
 						$dotSize = $smallDot;
 						$dotValue = [];
@@ -377,7 +377,22 @@ class PbPController extends Controller
 						$point2 = trim($ep_arr[1]);
 
 /*-----------------------------每分都输出pbp----------------------------*/
-						$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
+						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $winner,
+							'p1' => str_replace("50", "AD", $point1),
+							'p2' => str_replace("50", "AD", $point2),
+							'b1' => $dotValue,
+							'b2' => [],
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
 /*--------------------------------------------------------------------*/
 
 					} // foreach eachpoint
@@ -391,8 +406,8 @@ class PbPController extends Controller
 						} else if ($winner == 2) {
 							++$y;
 						}
-						if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
-						else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
+						//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
+						//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
 
 						if ($winner == 1) {
 							$color = Config::get('const.sideColor.home');
@@ -401,9 +416,36 @@ class PbPController extends Controller
 						}
 
 /*----------------------每一局结束时输出pbp,输出markArea---------------------*/
-						$pbp[$set][] = [$x, $y, $smallDot, [], ''];
-//						$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $color];  // 表示从last_x到x这段范围的局分，以及底色
-						$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];  // 表示从last_x到x这段范围的局分，以及底色
+						//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $winner,
+							'p1' => str_replace("50", "AD", $point1),
+							'p2' => str_replace("50", "AD", $point2),
+							'b1' => $dotValue,
+							'b2' => [],
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $color];  // 表示从last_x到x这段范围的局分，以及底色
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];  // 表示从last_x到x这段范围的局分，以及底色
+						if ($winner != $server && $winner > 0) $isBroken = true;
+						else $isBroken = false;
+						$param[$set][] = [
+							'x' => ($x + 0.5) * 2, // 划分一局的线,
+							'g1' => $game1,
+							'g2' => $game2,
+							's' => $server,
+							'w' => $winner,
+							'tb' => false,
+							'b' => $isBroken,
+						];
+
 /*--------------------------------------------------------------------*/
 					}
 
@@ -420,7 +462,7 @@ class PbPController extends Controller
 					else $holdOrLost = __('pbp.lines.inServe');
 
 /*----------------------不管一局有没有结束都输出serve------------------------------*/
-					$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
+					//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
 /*----------------------------------------------------------------------------------*/
 
 					if ($winner > 0) {
@@ -498,7 +540,22 @@ class PbPController extends Controller
 					if ($key == $last_key && !$in_progress) {
 
 /*----------------------抢七确认结束时输出不带具体比分的pbp--------------------*/
-						$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+						//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $winner,
+							'p1' => str_replace("50", "AD", $point1),
+							'p2' => str_replace("50", "AD", $point2),
+							'b1' => $dotValue,
+							'b2' => [],
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
 /*------------------------------------------------------------------*/
 
 						if ($winner == 1) ++$game1;
@@ -511,30 +568,54 @@ class PbPController extends Controller
 						}
 
 /*----------------------抢七确认结束时输出markArea------------------*/
-//						$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $color];
-						$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $color];
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];
+						$param[$set][] = [
+							'x' => ($x + 0.5) * 2, // 划分一局的线,
+							'g1' => $game1,
+							'g2' => $game2,
+							's' => $server,
+							'w' => $winner,
+							'tb' => true,
+							'b' => false,
+						];
 /*------------------------------------------------------------------*/
 					} else {
 
 /*----------------------抢七每分输出pbp-----------------------------*/
-						$pbp[$set][] = [$x, $y, $dotSize, $dotValue, $point1.'-'.$point2];
+						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, $point1.'-'.$point2];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $winner,
+							'p1' => str_replace("50", "AD", $point1),
+							'p2' => str_replace("50", "AD", $point2),
+							'b1' => $dotValue,
+							'b2' => [],
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
 /*------------------------------------------------------------------*/
 
 					}
 				} // if fifteens_available
 			} //foreach line
 
-			$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
-			if ($m < 10) $m = 10;
-			$param[$set]['min'] = -$m;
-			$param[$set]['max'] = $m;
+			//$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
+			//if ($m < 10) $m = 10;
+			//$param[$set]['min'] = -$m;
+			//$param[$set]['max'] = $m;
 		} //foreach SET
 
 		return [
 			'status' => 0,
 			'pbp' => $pbp,
-			'param' => $param,
-			'serve' => $serve,
+			'marklines' => $param,
+			'serve' => [],
 		];
 
 	}
