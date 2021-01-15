@@ -552,7 +552,7 @@ class PbPController extends Controller
 
 					$dotValue = [];
 					if ($bp || $sp || $mp) {
-						$bsm_count = ceil(abs($p1 - $p2) / 15);
+						$bsm_count = abs($p1 - $p2);
 						if ($bsm_count == 1) $bsm_count = ""; 
 						if ($bp) $dotValue[] = $bsm_count . 'BP';
 						if ($sp) $dotValue[] = $bsm_count . 'SP';
@@ -723,8 +723,8 @@ class PbPController extends Controller
 						//$color = Config::get('const.sideColor.home');
 						++$game1;
 						if ($tb_begin) {
-							$p1 = $point1 + 1;
-							$p2 = $point2;
+							$p1 = $last_point1 + 1;
+							$p2 = $last_point2;
 						} else {
 							$p1 = '🎾';
 						}
@@ -732,8 +732,8 @@ class PbPController extends Controller
 						//$color = Config::get('const.sideColor.away');
 						++$game2;
 						if ($tb_begin) {
-							$p2 = $point2 + 1;
-							$p1 = $point1;
+							$p2 = $last_point2 + 1;
+							$p1 = $last_point1;
 						} else {
 							$p2 = '🎾';
 						}
@@ -839,7 +839,12 @@ class PbPController extends Controller
 					$dotValue = [];
 					$bsm1 = $bsm2 = [];
 					if ($bp || $sp || $mp) {
-						$bsm_count = ceil(abs($point1 - $point2) / 15);
+						if (!$tb_begin) {
+							$bsm_count = ceil(abs($point1 - $point2) / 15);
+						} else {
+							$bsm_count = abs($point1 - $point2);
+						}
+						
 						if ($bsm_count == 1) $bsm_count = ""; 
 						if ($bp) $dotValue[] = $bsm_count . 'BP';
 						if ($sp) $dotValue[] = $bsm_count . 'SP';
@@ -853,6 +858,8 @@ class PbPController extends Controller
 					$p1 = $point1; $p2 = $point2;
 					if ($p1 == 50 && $p2 == 40) {$p1 = "A"; $p2 = '';}
 					if ($p1 == 40 && $p2 == 50) {$p2 = "A"; $p1 = '';}
+					$last_point1 = $point1;
+					$last_point2 = $point2; // 用于抢七结束前最后一分的计算
 					
 					/*-----------------------------每分都输出pbp----------------------------*/
 					//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
