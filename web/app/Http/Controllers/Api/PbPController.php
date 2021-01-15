@@ -144,8 +144,8 @@ class PbPController extends Controller
 
 					if ($point1 == "GAME") {$point1 = "🎾"; $point2 = '';}
 					if ($point2 == "GAME") {$point2 = "🎾"; $point1 = '';}
-					if ($point1 == 'AD' && $point2 == '40') {$point1 = 'AD'; $point2 = '';}
-					if ($point2 == 'AD' && $point1 == '40') {$point2 = 'AD'; $point1 = '';}
+					if ($point1 == 'AD' && $point2 == '40') {$point1 = 'A'; $point2 = '';}
+					if ($point2 == 'AD' && $point1 == '40') {$point2 = 'A'; $point1 = '';}
 
 					$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
 					$pbp[$set][] = [
@@ -390,8 +390,8 @@ class PbPController extends Controller
 
 						$point1 = $p1;
 						$point2 = $p2;
-						if ($p1 == 50 && $p2 == 40) {$p1 = 'AD'; $p2 = '';}
-						if ($p2 == 40 && $p1 == 50) {$p2 = 'AD'; $p1 = '';}
+						if ($p1 == 50 && $p2 == 40) {$p1 = 'A'; $p2 = '';}
+						if ($p2 == 40 && $p1 == 50) {$p2 = 'A'; $p1 = '';}
 
 						/*-----------------------------每分都输出pbp----------------------------*/
 						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
