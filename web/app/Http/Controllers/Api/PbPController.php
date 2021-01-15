@@ -374,9 +374,11 @@ class PbPController extends Controller
 
 						$dotValue = [];
 						if ($bp || $sp || $mp) {
-							if ($bp) $dotValue[] = 'BP';
-							if ($sp) $dotValue[] = 'SP';
-							if ($mp) $dotValue[] = 'MP';
+							$bsm_count = ceil(abs($p1 - $p2) / 15);
+							if ($bsm_count == 1) $bsm_count = ""; 
+							if ($bp) $dotValue[] = $bsm_count . 'BP';
+							if ($sp) $dotValue[] = $bsm_count . 'SP';
+							if ($mp) $dotValue[] = $bsm_count . 'MP';
 						}
 						if ($pointWinner == 1) {
 							$bsm1 = $dotValue;
@@ -389,7 +391,7 @@ class PbPController extends Controller
 						$point1 = $p1;
 						$point2 = $p2;
 						if ($p1 == 50 && $p2 == 40) {$p1 = 'AD'; $p2 = '';}
-						if ($p2 == 40 && $p1 == 40) {$p2 = 'AD'; $p1 = '';}
+						if ($p2 == 40 && $p1 == 50) {$p2 = 'AD'; $p1 = '';}
 
 						/*-----------------------------每分都输出pbp----------------------------*/
 						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
@@ -550,9 +552,11 @@ class PbPController extends Controller
 
 					$dotValue = [];
 					if ($bp || $sp || $mp) {
-						if ($bp) $dotValue[] = 'BP';
-						if ($sp) $dotValue[] = 'SP';
-						if ($mp) $dotValue[] = 'MP';
+						$bsm_count = ceil(abs($p1 - $p2) / 15);
+						if ($bsm_count == 1) $bsm_count = ""; 
+						if ($bp) $dotValue[] = $bsm_count . 'BP';
+						if ($sp) $dotValue[] = $bsm_count . 'SP';
+						if ($mp) $dotValue[] = $bsm_count . 'MP';
 					}
 					if ($pointWinner == 1) {
 						$bsm1 = $dotValue;
