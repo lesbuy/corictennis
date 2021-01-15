@@ -380,6 +380,8 @@ class PbPController extends Controller
 
 						$point1 = trim($ep_arr[0]);
 						$point2 = trim($ep_arr[1]);
+						if ($point1 == 50 && $point2 == 40) {$point1 = 'AD'; $point2 = '';}
+						if ($point2 == 40 && $point1 == 40) {$point2 = 'AD'; $point1 = '';}
 
 /*-----------------------------每分都输出pbp----------------------------*/
 						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
@@ -389,8 +391,8 @@ class PbPController extends Controller
 							'y' => $y,
 							's' => $server,
 							'w' => $pointWinner,
-							'p1' => str_replace("50", "AD", $point1),
-							'p2' => str_replace("50", "AD", $point2),
+							'p1' => $point1,
+							'p2' => $point2,
 							'b1' => $dotValue,
 							'b2' => [],
 							'f1' => "",
@@ -407,19 +409,24 @@ class PbPController extends Controller
 
 						++$x;
 						$pointWinner = $winner;
+						$point1 = $point2 = '';
 						if ($winner == 1) {
 							++$y;
-						} else if ($winner == 2) {
+							$point1 = '🎾';
+ 						} else if ($winner == 2) {
 							--$y;
+							$point2 = '🎾';
 						}
 						//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
 						//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
 
+						/*
 						if ($winner == 1) {
 							$color = Config::get('const.sideColor.home');
 						} else {
 							$color = Config::get('const.sideColor.away');
 						}
+						*/
 
 /*----------------------每一局结束时输出pbp,输出markArea---------------------*/
 						//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
@@ -429,9 +436,9 @@ class PbPController extends Controller
 							'y' => $y,
 							's' => $server,
 							'w' => $pointWinner,
-							'p1' => str_replace("50", "AD", $point1),
-							'p2' => str_replace("50", "AD", $point2),
-							'b1' => $dotValue,
+							'p1' => $point1,
+							'p2' => $point2,
+							'b1' => [],
 							'b2' => [],
 							'f1' => "",
 							'f2' => "",
@@ -455,6 +462,7 @@ class PbPController extends Controller
 /*--------------------------------------------------------------------*/
 					}
 
+					/*
 					if ($server == 1) {
 						$color = Config::get('const.sideColor.home'); 
 						$servePerson = 'HOME' . ' ' . __('pbp.lines.toServe');
@@ -462,10 +470,13 @@ class PbPController extends Controller
 						$color = Config::get('const.sideColor.away');
 						$servePerson = 'AWAY' . ' ' . __('pbp.lines.toServe');
 					}
+					*/
 
+					/*
 					if ($winner == $server && $winner > 0) $holdOrLost = __('pbp.lines.holdServe');
 					else if ($winner != $server && $winner > 0) $holdOrLost = __('pbp.lines.lostServe');
 					else $holdOrLost = __('pbp.lines.inServe');
+					*/
 
 /*----------------------不管一局有没有结束都输出serve------------------------------*/
 					//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
