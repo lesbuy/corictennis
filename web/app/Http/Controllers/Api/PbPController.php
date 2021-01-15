@@ -207,7 +207,6 @@ class PbPController extends Controller
 			'status' => 0,
 			'pbp' => $pbp,
 			'marklines' => $param,
-			'serve' => $serve,
 		];
 
 	}
@@ -236,7 +235,7 @@ class PbPController extends Controller
 		$response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		if ($response_code > 400) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 
-//		$html = file_get_contents("/home/ubuntu/web/1.php");
+		//$html = file_get_contents("/home/ubuntu/web/1.php");
 		if (!$html) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 		$DOM = str_get_html($html);
 		if (!$DOM) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
@@ -658,7 +657,6 @@ class PbPController extends Controller
 			'status' => 0,
 			'pbp' => $pbp,
 			'marklines' => $param,
-			'serve' => [],
 		];
 
 	}
@@ -667,9 +665,8 @@ class PbPController extends Controller
 
 		$pbp = [];
 		$param = [];
-		$serve = [];
 
-		$json = file_get_contents("https://ls.sportradar.com/ls/feeds/?/itf/en/Europe:Berlin/gismo/match_timeline/" . $this->matchid);
+		$json = file_get_contents("https://ls.fn.sportradar.com/itf/en/Europe:Berlin/gismo/match_timeline/" . $this->matchid);
 		if (!$json) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 
 		$json = json_decode($json, true);
@@ -681,19 +678,16 @@ class PbPController extends Controller
 
 		$in_progress = false;
 
-		$smallDot = 5;
-		$bigDot = 15;
-
 		$set = 1;
 		$x = $y = 0;
 		$last_x = 0;
 		$game1 = $game2 = 0;
 
-/*----------------------第一次输出pbp,param,serve---------------------*/
-		$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
-		$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
-		$serve[$set] = [];
-/*---------------------------------------------------------------------*/
+		/*----------------------第一次输出pbp,param,serve---------------------*/
+		//$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
+		//$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
+		//$serve[$set] = [];
+		/*---------------------------------------------------------------------*/
 
 		foreach ($json["doc"][0]["data"]["events"] as $ep) {
 			$pointtype = $ep["type"];
@@ -711,35 +705,65 @@ class PbPController extends Controller
 				
 				$winner = $ep["team"] == 'home' ? 1 : 2;
 				if ($winner == 1) {
-					--$y;
-				} else if ($winner == 2) {
 					++$y;
+				} else if ($winner == 2) {
+					--$y;
 				}
-				if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
-				else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
+				//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
+				//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
 
 				$ptrans = $ep["pointflagtranslation"];
-				$point1 = $ep["game_points"]['home'] + 0;
-				$point2 = $ep["game_points"]['away'] + 0;
+				$point1 = intval($ep["game_points"]['home']);
+				$point2 = intval($ep["game_points"]['away']);
 
 				if ($ptrans == "Game won" || $ptrans == "Break won" || $ptrans == "Set won" || $ptrans == "Match won") { // 一局结束
 
 					$in_progress = false; // 表示一局已结束
 					$tb_begin = false;
 
+					$point1 = $point2 = '';
 					if ($winner == 1) {
-						$color = Config::get('const.sideColor.home');
+						//$color = Config::get('const.sideColor.home');
 						++$game1;
+						$point1 = '🎾';
 					} else {
-						$color = Config::get('const.sideColor.away');
+						//$color = Config::get('const.sideColor.away');
 						++$game2;
+						$point2 = '🎾';
 					}
 
-/*----------------------每一局结束时输出pbp,输出markArea---------------------*/
-					$pbp[$set][] = [$x, $y, $smallDot, [], ''];
-					$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];  // 表示从last_x到x这段范围的局分，以及底色
-/*--------------------------------------------------------------------*/
+					/*----------------------每一局结束时输出pbp,输出markArea---------------------*/
+					//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+					//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];  // 表示从last_x到x这段范围的局分，以及底色
+					$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+					$pbp[$set][] = [
+						'x' => $x * 2,
+						'y' => $y,
+						's' => $server,
+						'w' => $winner,
+						'p1' => $point1,
+						'p2' => $point2,
+						'b1' => [],
+						'b2' => [],
+						'f1' => "",
+						'f2' => "",
+						'sv' => 0,
+						'ss' => 0,
+					];
+					if ($winner != $server && $winner > 0) $isBroken = true;
+					else $isBroken = false;
+					$param[$set][] = [
+						'x' => ($x + 0.5) * 2, // 划分一局的线,
+						'g1' => $game1,
+						'g2' => $game2,
+						's' => $server,
+						'w' => $winner,
+						'tb' => $tb_begin ? true : false,
+						'b' => $isBroken,
+					];
+					/*--------------------------------------------------------------------*/
 
+					/*
 					if ($server == 1) {
 						$color = Config::get('const.sideColor.home'); 
 						$servePerson = $this->p1 . ' ' . __('pbp.lines.toServe');
@@ -747,34 +771,34 @@ class PbPController extends Controller
 						$color = Config::get('const.sideColor.away');
 						$servePerson = $this->p2 . ' ' . __('pbp.lines.toServe');
 					}
+					*/
 
-					if ($winner == $server && $winner > 0) $holdOrLost = __('pbp.lines.holdServe');
-					else if ($winner != $server && $winner > 0) $holdOrLost = __('pbp.lines.lostServe');
-					else $holdOrLost = __('pbp.lines.inServe');
-
-/*------------------------------一局结束输出serve-------------------------------*/
-					$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
-/*----------------------------------------------------------------------------------*/
+					/*------------------------------一局结束输出serve-------------------------------*/
+					//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
+					/*----------------------------------------------------------------------------------*/
 
 					// 新开始一盘
 					if ($ptrans == "Set won" || $ptrans == "Match won") {
 
+						/*
 						$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
 						if ($m < 10) $m = 10;
 						$param[$set]['min'] = -$m;
 						$param[$set]['max'] = $m;
+						*/
 
+						if ($tb_begin) $tb_begin = false;
 						$game1 = $game2 = 0;
 
 						if ($ptrans != "Match won") {
 							++$set;
 
 							$x = $y = 0;
-/*----------------------盘初输出pbp,param,serve---------------------*/
-							$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
-							$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
-							$serve[$set] = [];
-/*---------------------------------------------------------------------*/
+							/*----------------------盘初输出pbp,param,serve---------------------*/
+							//$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
+							//$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
+							//$serve[$set] = [];
+							/*---------------------------------------------------------------------*/
 
 						}
 
@@ -798,31 +822,58 @@ class PbPController extends Controller
 					$sp = false; if ($ptrans == "set point") $sp = true;
 					$mp = false; if ($ptrans == "match point") $mp = true;
 
-					$dotSize = $smallDot;
 					$dotValue = [];
+					$bsm1 = $bsm2 = [];
 					if ($bp || $sp || $mp) {
-						$dotSize = $bigDot;
-						if ($bp) $dotValue[] = 'BP';
-						if ($sp) $dotValue[] = 'SP';
-						if ($mp) $dotValue[] = 'MP';
+						$bsm_count = ceil(abs($point1 - $point2) / 15);
+						if ($bsm_count == 1) $bsm_count = ""; 
+						if ($bp) $dotValue[] = $bsm_count . 'BP';
+						if ($sp) $dotValue[] = $bsm_count . 'SP';
+						if ($mp) $dotValue[] = $bsm_count . 'MP';
+						if ($point1 > $point2) {
+							$bsm1 = $dotValue;
+						} else if ($point1 < $point2) {
+							$bsm2 = $dotValue;
+						}
 					}
-
-/*-----------------------------每分都输出pbp----------------------------*/
-					$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
-/*--------------------------------------------------------------------*/
+					$p1 = $point1; $p2 = $point2;
+					if ($p1 == 50 && $p2 == 40) {$p1 = "A"; $p2 = '';}
+					if ($p1 == 40 && $p2 == 50) {$p2 = "A"; $p1 = '';}
+					
+					/*-----------------------------每分都输出pbp----------------------------*/
+					//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
+					$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+					$pbp[$set][] = [
+						'x' => $x * 2,
+						'y' => $y,
+						's' => $server,
+						'w' => $winner,
+						'p1' => $p1,
+						'p2' => $p2,
+						'b1' => $bsm1,
+						'b2' => $bsm2,
+						'f1' => "",
+						'f2' => "",
+						'sv' => 0,
+						'ss' => 0,
+					];
+					/*--------------------------------------------------------------------*/
 
 				}
 
 			}
 		}
 
+		/*
 		$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
 		if ($m < 10) $m = 10;
 		$param[$set]['min'] = -$m;
 		$param[$set]['max'] = $m;
+		*/
 
 		if ($in_progress) {
 
+			/*
 			if ($server == 1) {
 				$color = Config::get('const.sideColor.home'); 
 				$servePerson = $this->p1 . ' ' . __('pbp.lines.toServe');
@@ -830,22 +881,18 @@ class PbPController extends Controller
 				$color = Config::get('const.sideColor.away');
 				$servePerson = $this->p2 . ' ' . __('pbp.lines.toServe');
 			}
+			*/
 
-			if ($winner == $server && $winner > 0) $holdOrLost = __('pbp.lines.holdServe');
-			else if ($winner != $server && $winner > 0) $holdOrLost = __('pbp.lines.lostServe');
-			else $holdOrLost = __('pbp.lines.inServe');
-
-/*------------------------------一局结束输出serve-------------------------------*/
-			$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
-/*----------------------------------------------------------------------------------*/
+			/*------------------------------一局结束输出serve-------------------------------*/
+			//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
+			/*----------------------------------------------------------------------------------*/
 
 		}
 
 		return [
 			'status' => 0,
 			'pbp' => $pbp,
-			'param' => $param,
-			'serve' => $serve,
+			'marklines' => $param,
 		];
 
 	}
