@@ -53,7 +53,7 @@ class PbPController extends Controller
 
 		}
 
-		if ($ret["status"] < 0 && $this->eid > 40000 && $this->eid < 200000) {
+		if ($ret["status"] < 0 && preg_match('/^[MW]-ITF-/', $this->eid)) {
 
 			$ret = self::process_itf_event();
 
