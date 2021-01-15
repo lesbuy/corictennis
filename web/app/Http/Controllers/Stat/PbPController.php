@@ -48,7 +48,7 @@ class PbPController extends Controller
 
 		}
 
-		if ($ret["status"] < 0 && $this->eid > 40000 && $this->eid < 200000) {
+		if ($ret["status"] < 0 && preg_match('/^[MW]-ITF-/', $this->eid)) {
 
 			$ret = self::process_itf_event();
 
@@ -101,6 +101,7 @@ class PbPController extends Controller
 
 //		$html = file_get_contents("/home/ubuntu/web/1.php");
 		if (!$html) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
+		if (strlen($html) < 5000) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 		$DOM = str_get_html($html);
 		if (!$DOM) return ['status' => -1, 'errmsg' => __('pbp.notice.error')];
 
