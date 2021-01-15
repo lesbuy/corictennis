@@ -117,6 +117,7 @@ class PbPController extends Controller
 					$point1 = $POINT['tm1GameScore'];
 					$point2 = $POINT['tm2GameScore'];
 					$pointflag = $POINT['result'];
+					if ($pointflag == "N") $pointflag = "";
 					$flag1 = ''; $flag2 = '';
 					$bsm1 = []; $bsm2 = [];
 					if (in_array($pointflag, ['A', 'W'])) { // ace, winner 记在得分者头上
@@ -131,7 +132,7 @@ class PbPController extends Controller
 					$shot = $POINT['tm1Rally'] + $POINT['tm2Rally'];
 					$serve_speed = $POINT['serveSpeed'];
 
-					if (isset($POINT['brkPts'])) {
+					if (isset($POINT['brkPts'])	&& $POINT['brkPts'] > 0) {
 						$bp_num = $POINT['brkPts'];
 						${'bsm' . (3 - $serve_person)}[] = ($bp_num > 1 ? $bp_num : '') . 'BP';
 					} else {
