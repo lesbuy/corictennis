@@ -772,12 +772,12 @@ class StatController extends Controller
 				$b = intval($match[0]["ScoreSet" . $i . "B"]);
 
 				if ($i < 5 && $match[0]["ScoreSet" . ($i + 1) . "A"] !== "") {
-					if ($a > $b) {$c = 'SetWinner'; $d = 'SetLoser';}
-					else {$c = 'SetLoser'; $d = 'SetWinner';}
+					if ($a > $b) {$c = 'set-winner'; $d = 'set-loser';}
+					else {$c = 'set-loser'; $d = 'set-winner';}
 				} else {
 					if ($winner > 0) {
-						if ($winner == 1) {$c = 'SetWinner'; $d = 'SetLoser';}
-						else {$c = 'SetLoser'; $d = 'SetWinner';};
+						if ($winner == 1) {$c = 'set-winner'; $d = 'set-loser';}
+						else {$c = 'set-loser'; $d = 'set-winner';};
 					} else {
 						$c = $d = '';
 					}
@@ -948,12 +948,12 @@ class StatController extends Controller
 				$b = intval($match["PlayerTeam2"]["Sets"][$i]["SetScore"]);
 
 				if ($i < 5 && isset($match["PlayerTeam1"]["Sets"][$i + 1])) {
-					if ($a > $b) {$c = 'SetWinner'; $d = 'SetLoser';}
-					else {$c = 'SetLoser'; $d = 'SetWinner';}
+					if ($a > $b) {$c = 'set-winner'; $d = 'set-loser';}
+					else {$c = 'set-loser'; $d = 'set-winner';}
 				} else {
 					if ($winner > 0) {
-						if ($winner == 1) {$c = 'SetWinner'; $d = 'SetLoser';}
-						else {$c = 'SetLoser'; $d = 'SetWinner';};
+						if ($winner == 1) {$c = 'set-winner'; $d = 'set-loser';}
+						else {$c = 'set-loser'; $d = 'set-winner';};
 					} else {
 						$c = $d = '';
 					}
@@ -1271,7 +1271,7 @@ class StatController extends Controller
 
 	protected function process_itf_event() {
 
-		$url = "https://ls.sportradar.com/ls/feeds/?/itf/en/Europe:Berlin/gismo/match_info/$this->matchid";
+		$url = "https://ls.fn.sportradar.com/itf/en/Europe:Berlin/gismo/match_info/$this->matchid";
 		$html = file_get_contents($url);
 		$XML = json_decode(trim($html), true);
 		
@@ -1329,7 +1329,7 @@ class StatController extends Controller
 			$score[] = [$a, $b, $c, $d];
 		}
 
-		$url = "https://ls.betradar.com/ls/feeds/?/itf/en/Europe:Berlin/gismo/match_detailsextended/$this->matchid";
+		$url = "https://ls.fn.betradar.com/itf/en/Europe:Berlin/gismo/match_detailsextended/$this->matchid";
 		$html = file_get_contents($url);
 		$XML = json_decode(trim($html), true);
 		$match = $XML["doc"][0]["data"];
@@ -1428,7 +1428,6 @@ class StatController extends Controller
 		}
 
 		$ratio = self::convertToRatio($stat);
-//		$ratio = "";
 		return [
 			'status' => 0,
 			'stat' => $stat,
