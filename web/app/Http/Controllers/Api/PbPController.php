@@ -348,17 +348,22 @@ class PbPController extends Controller
 
 						$ep_arr = explode(":", $eachpoint);
 
+						$pointWinner = 0;
 						if (trim($ep_arr[0]) == $point1) {
 							if (trim($ep_arr[1]) > $point2) { // p2增大，算p2得分
-								++$y;
-							} else { // p2减少，从ad变成40，算p1得分
 								--$y;
+								$pointWinner = 2;
+							} else { // p2减少，从ad变成40，算p1得分
+								++$y;
+								$pointWinner = 1;
 							}
 						} else if (trim($ep_arr[1]) == $point2) {
 							if (trim($ep_arr[0]) > $point1) { // p1增大，算p1得分
-								--$y;
-							} else {
 								++$y;
+								$pointWinner = 1;
+							} else {
+								--$y;
+								$pointWinner = 2;
 							}
 						}
 						//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
@@ -383,7 +388,7 @@ class PbPController extends Controller
 							'x' => $x * 2,
 							'y' => $y,
 							's' => $server,
-							'w' => $winner,
+							'w' => $pointWinner,
 							'p1' => str_replace("50", "AD", $point1),
 							'p2' => str_replace("50", "AD", $point2),
 							'b1' => $dotValue,
@@ -401,10 +406,11 @@ class PbPController extends Controller
 					if (!$in_progress) {
 
 						++$x;
+						$pointWinner = $winner;
 						if ($winner == 1) {
-							--$y;
-						} else if ($winner == 2) {
 							++$y;
+						} else if ($winner == 2) {
+							--$y;
 						}
 						//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
 						//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
@@ -422,7 +428,7 @@ class PbPController extends Controller
 							'x' => $x * 2,
 							'y' => $y,
 							's' => $server,
-							'w' => $winner,
+							'w' => $pointWinner,
 							'p1' => str_replace("50", "AD", $point1),
 							'p2' => str_replace("50", "AD", $point2),
 							'b1' => $dotValue,
@@ -491,18 +497,21 @@ class PbPController extends Controller
 					if (!$tb_begin) continue;
 
 					++$x;
+					$pointWinner = 0;
 					if (trim($ep_arr[0]) == $point1) {
 						if (trim($ep_arr[1]) > $point2) { // p2增大，算p2得分
-							++$y;
+							--$y;
+							$pointWinner = 2;
 						}
 					} else if (trim($ep_arr[1]) == $point2) {
 						if (trim($ep_arr[0]) > $point1) { // p1增大，算p1得分
-							--$y;
+							++$y;
+							$pointWinner = 1;
 						}
 					}
 //					echo trim($ep_arr[0]) . "\t" . trim($ep_arr[1]) . "\n";
-					if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
-					else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
+					//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
+					//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
 
 					$point1 = trim($ep_arr[0]);
 					$point2 = trim($ep_arr[1]);
@@ -546,9 +555,9 @@ class PbPController extends Controller
 							'x' => $x * 2,
 							'y' => $y,
 							's' => $server,
-							'w' => $winner,
-							'p1' => str_replace("50", "AD", $point1),
-							'p2' => str_replace("50", "AD", $point2),
+							'w' => $pointWinner,
+							'p1' => $point1,
+							'p2' => $point2,
 							'b1' => $dotValue,
 							'b2' => [],
 							'f1' => "",
@@ -589,9 +598,9 @@ class PbPController extends Controller
 							'x' => $x * 2,
 							'y' => $y,
 							's' => $server,
-							'w' => $winner,
-							'p1' => str_replace("50", "AD", $point1),
-							'p2' => str_replace("50", "AD", $point2),
+							'w' => $pointWinner,
+							'p1' => $point1,
+							'p2' => $point2,
 							'b1' => $dotValue,
 							'b2' => [],
 							'f1' => "",
