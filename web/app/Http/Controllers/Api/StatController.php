@@ -1633,15 +1633,18 @@ class StatController extends Controller
 				$val2 = $setData[1][$key];
 				if (in_array($key, ["wi", "ue", "fe", "mgr", "mpr"])) {
 					if ($val1 == 0 && $val2 == 0) {
-						unset($setData[$key]);
+						unset($setData[0][$key]);
+						unset($setData[1][$key]);
 					}
 				} else if (in_array($key, ["f1a", "f1f", "f2a", "f2f", "dis"])) {
 					if ($val1[0] == 0 && $val2[0] == 0) {
-						unset($setData[$key]);
+						unset($setData[0][$key]);
+						unset($setData[1][$key]);
 					}
 				} else if (in_array($key, ["np%", "rp%", "as", "ds", "gs", "os", "ps", "l", "v", "sg"])) {
 					if ($val1 == "0% (0/0)" && $val2 == "0% (0/0)") {
-						unset($setData[$key]);
+						unset($setData[0][$key]);
+						unset($setData[1][$key]);
 					}
 				}
 			}
