@@ -47,13 +47,7 @@ class StatController extends Controller
 
 		if ($this->eid == 'DC' || $this->eid == 'FC') {
 
-//			$ret = self::process_davis_fed_cup();
 			$ret = self::process_itf_event();
-
-//		} else if (in_array($this->eid, ['UO'])) {
-//		if (in_array($this->eid, ['RG', 'WC', 'UO'])) {
-
-//			$ret = self::process_grand_slam();
 
 		} else if (in_array($this->eid, ['AO'])) {
 
@@ -69,7 +63,13 @@ class StatController extends Controller
 
 		} else if (preg_match('/^[A-Z]{2}[0-9]{3}$/', $this->matchid)){
 
-			$ret = self::process_atp_wta_tour();
+			//$ret = self::process_atp_wta_tour();
+			$e = substr($this->matchid, 0, 2);
+			if (in_array($e, ["LS", "LD", "RS", "RD"])) {
+				$ret = self::process_wta_tour();
+			} else {
+				$ret = self::process_atp_tour();
+			}
 
 		} else {
 
@@ -84,149 +84,6 @@ class StatController extends Controller
 		$ret['players'] = $players;
 		return $ret;
 
-	}
-
-	protected function process_davis_fed_cup() {
-
-		if (substr($this->matchid, 0, 1) == "M"){
-			$cup = "daviscup";
-		} else {
-			$cup = "fedcup";
-		}
-
-		$url = "http://$cup.tennis-live-scores.com/data/$cup/$this->matchid.json";
-
-		$html = file_get_contents($url);
-		$json = json_decode($html, true);
-
-		// 总盘数
-		$bestof = @$json["BestOfSets"] + 0;
-
-		// 胜负
-		$winner = @$json["WinningSide"] + 0;
-		if ($winner == 1) $wl = ["winner", "loser"];
-		else if ($winner == 2) $wl = ["loser", "winner"];
-		else $wl = ["unfinished", "unfinished"];
-
-		// 每盘比分
-		$score = [];
-		for ($i = 0; $i < 5; ++$i){
-			if (isset($json["Sets"][$i])){
-				$a = $json["Sets"][$i]["Side1Score"];
-				$b = $json["Sets"][$i]["Side2Score"];
-
-				if (isset($json["Sets"][$i + 1]) && $i < 5) {
-					if ($a > $b) {$c = 'set-winner'; $d = 'set-loser';}
-					else {$c = 'set-loser'; $d = 'set-winner';};
-				} else {
-					if ($winner > 0) {
-						if ($winner == 1) {$c = 'set-winner'; $d = 'set-loser';}
-						else {$c = 'set-loser'; $d = 'set-winner';};
-					} else {
-						$c = $d = '';
-					}
-				}
-
-				if (isset($json["Sets"][$i]["Side1TieBreakScore"], $json["Sets"][$i]["Side2TieBreakScore"])){
-					if ($json["Sets"][$i]["Side1TieBreakScore"] > $json["Sets"][$i]["Side2TieBreakScore"]){
-						$b .= "<sup>" . $json["Sets"][$i]["Side2TieBreakScore"] . "</sup>";
-					} else {
-						$a .= "<sup>" . $json["Sets"][$i]["Side1TieBreakScore"] . "</sup>";
-					}
-				}
-			} else {
-				$a = $b = "&nbsp;";
-				$c = $d = '';
-			}
-			$score[] = [$a, $b, $c, $d];
-		}
-
-		// 统计参数
-		$stat = [];
-
-		for ($j = -1; $j < 5; ++$j){
-
-			if ($j == -1) {
-				if (!isset($json["MatchStatistics"])) continue;
-				$v = $json["MatchStatistics"];
-				$set = 0;
-			} else {
-				if (!isset($json["Sets"]) || !isset($json["Sets"][$j]) || !isset($json["Sets"][$j]["SetStatistics"])) continue;
-				$v = $json["Sets"][$j]["SetStatistics"];
-				$set = $j + 1;
-			}
-
-			$stat[$set] = [];
-
-			for ($seq = 0; $seq < 2; ++$seq){
-
-				$i = $seq + 1;
-				$ace = @$v["Side".$i."AceCount"] + 0;
-				$df = @$v["Side".$i."DoubleFaultCount"] + 0;
-				$faqiu = @$v["Side".$i."FirstServeCount"] + 0;
-				$yifachenggong = @$v["Side".$i."FirstServeInCount"] + 0;
-				$yifadefen = @$v["Side".$i."FirstServeInWonCount"] + 0;
-				$erfa = @$v["Side".$i."SecondServeCount"] + 0;
-				$erfadefen = @$v["Side".$i."SecondServeInWonCount"] + 0;
-				$s1_percent = self::add_percentage($yifachenggong."/".$faqiu);
-				$s1 = self::add_percentage($yifadefen."/".$yifachenggong);
-				$s2 = self::add_percentage($erfadefen."/".$erfa);
-				$bp = @$v["Side".$i."BreakPointsWonCount"] + 0;
-				$bpjihui = @$v["Side".$i."BreakPointsCount"] + 0;
-				$bp_percent = self::add_percentage($bp."/".$bpjihui);
-				$wi = @$v["Side".$i."TotalWinners"] + 0;
-				$ue = @$v["Side".$i."UnforcedErrors"] + 0;
-				$fe = @$v["Side".$i."ForcedErrors"] + 0;
-				$np = @$v["Side".$i."NetPointsWon"] + 0;
-				$npjihui = @$v["Side".$i."NetPointsTotal"] + 0;
-				$np_percent = self::add_percentage($np."/".$npjihui);
-				$tp = @$v["Side".$i."TotalPointsWonCount"] + 0;
-
-				$f1fkph = max(@$v["Side".$i."Player1Fastest1stServeKPH"] + 0, @$v["Side".$i."Player2Fastest1stServeKPH"] + 0);
-				$f2fkph = max(@$v["Side".$i."Player1Fastest2ndServeKPH"] + 0, @$v["Side".$i."Player2Fastest2ndServeKPH"] + 0);
-				$f1akph = max(@$v["Side".$i."Player1Average1stServeKPH"] + 0, @$v["Side".$i."Player2Average1stServeKPH"] + 0);
-				$f2akph = max(@$v["Side".$i."Player1Average2ndServeKPH"] + 0, @$v["Side".$i."Player2Average2ndServeKPH"] + 0);
-
-				$f1fmph = max(@$v["Side".$i."Player1Fastest1stServeMPH"] + 0, @$v["Side".$i."Player2Fastest1stServeMPH"] + 0);
-				$f2fmph = max(@$v["Side".$i."Player1Fastest2ndServeMPH"] + 0, @$v["Side".$i."Player2Fastest2ndServeMPH"] + 0);
-				$f1amph = max(@$v["Side".$i."Player1Average1stServeMPH"] + 0, @$v["Side".$i."Player2Average1stServeMPH"] + 0);
-				$f2amph = max(@$v["Side".$i."Player1Average2ndServeMPH"] + 0, @$v["Side".$i."Player2Average2ndServeMPH"] + 0);
-
-				$hour = @$v["DurationInHours"];
-				$minute = @$v["DurationInMins"];
-				$dura = date('H:i:s', strtotime("$hour:$minute:00"));
-
-				$stat[$set][] = [
-					'dura' => $dura,
-					'ace' => $ace,
-					'df' => $df,
-					's1%' => $s1_percent,
-					's1' => $s1,
-					's2' => $s2,
-					'wi' => $wi,
-					'ue' => $ue,
-					'fe' => $fe,
-					'bp%' => $bp_percent,
-					'np%' => $np_percent,
-					'tp' => $tp,
-					'f1f' => [$f1fkph, $f1fmph],
-					'f1a' => [$f1akph, $f1amph],
-					'f2f' => [$f2fkph, $f2fmph],
-					'f2a' => [$f2akph, $f2amph],
-				];
-			}
-		}
-
-		$ratio = self::convertToRatio($stat);
-
-		return [
-			'status' => 0,
-			'stat' => $stat,
-			'ratio' => $ratio,
-			'score' => $score,
-			'wl' => $wl,
-			'bestof' => $bestof,
-		];
 	}
 
 	protected function process_rg() {
@@ -756,7 +613,7 @@ class StatController extends Controller
 		}
 
 
-/*
+		/*
 		foreach ($st as $sets) {
 			$set = $sets["SetNum"];
 			if ($set == "all") $set = 0;
@@ -771,8 +628,8 @@ class StatController extends Controller
 				}
 				$ace = $data['TotAces'][$p];		
 				$df = $data['DF'][$p];
-//					$wi = $data['TotWin'][$p];
-//					$ue = $data['TotUnfErr'][$p];
+					//$wi = $data['TotWin'][$p];
+					//$ue = $data['TotUnfErr'][$p];
 				$wi = @$data['FHApprWin'][$p] + @$data['FHDropWin'][$p] + @$data['FHGndWin'][$p] + @$data['FHLobWin'][$p] + @$data['FHOvhdWin'][$p] + @$data['FHPassWin'][$p] + @$data['FHVolWin'][$p]
 					+ @$data['BHApprWin'][$p] + @$data['BHDropWin'][$p] + @$data['BHGndWin'][$p] + @$data['BHLobWin'][$p] + @$data['BHOvhdWin'][$p] + @$data['BHPassWin'][$p] + @$data['BHVolWin'][$p] + $ace;
 				$ue = @$data['FHApprUnf'][$p] + @$data['FHDropUnf'][$p] + @$data['FHGndUnf'][$p] + @$data['FHLobUnf'][$p] + @$data['FHOvhdUnf'][$p] + @$data['FHPassUnf'][$p] + @$data['FHVolUnf'][$p]
@@ -867,7 +724,7 @@ class StatController extends Controller
 				];
 			}
 		}
-*/
+		*/
 
 		ksort($stat);
 		//print_r($stat);
@@ -885,55 +742,21 @@ class StatController extends Controller
 
 	}
 
-	protected function process_grand_slam() {
-
-		if ($this->eid == "RG"){
-			$prefix = "http://www.rolandgarros.com/en_FR/";
-		} else if ($this->eid == "WC"){
-			$prefix = "http://www.wimbledon.com/en_GB/";
-		} else if ($this->eid == "UO"){
-			$prefix = "http://www.usopen.org/en_US/";
-		} else if ($this->eid == "AO"){
-			$prefix = "http://www.ausopen.com/en_AU/";
-		}
-
-		$matchtype = substr($this->matchid, 0, 2);
-		$matchtype = Config::get('const.grandslam.type2id.' . $matchtype);
-
-		$cmd = "grep '^$matchtype" . substr($this->matchid, 2) . "\t' /home/ubuntu/share/mqtt/matchstat | head -1";
-		unset($r); exec($cmd, $r);
-		if (count($r) > 0){
-			$line_arr = explode("\t", trim($r[0]));
-			$str = replace_letters($line_arr[1]);
-		} else {
-			//初始化
-			$ch = curl_init();
-			//设置选项，包括URL
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-			curl_setopt($ch, CURLOPT_HEADER, 0); 
-			$url = $prefix . "xml/gen/scores/completed/" . $matchtype . substr($this->matchid, 2) . ".unc.xml";
-			curl_setopt($ch, CURLOPT_URL, $url);
-			$html = curl_exec($ch);
-			$response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			if ($response_code > 400) return ['status' => -1, 'errmsg' => __('stat.notice.error')];
-
-			$html = preg_replace('/<h>.*<\/h>/', "", $html);
-			$str = replace_letters(preg_replace('/<[^>]*>/', "", $html));
-		}
-
-		$arr = explode("|", $str);
+	protected function process_wta_tour() {
+		$url = "https://api.wtatennis.com/tennis/tournaments/$this->eid/$this->year/matches/$this->matchid/score";
+		$html = file_get_contents($url);
+		$match = json_decode($html, true);
+		if (!$match || !isset($match[0])) return ['status' => -1, 'errmsg' => __('stat.notice.error')];
 
 		// 总盘数
 		$bestof = 3;
-		if (substr($this->matchid, 0, 2) == 'MS') $bestof = 5;
-		else if ($this->eid == 'M995' && (substr($this->matchid, 0, 3) == 'QS3' || substr($this->matchid, 0, 2) == 'MD')) $bestof = 5;
 
 		// 胜负
 		$winner = 0;
-		if (strpos("FGHIJKLM", $arr[5]) !== false){
-			if (strpos("FHJL", $arr[5]) !== false){
+		if ($match[0]["MatchState"] == "F"){
+			if ($match[0]["Winner"] % 2 == 0){
 				$winner = 1;
-			} else if (strpos("GIKM", $arr[5]) !== false){
+			} else if ($match[0]["Winner"] % 2 == 1){
 				$winner = 2;
 			}
 		}
@@ -943,187 +766,320 @@ class StatController extends Controller
 
 		// 每盘比分
 		$score = [];
-		$s1 = $arr[16];
-		$s2 = $arr[17];
 		for ($i = 1; $i <= 5; ++$i){
-			if (substr($s1, 2*($i-1), 1)){
-				$a = ord(substr($s1, 2*($i-1), 1)) - ord("A");
-				$b = ord(substr($s2, 2*($i-1), 1)) - ord("A");
+			if ($match[0]["ScoreSet" . $i . "A"] != ""){
+				$a = intval($match[0]["ScoreSet" . $i . "A"]);
+				$b = intval($match[0]["ScoreSet" . $i . "B"]);
 
-				if (substr($s1, 2 * $i, 1) && $i < 5) {
-					if ($a > $b) {$c = 'set-winner'; $d = 'set-loser';}
-					else {$c = 'set-loser'; $d = 'set-winner';}
+				if ($i < 5 && $match[0]["ScoreSet" . ($i + 1) . "A"] !== "") {
+					if ($a > $b) {$c = 'SetWinner'; $d = 'SetLoser';}
+					else {$c = 'SetLoser'; $d = 'SetWinner';}
 				} else {
 					if ($winner > 0) {
-						if ($winner == 1) {$c = 'set-winner'; $d = 'set-loser';}
-						else {$c = 'set-loser'; $d = 'set-winner';};
+						if ($winner == 1) {$c = 'SetWinner'; $d = 'SetLoser';}
+						else {$c = 'SetLoser'; $d = 'SetWinner';};
 					} else {
 						$c = $d = '';
 					}
 				}
 
-				if (($a == 6 && $b == 7) || ($a == 0 && $b == 1 && $i == $bestof && $winner == 2)){
-					$a .= "<sup>". (ord(substr($s1, 2*($i-1)+1, 1)) - ord("A")) ."</sup>";
-				} else if (($a == 7 && $b == 6) || ($a == 1 && $b == 0 && $i == $bestof && $winner == 1)){
-					$b .= "<sup>". (ord(substr($s2, 2*($i-1)+1, 1)) - ord("A")) ."</sup>";
+				if (($a == 6 && $b == 7) || ($a == 0 && $b == 1 && $i == $bestof && $winner == 2) || ($a == 3 && $b == 4 && $this->eid == '7696')){
+					$a .= "<sup>". $match[0]["ScoreTbSet" . $i] ."</sup>";
+				} else if (($a == 7 && $b == 6) || ($a == 1 && $b == 0 && $i == $bestof && $winner == 1) || ($a == 4 && $b == 3 && $this->eid == '7696')){
+					$b .= "<sup>". $match[0]["ScoreTbSet" . $i] ."</sup>";
 				}
 			} else{
-				$a = $b = '&nbsp;';
+				$a = $b = "&nbsp;";
+				$c = $d = '';
+			}
+			$score[] = [$a, $b, $c, $d];
+		}
+		$total_dura = $match[0]["MatchTimeTotal"];
+
+		$url = "https://api.wtatennis.com/tennis/tournaments/$this->eid/$this->year/matches/$this->matchid/stats";
+		$html = file_get_contents($url);
+		$match = json_decode($html, true);
+		if (!$match || !isset($match[0])) return ['status' => -1, 'errmsg' => __('stat.notice.error')];
+
+		$stat = [];
+
+		$all[0] = $all[1] = [];
+		for ($set = 1; $set <= 5; ++$set){
+			if (isset($match[$set])){
+				$stat[$set] = [];
+				$SET = $match[$set];
+				foreach (["a", "b"] as $seq){
+					$oppo = $seq == "a" ? "b" : "a";
+
+					$ace = $SET["aces" . $seq];
+					$df = $SET["dblflt" . $seq];
+					$tp = $SET["totptswon" . $seq];
+
+					$faqiu = $SET["totservplayed" . $seq];
+					$yifachenggong = $SET["ptsplayed1stserv" . $seq];
+					$yifadefen = $SET["ptswon1stserv" . $seq];
+					$erfa = $faqiu - $yifachenggong;
+					$faqiudefen = $SET["ptstotwonserv" . $seq];
+					$erfadefen = $faqiudefen - $yifadefen;
+					$pofa = $SET["breakptsconv" . $seq];
+					$pofajihui = $SET["breakptsplayed" . $seq];
+					$faqiuju = $SET["servgamesplayed" . $seq];
+
+					$oppo_faqiudiufen = $tp - $faqiudefen;
+					$oppo_faqiu = $SET["totservplayed" . $oppo];
+					$baofa = $faqiuju - $SET["breakptsconv" . $oppo];
+
+					@$all[$seq]['ace'] += $ace;
+					@$all[$seq]['df'] += $df;
+					@$all[$seq]['tp'] += $tp;
+					@$all[$seq]['faqiu'] += $faqiu;
+					@$all[$seq]['yifachenggong'] += $yifachenggong;
+					@$all[$seq]['yifadefen'] += $yifadefen;
+					@$all[$seq]['erfa'] += $erfa;
+					@$all[$seq]['erfadefen'] += $erfadefen;
+					@$all[$seq]['faqiudefen'] += $faqiudefen;
+					@$all[$seq]['pofa'] += $pofa;
+					@$all[$seq]['pofajihui'] += $pofajihui;
+					@$all[$seq]['faqiuju'] += $faqiuju;
+					@$all[$seq]['oppo_faqiudiufen'] += $oppo_faqiudiufen;
+					@$all[$seq]['oppo_faqiu'] += $oppo_faqiu;
+					@$all[$seq]['baofa'] += $baofa;
+
+					$s1_percent = self::add_percentage($yifachenggong . "/" . $faqiu);
+					$s1 = self::add_percentage($yifadefen . "/" . $yifachenggong);
+					$s2 = self::add_percentage($erfadefen . "/" . $erfa);
+					$bp_percent = self::add_percentage($pofa . "/" . $pofajihui);
+					$rp_percent = self::add_percentage($oppo_faqiudiufen . "/" . $oppo_faqiu);
+					$sg_percent = self::add_percentage($baofa . "/" . $faqiuju);
+
+					$dura = $SET["settime"];
+
+					$stat[$set][] = [
+						'dura' => $dura,
+						'ace' => $ace,
+						'df' => $df,
+						's1%' => $s1_percent,
+						's1' => $s1,
+						's2' => $s2,
+						'bp%' => $bp_percent,
+						'sg%' => $sg_percent,
+						'rp%' => $rp_percent,
+						'tp' => $tp,
+					];
+				} // for seq
+			} // if isset
+		} // for set
+
+		$seconds = 0;
+		for ($set = 1; $set <= 5; ++$set){
+			if (isset($match[$set])){
+				$SET = $match[$set];
+				$arr = explode(":", @$SET["settime"]);
+				$seconds += intval(@$arr[0]) * 3600 + intval(@$arr[1]) * 60 + intval(@$arr[2]);
+			}
+		}
+
+		foreach (["a", "b"] as $seq){
+			@$all[$seq]['s1_percent'] = self::add_percentage($all[$seq]['yifachenggong'] . "/" . $all[$seq]['faqiu']);
+			@$all[$seq]['s1'] = self::add_percentage($all[$seq]['yifadefen'] . "/" . $all[$seq]['yifachenggong']);
+			@$all[$seq]['s2'] = self::add_percentage($all[$seq]['erfadefen'] . "/" . $all[$seq]['erfa']);
+			@$all[$seq]['bp_percent'] = self::add_percentage($all[$seq]['pofa'] . "/" . $all[$seq]['pofajihui']);
+			@$all[$seq]['rp_percent'] = self::add_percentage($all[$seq]['oppo_faqiudiufen'] . "/" . $all[$seq]['oppo_faqiu']);
+			@$all[$seq]['sg_percent'] = self::add_percentage($all[$seq]['baofa'] . "/" . $all[$seq]['faqiuju']);
+			//@$all[$seq]['dura'] = date('H:i:s', strtotime("2021-1-1 0:0:0 +" . $seconds . " seconds"));
+			@$all[$seq]['dura'] = $total_dura;
+
+			$stat[0][] = [
+				'dura' => $all[$seq]['dura'],
+				'ace' => $all[$seq]['ace'],
+				'df' => $all[$seq]['df'],
+				's1%' => $all[$seq]['s1_percent'],
+				's1' => $all[$seq]['s1'],
+				's2' => $all[$seq]['s2'],
+				'bp%' => $all[$seq]['bp_percent'],
+				'sg%' => $all[$seq]['sg_percent'],
+				'rp%' => $all[$seq]['rp_percent'],
+				'tp' => $all[$seq]['tp'],
+			];
+		}
+
+		ksort($stat);
+			
+		$ratio = self::convertToRatio($stat);
+
+		return [
+			'status' => 0,
+			'stat' => $stat,
+			'ratio' => $ratio,
+			'score' => $score,
+			'wl' => $wl,
+			'bestof' => $bestof,
+		];
+	}
+
+	protected function process_atp_tour() {
+		$url = "https://www.atptour.com/-/ajax/MatchStats/en/$this->year/$this->eid/$this->matchid";
+		$html = file_get_contents($url);
+		$match = json_decode($html, true);
+		if (!$match || !isset($match["Match"])) return ['status' => -1, 'errmsg' => __('stat.notice.error')];
+		$match = $match["Match"];
+
+		// 总盘数
+		$bestof = $match["NumberOfSets"];
+
+		// 胜负
+		$winner = 0;
+		if ($match["Status"] == "F"){
+			if ($match["Winner"] == $match["PlayerTeam1"]["PlayerId"]){
+				$winner = 1;
+			} else if ($match["Winner"] == $match["PlayerTeam2"]["PlayerId"]){
+				$winner = 2;
+			}
+		}
+		if ($winner == 1) $wl = ["winner", "loser"];
+		else if ($winner == 2) $wl = ["loser", "winner"];
+		else $wl = ["unfinished", "unfinished"];
+
+		// 每盘比分
+		$score = [];
+		for ($i = 1; $i <= 5; ++$i){
+			if (isset($match["PlayerTeam1"]["Sets"][$i])){
+				$a = intval($match["PlayerTeam1"]["Sets"][$i]["SetScore"]);
+				$b = intval($match["PlayerTeam2"]["Sets"][$i]["SetScore"]);
+
+				if ($i < 5 && isset($match["PlayerTeam1"]["Sets"][$i + 1])) {
+					if ($a > $b) {$c = 'SetWinner'; $d = 'SetLoser';}
+					else {$c = 'SetLoser'; $d = 'SetWinner';}
+				} else {
+					if ($winner > 0) {
+						if ($winner == 1) {$c = 'SetWinner'; $d = 'SetLoser';}
+						else {$c = 'SetLoser'; $d = 'SetWinner';};
+					} else {
+						$c = $d = '';
+					}
+				}
+
+				if (($a == 6 && $b == 7) || ($a == 0 && $b == 1 && $i == $bestof && $winner == 2) || ($a == 3 && $b == 4 && $this->eid == '7696')){
+					$a .= "<sup>". $match["PlayerTeam1"]["Sets"][$i]["TieBreakScore"] ."</sup>";
+				} else if (($a == 7 && $b == 6) || ($a == 1 && $b == 0 && $i == $bestof && $winner == 1) || ($a == 4 && $b == 3 && $this->eid == '7696')){
+					$b .= "<sup>". $match["PlayerTeam2"]["Sets"][$i]["TieBreakScore"] ."</sup>";
+				}
+			} else{
+				$a = $b = "&nbsp;";
 				$c = $d = '';
 			}
 			$score[] = [$a, $b, $c, $d];
 		}
 
-		// 数据统计
+		// 技术统计
 		$stat = [];
 
-		for ($set = 0; $set <= 5; ++$set) {
+		$all[0] = $all[1] = [];
+		for ($set = 0; $set <= 5; ++$set){
+			if (isset($match["PlayerTeam1"]["Sets"][$set])){
+				$stat[$set] = [];
+				foreach ([1, 2] as $seq){
+					$oppo = 3 - $seq;
 
-			for ($seq = 0; $seq < 2; ++$seq) {
+					$ace = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["Aces"]["Number"];
+					$df = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["DoubleFaults"]["Number"];
+					$tp = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["PointStats"]["TotalPointsWon"]["Dividend"];
 
-				$idx = 27 + $set * 3 + $seq;
+					$faqiu = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServe"]["Divisor"];
+					$yifachenggong = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServe"]["Dividend"];
+					$yifadefen = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServePointsWon"]["Dividend"];
+					$erfa = $faqiu - $yifachenggong;
+					$erfadefen = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["SecondServePointsWon"]["Dividend"];
+					$faqiudefen = $yifadefen + $erfadefen;
+					$pofa = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Dividend"];
+					$pofajihui = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Divisor"];
+					$faqiuju = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["ServiceStats"]["ServiceGamesPlayed"]["Number"];
 
-				if (!isset($arr[$idx]) || !$arr[$idx]) continue;
+					$oppo_faqiudiufen = $tp - $faqiudefen;
+					$oppo_faqiu = @$match["PlayerTeam" . $oppo]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServe"]["Divisor"];
+					$baofa = $faqiuju - @$match["PlayerTeam" . $oppo]["Sets"][$set]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Dividend"];
 
-				$ace = $df = $wi = $ue = $faqiu = $yifachenggong = $yifadefen = $erfadefen = $erfa = $pofa = $pofajihui = $wangqiandefen = $wangqianqiu = $jiefaqiudefen = 0;
+					/*
+					@$all[$seq]['ace'] += $ace;
+					@$all[$seq]['df'] += $df;
+					@$all[$seq]['tp'] += $tp;
+					@$all[$seq]['faqiu'] += $faqiu;
+					@$all[$seq]['yifachenggong'] += $yifachenggong;
+					@$all[$seq]['yifadefen'] += $yifadefen;
+					@$all[$seq]['erfa'] += $erfa;
+					@$all[$seq]['erfadefen'] += $erfadefen;
+					@$all[$seq]['faqiudefen'] += $faqiudefen;
+					@$all[$seq]['pofa'] += $pofa;
+					@$all[$seq]['pofajihui'] += $pofajihui;
+					@$all[$seq]['faqiuju'] += $faqiuju;
+					@$all[$seq]['oppo_faqiudiufen'] += $oppo_faqiudiufen;
+					@$all[$seq]['oppo_faqiu'] += $oppo_faqiu;
+					@$all[$seq]['baofa'] += $baofa;
+					*/
+					$s1_percent = self::add_percentage($yifachenggong . "/" . $faqiu);
+					$s1 = self::add_percentage($yifadefen . "/" . $yifachenggong);
+					$s2 = self::add_percentage($erfadefen . "/" . $erfa);
+					$bp_percent = self::add_percentage($pofa . "/" . $pofajihui);
+					$rp_percent = self::add_percentage($oppo_faqiudiufen . "/" . $oppo_faqiu);
+					$sg_percent = self::add_percentage($baofa . "/" . $faqiuju);
 
-				if (isset($arr[$idx]) && $arr[$idx]) {
-					$ar = explode(":", $arr[$idx]);
+					$dura = @$match["PlayerTeam" . $seq]["Sets"][$set]["Stats"]["Time"];
 
-					$ace = $ar[9];
-					$df = $ar[10];
-					$wi = $ar[11];
-					$ue = $ar[12];
-
-					$faqiu = $ar[2];
-					$yifachenggong = $ar[0];
-					$yifadefen = $ar[1];
-					$yifachenggonglu = $ar[3];
-					$yifadefenlu = $ar[4];
-					$erfadefen = $ar[5];
-					$erfa = $ar[6];
-					$erfachenggonglu = $ar[7];
-					$erfadefenlu = $ar[8];
-					$pofa = $ar[13];
-					$pofajihui = $ar[14];
-					$pofalu = $ar[15];
-					$wangqiandefen = $ar[16];
-					$wangqianqiu = $ar[17];
-					$wangqigndefenlu = $ar[18];
-					$jiefaqiudefen = $ar[19];
-				}
-
-				$s1_percent = self::add_percentage($yifachenggong . "/" . $faqiu);
-				$s1 = self::add_percentage($yifadefen . "/" . $yifachenggong);;
-				$s2 = self::add_percentage($erfadefen . "/" . $erfa);
-				$np_percent = self::add_percentage($wangqiandefen . "/" . $wangqianqiu);
-				$bp_percent = self::add_percentage($pofa . "/" . $pofajihui);
-				$tp = $yifadefen + $erfadefen + $jiefaqiudefen;
-
-				// 时长
-				$dura = '00:00:00';
-				$idx = 29 + $set * 3;
-
-				if (isset($arr[$idx]) && $arr[$idx]) {
-					$dura = date('H:i:s', strtotime("0:0:0 +" . $arr[$idx] . " minutes"));
-				}
-
-
-				// 发球时速
-				$f1fkph = $f1akph = $f2fkph = $f2akph = 0;
-				$f1fmph = $f1amph = $f2fmph = $f2amph = 0;
-				$idx = 50 + $set * 2 + $seq;
-
-				if (isset($arr[$idx]) && $arr[$idx]) {
-					$ar = explode(":", $arr[$idx]);
-					$f1fkph = $ar[7] + 0;
-					$f1akph = $ar[6] + 0;
-					$f2fkph = $ar[15] + 0;
-					$f2akph = $ar[14] + 0;
-
-					$f1fmph = self::kilo2mile($ar[7]);
-					$f1amph = self::kilo2mile($ar[6]);
-					$f2fmph = self::kilo2mile($ar[15]);
-					$f2amph = self::kilo2mile($ar[14]);
-				}
-
-				// 跑动距离
-				$dismph = $diskph = 0;
-				$idx = 48 + $seq;
-
-				if (isset($arr[$idx]) && $arr[$idx]) {
-					$ar = explode(":", $arr[$idx]);
-					if (count($ar) > 1) {
-						$ar1 = explode(',', $ar[$set]);
-						if (count($ar1) == 2) {
-							$dismph = $ar1[1] + 0;
-							$diskph = $ar1[0] + 0;
-						}
-					}
-				}
-
-				// 得分细节
-				$fe = $as = $ds = $gs = $l = $os = $ps = $v = 0;
-				$asp = $dsp = $gsp = $lp = $osp = $psp = $vp = 0;
-				$idx = 74 + $set * 2 + $seq;
-
-				if (isset($arr[$idx]) && $arr[$idx]) {
-					$ar = explode(":", $arr[$idx]);
-
-					$fe = $as = $ds = $gs = $l = $os = $ps = $v = 0;
-					$asp = $dsp = $gsp = $lp = $osp = $psp = $vp = 0;
-					for ($j = 0; $j < count($ar); ++$j){
-						if ($j % 4 == 0) $fe += $ar[$j];
-						if ($j % 4 == 1) continue;
-						if (floor($j / 8) == 0) {$as += $ar[$j]; if ($j % 4 == 3) $asp += $ar[$j];}
-						if (floor($j / 8) == 1) {$ds += $ar[$j]; if ($j % 4 == 3) $dsp += $ar[$j];}
-						if (floor($j / 8) == 2) {$gs += $ar[$j]; if ($j % 4 == 3) $gsp += $ar[$j];}
-						if (floor($j / 8) == 3) {$l += $ar[$j]; if ($j % 4 == 3) $lp += $ar[$j];}
-						if (floor($j / 8) == 4) {$os += $ar[$j]; if ($j % 4 == 3) $osp += $ar[$j];}
-						if (floor($j / 8) == 5) {$ps += $ar[$j]; if ($j % 4 == 3) $psp += $ar[$j];}
-						if (floor($j / 8) == 6) {$v += $ar[$j]; if ($j % 4 == 3) $vp += $ar[$j];}
-					}
-				}
-
-				$as_percent = self::add_percentage($asp."/".$as);
-				$ds_percent = self::add_percentage($dsp."/".$ds);
-				$gs_percent = self::add_percentage($gsp."/".$gs);
-				$l_percent = self::add_percentage($lp."/".$l);
-				$os_percent = self::add_percentage($osp."/".$os);
-				$ps_percent = self::add_percentage($psp."/".$ps);
-				$v_percent = self::add_percentage($vp."/".$v);
-
-				$stat[$set][] = [
-					'dura' => $dura,
-					'ace' => $ace,
-					'df' => $df,
-					's1%' => $s1_percent,
-					's1' => $s1,
-					's2' => $s2,
-					'wi' => $wi,
-					'ue' => $ue,
-					'fe' => $fe,
-					'bp%' => $bp_percent,
-					'np%' => $np_percent,
-					'tp' => $tp,
-					'dis' => [$diskph, $dismph],
-					'f1f' => [$f1fkph, $f1fmph],
-					'f1a' => [$f1akph, $f1amph],
-					'f2f' => [$f2fkph, $f2fmph],
-					'f2a' => [$f2akph, $f2amph],
-					'as' => $as_percent,
-					'ds' => $ds_percent,
-					'gs' => $gs_percent,
-					'l' => $l_percent,
-					'os' => $os_percent,
-					'ps' => $ps_percent,
-					'v' => $v_percent,
-				];
-
-			} // for seq
-
+					$stat[$set][] = [
+						'dura' => $dura,
+						'ace' => $ace,
+						'df' => $df,
+						's1%' => $s1_percent,
+						's1' => $s1,
+						's2' => $s2,
+						'bp%' => $bp_percent,
+						'sg%' => $sg_percent,
+						'rp%' => $rp_percent,
+						'tp' => $tp,
+					];
+				} // for seq
+			} // if isset
 		} // for set
 
+		if ($stat[0][0]["dura"] == "") {
+			$seconds = 0;
+			for ($set = 1; $set <= 5; ++$set){
+				if (isset($match["PlayerTeam1"]["Sets"][$set]["Stats"])){
+					$arr = explode(":", @$match["PlayerTeam1"]["Sets"][$set]["Stats"]["Time"]);
+					$seconds += intval(@$arr[0]) * 3600 + intval(@$arr[1]) * 60 + intval(@$arr[2]);
+				}
+			}
+			$dura = date('H:i:s', strtotime("2021-1-1 0:0:0 +" . $seconds . " seconds"));
+			$stat[0][0]["dura"] = $dura;
+			$stat[0][1]["dura"] = $dura;
+		}
+
+		/*
+		foreach ([1, 2] as $seq){
+			@$all[$seq]['s1_percent'] = self::add_percentage($all[$seq]['yifachenggong'] . "/" . $all[$seq]['faqiu']);
+			@$all[$seq]['s1'] = self::add_percentage($all[$seq]['yifadefen'] . "/" . $all[$seq]['yifachenggong']);
+			@$all[$seq]['s2'] = self::add_percentage($all[$seq]['erfadefen'] . "/" . $all[$seq]['erfa']);
+			@$all[$seq]['bp_percent'] = self::add_percentage($all[$seq]['pofa'] . "/" . $all[$seq]['pofajihui']);
+			@$all[$seq]['rp_percent'] = self::add_percentage($all[$seq]['oppo_faqiudiufen'] . "/" . $all[$seq]['oppo_faqiu']);
+			@$all[$seq]['sg_percent'] = self::add_percentage($all[$seq]['baofa'] . "/" . $all[$seq]['faqiuju']);
+			@$all[$seq]['dura'] = date('H:i:s', strtotime("2021-1-1 0:0:0 +" . $seconds . " seconds"));
+
+			$stat[0][] = [
+				'dura' => $all[$seq]['dura'],
+				'ace' => $all[$seq]['ace'],
+				'df' => $all[$seq]['df'],
+				's1%' => $all[$seq]['s1_percent'],
+				's1' => $all[$seq]['s1'],
+				's2' => $all[$seq]['s2'],
+				'bp%' => $all[$seq]['bp_percent'],
+				'sg%' => $all[$seq]['sg_percent'],
+				'rp%' => $all[$seq]['rp_percent'],
+				'tp' => $all[$seq]['tp'],
+			];
+		}
+		*/
+		ksort($stat);
+			
 		$ratio = self::convertToRatio($stat);
 
 		return [
@@ -1137,6 +1093,7 @@ class StatController extends Controller
 
 	}
 
+	/*
 	protected function process_atp_wta_tour() {
 
 		$url = "http://ws.protennislive.com/LiveScoreSystem/M/Short/GetMatchStats_VCrypt.aspx?year=$this->year&id=$this->eid&mId=$this->matchid";
@@ -1309,8 +1266,8 @@ class StatController extends Controller
 			'wl' => $wl,
 			'bestof' => $bestof,
 		];
-
 	}
+	*/
 
 	protected function process_itf_event() {
 

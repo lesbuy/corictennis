@@ -943,26 +943,12 @@ class PbPController extends Controller
 				$gender = 'itf';
 			}
 			$key = join('_', [$gender, 'profile', $pid]);
-			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
-			$has_pt = $has_hs = 1;
-			if (!$res[5]) {
-				$has_pt = 0;
-				$pt = ($gender == "atp" ? "gladiator-ghost.png" : "wtaplayer.png");
-			} else {
-				$pt = $res[5];
-			}
-			if (!$res[6]) {
-				$has_hs = 0;
-				$hs = $gender . "player.jpg";
-			} else {
-				$hs = $res[6];
-			}
-			$hs = join('/', ['images', join('_', [$gender, 'headshot']), $hs]);
-			$pt = join('/', ['images', join('_', [$gender, 'portrait']), $pt]);
+			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc');
 
-			$rank = intval($res[7]);
-			if ($rank <= 0 || $rank == 9999) $rank = null;
-				
+			$res1 = fetch_portrait($pid, $gender);
+			$res2 = fetch_headshot($pid, $gender);
+			$res3 = fetch_rank($pid, $gender);
+
 			$ret[$pid] = [
 				'id' => $pid,
 				'name' => $res[0],
@@ -970,14 +956,13 @@ class PbPController extends Controller
 				'first' => $res[2],
 				'last' => $res[3],
 				'ioc' => $res[4],
-				'pt' => $pt,
-				'hs' => $hs,
-				'has_pt' => $has_pt,
-				'has_hs' => $has_hs,
-				'rank' => $rank,
+				'pt' => $res1[1],
+				'hs' => $res2[1],
+				'has_pt' => $res1[0],
+				'has_hs' => $res2[0],
+				'rank' => $res3,
 			];
 		}
 		return $ret;
 	}
-
 }
