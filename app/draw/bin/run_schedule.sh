@@ -18,7 +18,7 @@ monday4=`date -d "$current_monday +14 days" +%Y-%m-%d`
 
 cat /dev/null > tmp_schedule
 
-php ../src/oop.php AO $year >> tmp_schedule
+#php ../src/oop.php AO $year >> tmp_schedule
 
 now=`date +%s`
 grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 
@@ -46,7 +46,7 @@ do
 		endtime=$((unix+15*86400))
 	else
 		starttime=$((unix-4*86400))
-		endtime=$((unix+11*86400))
+		endtime=$((unix+9*86400))
 	fi
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]

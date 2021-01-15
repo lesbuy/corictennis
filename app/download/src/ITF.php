@@ -14,7 +14,8 @@ class Down extends DownBase {
 		$year = date('Y', time());
 		$file = join("/", [STORE, "calendar", $year, "ITF"]);
 		if (date('Y', time() + 10 * 86400) != $year) $file .= " " . join("/", [STORE, "calendar", date('Y', time() + 10 * 86400), "ITF"]);
-		if (date('Y', time() - 10 * 86400) != $year) $file .= " " . join("/", [STORE, "calendar", date('Y', time() - 10 * 86400), "ITF"]);
+		if (date('Y', time() - 20 * 86400) != $year) $file .= " " . join("/", [STORE, "calendar", date('Y', time() - 20 * 86400), "ITF"]);
+		print_err($file);
 		if ($this->asso == "itf-men") {
 			$cmd = "cat $file | awk -F\"\\t\" '$4 == \"M\"'";
 		} else if ($this->asso == "itf-women") {
@@ -49,7 +50,10 @@ class Down extends DownBase {
 		// 遍历所有tour，并输出到相应的文件里
 		foreach ($this->tourList as $t) {
 			$t->printSelf();
-			$url = "https://live.itftennis.com//feeds/d/drawsheets.php/en/$t->eventID-$t->year";
+			unset($this->players); $this->players = [];
+			unset($this->teams); $this->teams = [];
+
+			$url = "https://live.itftennis.com//feeds/d/drawsheets.php/en/" . $t->eventID . "-" . $t->year;
 			$html = http($url, null, null, null);
 			if (!$html) {
 				print_line("download players failed");

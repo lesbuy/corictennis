@@ -3,3 +3,9 @@
 3
 4
 5
+nohup.wta
+nohup.atp
+list_atp_activity
+list_wta_activity
+err_atp_activity
+err_wta_activity

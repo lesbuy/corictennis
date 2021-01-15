@@ -15,9 +15,9 @@ class Down extends DownBase {
 		unset($r); exec($cmd, $r);
 		foreach ($r as $row) {
 			$arr = explode("\t", $row);
-			// 前一周周五开始算，一直到下一周周五0点结束
+			// 前一周周五开始算，一直到下一周周三0点结束
 			$start = $arr[6] - 3 * 86400;
-			$end = $arr[6] + $arr[21] * 7 * 86400 + 4 * 86400;
+			$end = $arr[6] + $arr[21] * 7 * 86400 + 2 * 86400;
 			if (time() < $start || time() >= $end) continue;
 			$t = new DownTour;
 			$t->eventID = $arr[1];
@@ -169,7 +169,8 @@ class Down extends DownBase {
 
 		$fp = fopen(join("/", [DATA, $gender . "_bio_down_list"]), "r");
 		$nation_short2long = [];
-		$nodes = [];
+		$nodes = []; // 原来的all_name_xxx 表, 即将废弃
+		$new_nodes = []; // 新的names表
 		$tic = tic();
 		while ($line = trim(fgets($fp))) {
 			$pid = $line;
@@ -190,6 +191,9 @@ class Down extends DownBase {
 			if ($rank_s <= 100 || $rank_d <= 30) $priority = 1;
 			else $priority = 2;
 
+			$rank_s = intval($rank_s);
+			if ($rank_s == 0) $rank_s = 9999;
+
 			$node = [
 				'id' => $pid,
 				'name' => $name,
@@ -200,7 +204,20 @@ class Down extends DownBase {
 				'first' => $first,
 				'last' => $last
 			];
+			$new_node = [
+				'pid' => $pid,
+				'name' => $name,
+				'highest' => $rank_s_hi,
+				'priority' => $priority,
+				'ioc' => $ioc,
+				'first' => $first,
+				'last' => $last,
+				'rank' => $rank_s,
+				'gender' => 1,
+			];
+
 			$nodes[] = $node;
+			$new_nodes[] = $new_node;
 			print_err($pid, $first, $last);
 			sleep(2);
 		}
@@ -212,7 +229,14 @@ class Down extends DownBase {
 		$schema = array_keys($nodes[0]);
 		$tic = tic();
 		$db->multi_insert($tbname, $nodes, $schema);
-		print_err("insert into db ", toc($tic));
+		print_err("insert into db `all_name_$gender` ", toc($tic));
+
+		$db = new_db("test");
+		$tbname = "names";
+		$schema = array_keys($nodes[0]);
+		$tic = tic();
+		$db->multi_insert($tbname, $new_nodes, $schema);
+		print_err("insert into db `names` ", toc($tic));
 
 		return [true, ""];
 	}

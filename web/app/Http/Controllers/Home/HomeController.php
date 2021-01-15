@@ -491,6 +491,7 @@ class HomeController extends Controller
 	private function process_rank_data(&$ret, $id, $gender) {
 		// rank data
 		foreach (['S', 'D'] as $sd) {
+			$ret['rank']['dot'][$sd] = [];
 			$cmd = "cd " . join("/", [Config::get('const.root'), "data", "rank", $gender, strtolower($sd), "history"]) . "; grep \"^$id	\" *";
 			unset($r); exec($cmd, $r);
 			$maxrank = 9999;
@@ -555,7 +556,7 @@ class HomeController extends Controller
 		$ids = []; // 记录那些需要去数据库查名字的人
 		$heads = []; // 需要查头像的人
 		foreach (['S', 'D'] as $sd) {
-			$cmd = "grep ^$id " . join("/", [Config::get('const.root'), "data", "calc", $gender, strtolower($sd), "year", "unloaded"]);
+			$cmd = "grep ^$id " . join("/", [Config::get('const.root'), "data", "calc", $gender, strtolower($sd), "year", "unloaded"]) . " " . join("/", [Config::get('const.root'), "data", "calc", $gender, strtolower($sd), "year", "comingup"]);
 			unset($r); exec($cmd, $r);
 
 			$matches = [];
@@ -730,7 +731,7 @@ class HomeController extends Controller
 				'QF' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
 				'Attend' => ['GS' => [0,[]], 'YEC' => [0,[]], 'OL' => [0,[]], '1000' => [0,[]], '500' => [0,[]], '250' => [0,[]], 'TOUR' => [0,[]], 'NONTOUR' => [0,[]]],
 			];
-			$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'unloaded']) . " | sort -t\"	\" -k6gr,6";
+			$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"" . strtolower($sd) . "\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'unloaded']) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, strtolower($sd), 'year', 'comingup']) . " | sort -t\"	\" -k6gr,6";
 			unset($r); exec($cmd, $r);
 
 			if ($r) {
@@ -812,7 +813,7 @@ class HomeController extends Controller
 		$win_match = array_fill(0, 501, 0);
 		$loss_match = array_fill(0, 501, 0);
 		$winloss_match = array_fill(0, 501, [0, 0]);
-		$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"s\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, "s", 'year', 'unloaded']);
+		$cmd = "awk -F\"\\t\" '$1 == \"$id\" && $15 == \"s\"' " . join("/", [Config::get('const.root'), 'data', 'activity', $gender, $id]) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, "s", 'year', 'unloaded']) . " " . join("/", [Config::get('const.root'), 'data', 'calc', $gender, "s", 'year', 'comingup']);
 		unset($r); exec($cmd, $r);
 		foreach (Config::get('const.schema_activity_matches') as $k => $v) {
 			$kvmap[$v] = $k + 1;

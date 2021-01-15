@@ -388,7 +388,9 @@ class Activity {
 						$oppo_rank = trim($tr->find('td', 1)->innertext);
 					} else {
 						if (!$is_atp_cup_doubles) {
-							$oppo_rank = join("/", array_map(function ($d) {return trim($d);}, explode("<br/>", $tr->find('td', 1)->innertext)));
+							$innertext = $tr->find('td', 1)->innertext;
+							$innertext = str_replace("<br />", "<br/>", $innertext);
+							$oppo_rank = join("/", array_map(function ($d) {return trim($d);}, explode("<br/>", $innertext)));
 						} else {
 							$td = $tr->find('td', 1)->find('.day-table-flag a', 0);
 							$partner_id = strtoupper(explode("/", $td->href)[4]);
@@ -684,19 +686,22 @@ class Activity {
 					}
 				}
 
-				$this->matches[] = [
-					$round_seq,
-					$round,
-					$wl,
-					$games,
-					$oppo_rank,
-					$oppo_seed,
-					$oppo_entry,
-					$oppo_id,
-					$oppo_ioc,
-					$oppo_partner_id,
-					$oppo_partner_ioc,
-				];
+				// 没有wl的不输出，轮次是Q1, Q2，和正赛第一轮
+				if ($wl != "" || ($round_seq == 1 || $round_seq == 2 || $round_seq == 21)) {
+					$this->matches[] = [
+						$round_seq,
+						$round,
+						$wl,
+						$games,
+						$oppo_rank,
+						$oppo_seed,
+						$oppo_entry,
+						$oppo_id,
+						$oppo_ioc,
+						$oppo_partner_id,
+						$oppo_partner_ioc,
+					];
+				}
 
 				$this->pre_eid = $this->eid;
 				$this->pre_year = $this->year;

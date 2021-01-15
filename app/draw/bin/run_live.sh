@@ -41,14 +41,14 @@ do
 	fi
 
 	# 2周的比赛从上周1开始到结束后的周1
-	# 1周的比赛从上周4开始到结束后的周3
+	# 1周的比赛从上周4开始到结束后的周2
 	if [[ $weeks == "2" ]]
 	then
 		starttime=$((unix-7*86400))
 		endtime=$((unix+15*86400))
 	else
 		starttime=$((unix-4*86400))
-		endtime=$((unix+11*86400))
+		endtime=$((unix+9*86400))
 	fi
 
 	if [[ $now -gt $starttime && $now -lt $endtime ]]

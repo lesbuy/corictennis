@@ -435,9 +435,9 @@ class ResultController extends Controller
 
 				$round = translate('roundname', $kvmap['round']);
 
-				if (in_array(substr($matchId, 0, 2), ['MS', 'QS', 'MD', 'QD', 'M-'])) {
+				if (in_array(substr($matchId, 0, 2), ['MS', 'QS', 'MD', 'QD', 'M-']) || in_array($kvmap['sexid'], [0, 2, 5, 7])) {
 					$sextype = 'atp';
-				} else if (in_array(substr($matchId, 0, 2), ['WS', 'LS', 'RS', 'PS', 'WD', 'LD', 'PD', 'RD', 'W-'])) {
+				} else if (in_array(substr($matchId, 0, 2), ['WS', 'LS', 'RS', 'PS', 'WD', 'LD', 'PD', 'RD', 'W-']) || in_array($kvmap['sexid'], [1, 3, 6, 8])) {
 					$sextype = 'wta';
 				} else if (strpos($kvmap['tour'], "M-FU-") !== false || strpos($kvmap['tour'], "M-ITF-") !== false) {
 					$sextype = 'atp';

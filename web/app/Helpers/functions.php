@@ -700,7 +700,7 @@ function fetch_headshot($pid, $gender = "atp") {
 function fetch_player_info($pid, $gender = "atp") {
 	// gender = atp or wta
 	if (!$pid) return null;
-	$info = Redis::hmget(join("_", [$gender, "profile", $pid]), 'first', 'last', 'ioc', 'birthday', 'hs', 'pt', 'birthplace', 'residence', 'hand', 'backhand', 'turnpro', 'height', 'height_imp', 'weight', 'weight_imp', 'prize_c', 'prize_y', 'title_s_c', 'title_s_y', 'title_d_c', 'title_d_y');
+	$info = Redis::hmget(join("_", [preg_match('/^\d{7,10}$/', $pid) ? "itf" : $gender, "profile", $pid]), 'first', 'last', 'ioc', 'birthday', 'hs', 'pt', 'birthplace', 'residence', 'hand', 'backhand', 'turnpro', 'height', 'height_imp', 'weight', 'weight_imp', 'prize_c', 'prize_y', 'title_s_c', 'title_s_y', 'title_d_c', 'title_d_y');
 	if (!$info) return null;
 
 	$headshot = $info[4];

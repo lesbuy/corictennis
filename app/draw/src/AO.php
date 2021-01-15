@@ -147,6 +147,8 @@ class Event extends Base{
 				'rs' => $rank_s,
 				'rd' => $rank_d,
 			];
+			$this->rank['s'][$pid] = $rank_s;
+			$this->rank['d'][$pid] = $rank_d;
 		}
 
 		foreach ($json['teams'] as $t) {

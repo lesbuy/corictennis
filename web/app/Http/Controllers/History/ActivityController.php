@@ -245,9 +245,10 @@ class ActivityController extends Controller
 			$final = $req->input('onlyFinal', '');
 
 			$file1 = join('/', [env('ROOT'), 'data', 'calc', $type, $sd, "year", "unloaded"]);
-			$file2 = join('/', [env('ROOT'), 'data', 'activity', $type, $p1]);
+			$file2 = join('/', [env('ROOT'), 'data', 'calc', $type, $sd, "year", "comingup"]);
+			$file3 = join('/', [env('ROOT'), 'data', 'activity', $type, $p1]);
 
-			$cmd = "cat $file1 $file2 | awk -F\"\\t\" '$1 == \"$p1\"'";
+			$cmd = "cat $file1 $file2 $file3 | awk -F\"\\t\" '$1 == \"$p1\"'";
 
 			if ($year > -1) {
 				$cmd .= " | awk -F\"\\t\" '$" . $kvmap['year'] . " == $year' ";
@@ -276,7 +277,7 @@ class ActivityController extends Controller
 				$cmd .= " | awk -F\"\\t\" '$" . $kvmap['level'] . " == \"GS\"' ";
 				$ret['filter'] .= "\t" . __('h2h.selectBar.level.g');
 			} else if ($level == 'm') {
-				$cmd .= " | awk -F\"\\t\" '$" . $kvmap['level'] . " == \"1000\" || $" . $kvmap['level'] . " == \"PM\" || $" . $kvmap['level'] . " == \"P5\" || $" . $kvmap['level'] . " == \"MS\" || $" . $kvmap['level'] . " == \"CSS\" || $" . $kvmap['level'] . " == \"T1\"' ";
+				$cmd .= " | awk -F\"\\t\" '$" . $kvmap['level'] . " == \"1000\" || $" . $kvmap['level'] . " == \"WTA1000\" || $" . $kvmap['level'] . " == \"PM\" || $" . $kvmap['level'] . " == \"P5\" || $" . $kvmap['level'] . " == \"MS\" || $" . $kvmap['level'] . " == \"CSS\" || $" . $kvmap['level'] . " == \"T1\"' ";
 				$ret['filter'] .= "\t" . __('h2h.selectBar.level.m');
 			} else if ($level == 't') {
 				$cmd .= " | awk -F\"\\t\" '$" . $kvmap['level'] . " != \"ITF\" && $" . $kvmap['level'] . " != \"FU\" && $" . $kvmap['level'] . " != \"CH\" && $" . $kvmap['level'] . " != \"125K\" && $" . $kvmap['level'] . " != \"C\"' ";
@@ -300,7 +301,7 @@ class ActivityController extends Controller
 				$cmd .= " | awk -F\"\\t\" '$" . $kvmap['level'] . " == \"DC\" || $" . $kvmap['level'] . " == \"FC\"' ";
 				$ret['filter'] .= "\t" . __('h2h.selectBar.level.dc');
 			} else if ($level == 'yec') {
-				$cmd .= " | awk -F\"\\t\" '($" . $kvmap['level'] . " == \"YEC\" && $" . $kvmap['city'] . " != \"BALI\" && $" . $kvmap['city'] . " != \"SOFIA\" && $" . $kvmap['city'] . " != \"ZHUHAI\") || $" . $kvmap['level'] . " == \"WC\"' ";
+				$cmd .= " | awk -F\"\\t\" '$" . $kvmap['level'] . " == \"YEC\" || $" . $kvmap['level'] . " == \"WC\"' ";
 				$ret['filter'] .= "\t" . __('h2h.selectBar.level.yec');
 			}
 
@@ -387,23 +388,11 @@ class ActivityController extends Controller
 
 
 			$key = join('_', [$type, 'profile', $p1]);
-			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
-			$has_pt = $has_hs = 1;
-			if (!$res[6]) {
-				$has_hs = 0;
-				$hs = $type . "player.jpg";
-			} else {
-				$hs = $res[6];
-			}
-			$hs = url(join('/', ['images', join('_', [$type, 'headshot']), $hs]));
-			$ret['p1head'] = $hs;
+			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc');
+			$ret['p1head'] = fetch_headshot($p1, $type)[1];
 			$ret['name1'] = translate2short($p1, $res[2], $res[3], $res[4]);
 
-			$key = join('_', ['rank', $type, $sd]);
-			$res = Redis::hmget($key, $p1);
-			$rank = $res[0];
-			if (!$rank) $rank = "-";
-			$ret['rank1'] = $rank;
+			$ret['rank1'] = fetch_rank($p1, $type);
 		}// if status
 //		return json_encode($ret);
 		return view('activity.query', ['ret' => $ret]);

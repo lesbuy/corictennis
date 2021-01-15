@@ -2,11 +2,10 @@
 
 require_once("activity.php");
 
-$gender = get_param($argv, 1, 'atp', ' atp wta ');
+$pid = get_param($argv, 1, null);
 $sd = get_param($argv, 2, 's', ' s d ');
-$pid = get_param($argv, 3, null);
-$year = get_param($argv, 4, 'all');
-$page = get_param($argv, 5, 'all');
+$year = get_param($argv, 3, 'all');
+$page = get_param($argv, 4, 'all');
 
 if (!$pid) exit(-1);
 

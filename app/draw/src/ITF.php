@@ -449,7 +449,7 @@ class Event extends Base{
 	
 		foreach ($xml['doc'][0]['data'] as $amatch) {
 			$matchid = $amatch['matchid'];
-			//if (!isset($this->matches[$matchid])) continue;
+			if (!isset($this->matches[$matchid])) continue;
 
 			self::getResult($matchid, $amatch['match']);
 

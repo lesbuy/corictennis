@@ -46,6 +46,7 @@ class H2HController extends Controller
 					$filter['level'][] = 'GS';
 				} else if ($level == "MS") {
 					$filter['level'][] = '1000';
+					$filter['level'][] = 'WTA1000';
 					$filter['level'][] = 'CSS';
 					$filter['level'][] = 'MS';
 					$filter['level'][] = 'PM';
@@ -53,6 +54,7 @@ class H2HController extends Controller
 					$filter['level'][] = 'T1';
 				} else if ($level == 'P') {
 					$filter['level'][] = '500';
+					$filter['level'][] = 'WTA500';
 					$filter['level'][] = 'ISG';
 					$filter['level'][] = 'CS';
 					$filter['level'][] = 'CSD';
@@ -60,6 +62,7 @@ class H2HController extends Controller
 					$filter['level'][] = 'T2';
 				} else if ($level == 'IS') {
 					$filter['level'][] = '250';
+					$filter['level'][] = 'WTA250';
 					$filter['level'][] = 'IS';
 					$filter['level'][] = 'WS';
 					$filter['level'][] = 'WSD';
@@ -157,7 +160,8 @@ class H2HController extends Controller
 		}
 
 		$files = join(' ', array_map(function ($d) use ($gender) {return join('/', [Config::get('const.root'), 'data', 'activity', $gender, $d]);}, $merge_arr));
-		$files .= ' ' . join('/', [Config::get('const.root'), 'data', 'activity_current', $gender, "*"]);
+		$files .= ' ' . join('/', [Config::get('const.root'), 'data', 'calc', $gender, $sd, 'year', 'unloaded']);
+		$files .= ' ' . join('/', [Config::get('const.root'), 'data', 'calc', $gender, $sd, 'year', 'comingup']);
 
 		$conditions_a = [];
 		foreach ($filter as $col => $values) {
@@ -357,26 +361,12 @@ class H2HController extends Controller
 				$gender = 'itf';
 			}
 			$key = join('_', [$gender, 'profile', $pid]);
-			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc', 'pt', 'hs', 'rank_s');
-			$has_pt = $has_hs = 1;
-			if (!$res[5]) {
-				$has_pt = 0;
-				$pt = ($gender == "atp" ? "gladiator-ghost.png" : "wtaplayer.png");
-			} else {
-				$pt = $res[5];
-			}
-			if (!$res[6]) {
-				$has_hs = 0;
-				$hs = $gender . "player.jpg";
-			} else {
-				$hs = $res[6];
-			}
-			$hs = join('/', ['images', join('_', [$gender, 'headshot']), $hs]);
-			$pt = join('/', ['images', join('_', [$gender, 'portrait']), $pt]);
+			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc');
 
-			$rank = intval($res[7]);
-			if ($rank <= 0 || $rank == 9999) $rank = null;
-				
+			$res1 = fetch_portrait($pid, $gender);
+			$res2 = fetch_headshot($pid, $gender);
+			$res3 = fetch_rank($pid, $gender);
+
 			$ret[$pid] = [
 				'id' => $pid,
 				'name' => $res[0],
@@ -384,11 +374,11 @@ class H2HController extends Controller
 				'first' => $res[2],
 				'last' => $res[3],
 				'ioc' => $res[4],
-				'pt' => $pt,
-				'hs' => $hs,
-				'has_pt' => $has_pt,
-				'has_hs' => $has_hs,
-				'rank' => $rank,
+				'pt' => $res1[1],
+				'hs' => $res2[1],
+				'has_pt' => $res1[0],
+				'has_hs' => $res2[0],
+				'rank' => $res3,
 			];
 		}
 		return $ret;

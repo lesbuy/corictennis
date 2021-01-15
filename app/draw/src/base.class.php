@@ -80,21 +80,30 @@ abstract class Base{
 				$this->wta_level = $ar[1];
 			} else {
 				$this->atp_level = $this->wta_level = $ar[0];
-				$prize = $arr[20];
-				if (in_string($ar[0], "ITF") || preg_match('/^[WM]\d{2,3}$/', $ar[0])) {
-					if (in_string($arr[11], "+")) $prize += 1;
-				}
-				if ($arr[3] == "M") {
-					$this->atpprize = $prize;
-				} else {
-					$this->wtaprize = $prize;
-				}
 			}
+
+			$prize = $arr[20];
+			if (in_string($arr[0], "ITF") || preg_match('/^M\d{2}$/', $this->atp_level) || preg_match('/^W\d{2,3}$/', $this->wta_level)) {
+				if (in_string($arr[11], "+")) $prize += 1;
+			}
+			if ($arr[3] == "M") {
+				$this->atpprize = $prize;
+			} else if ($arr[3] == "W") {
+				$this->wtaprize = $prize;
+			} else if ($arr[3] == "MW") {
+				$this->atpprize = $this->wtaprize = $prize / 2;
+			}
+
 			if (strpos($this->atp_level, 'CH') !== false) {
 				$this->atp_level = 'CH';
-			} else if (strpos($this->atp_level, 'ITF') !== false) {
+			}
+			if (strpos($this->atp_level, 'ITF') !== false || preg_match('/^M\d{2}$/', $this->atp_level)) {
 				$this->atp_level = 'ITF';
 			}
+			if (strpos($this->wta_level, 'ITF') !== false || preg_match('/^W\d{2,3}$/', $this->wta_level)) {
+				$this->wta_level = 'ITF';
+			}
+
 		}
 	}
 
@@ -708,8 +717,8 @@ abstract class Base{
 			$gender = "atp";
 			if (in_array($event, ["WS", "WD", "PS", "PD"])) $gender = "wta";
 			$_lev = $this->{$gender . '_level'};
-			if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
-			if (strpos($_lev, "CH ") === 0) $_lev = "CH";
+			if (strpos($_lev, "ITF") === 0) $_lev = "ITF";
+			if (strpos($_lev, "CH") === 0) $_lev = "CH";
 
 			// 记分日期
 			$weeks = 1;
@@ -718,7 +727,7 @@ abstract class Base{
 			}
 			$recordday = date('Ymd', strtotime($date) + $weeks * 7 * 86400);
 
-			if ($this->{$gender . '_level'} == "ITF") { // 如果是ITF低级别，再延一周
+			if ($this->{$gender . '_level'} == "ITF" && $this->{$gender . 'prize'} < 40000) { // 如果是ITF低级别，再延一周
 				$recordday = date('Ymd', strtotime($recordday) + 7 * 86400);
 			} 
 
@@ -801,7 +810,8 @@ abstract class Base{
 		$this->redis = new_redis();
 
 		$teams = [];
-		foreach ($this->teams as $ateam) {
+		foreach ($this->teams as $teamKey => $ateam) {
+			if (in_array($teamKey, ['MS', 'QS', 'MD', 'QD', 'WS', 'PS', 'WD', 'PD'])) continue;
 			$uuid = $ateam['uuid'];
 			$event = substr($uuid, 0, 2);
 			if (!in_array($event, ['MS', 'QS', 'MD', 'QD', 'WS', 'PS', 'WD', 'PD'])) continue;
@@ -933,7 +943,7 @@ abstract class Base{
 					}
 					$recordday = date('Ymd', strtotime($this->first_day) + $weeks * 7 * 86400);
 
-					if ($this->{$gender . '_level'} == "ITF") { // 如果是ITF低级别，再延一周
+					if ($this->{$gender . '_level'} == "ITF" && $this->{$gender . 'prize'} < 40000) { // 如果是ITF低级别，再延一周
 						$recordday = date('Ymd', strtotime($recordday) + 7 * 86400);
 					} 
 
@@ -963,8 +973,8 @@ abstract class Base{
 							$this->draws[$the_match['event']]['sd'] == "S" ?
 								@$this->teams[$the_match['t' . (3 - $pos)]]['p'][0]['rs'] :
 								join("/", array_map(function ($d) {return @$d['rd'];}, $this->teams[$the_match['t' . (3 - $pos)]]['p'])),
-							$this->teams[$the_match['t' . (3 - $pos)]]['s'],
-							$this->teams[$the_match['t' . (3 - $pos)]]['e'],
+							@$this->teams[$the_match['t' . (3 - $pos)]]['s'],
+							@$this->teams[$the_match['t' . (3 - $pos)]]['e'],
 							@$this->teams[$the_match['t' . (3 - $pos)]]['p'][0]['p'],
 							@$this->teams[$the_match['t' . (3 - $pos)]]['p'][0]['i'],
 							@$this->teams[$the_match['t' . (3 - $pos)]]['p'][1]['p'],
@@ -980,13 +990,13 @@ abstract class Base{
 					}
 
 					$_lev = $this->{$gender . '_level'};
-					if (strpos($_lev, "ITF ") === 0) $_lev = "ITF";
-					if (strpos($_lev, "CH ") === 0) $_lev = "CH";
+					if (strpos($_lev, "ITF") === 0) $_lev = "ITF";
+					if (strpos($_lev, "CH") === 0) $_lev = "CH";
 
 					output_content(join("\t", [
 						$gender,
 						$true_pid,
-						join("/", array_map(function ($d) use ($gender, $true_pid) {return $this->redis->cmd('HGET', join("_", [$gender, 'profile', $d]), 'ioc')->get();}, explode("/", $true_pid))), // ioc
+						join("/", array_map(function ($d) use ($gender, $true_pid) {return $this->redis->cmd('HGET', join("_", [preg_match('/^\d{7,10}$/', $d) ? "itf" : $gender, 'profile', $d]), 'ioc')->get();}, explode("/", $true_pid))), // ioc
 						$this->{$gender . 'id'},
 						$this->tour,
 						$this->year,
@@ -1004,7 +1014,7 @@ abstract class Base{
 						$this_seed, // seed
 						$this_entry, // entry
 						isset($res['partner']) ? $res['partner'] : '',
-						isset($res['partner']) ? $this->redis->cmd('HGET', join("_", [$gender, 'profile', $res['partner']]), 'ioc')->get() : "", // partner ioc
+						isset($res['partner']) ? $this->redis->cmd('HGET', join("_", [preg_match('/^\d{7,10}$/', $res['partner']) ? "itf" : $gender, 'profile', $res['partner']]), 'ioc')->get() : "", // partner ioc
 						$res['prize'],
 						$res['point'],
 						0, // award point
