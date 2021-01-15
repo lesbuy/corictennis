@@ -177,7 +177,7 @@ class PbPController extends Controller
 					'x' => ($x + 0.5) * 2, // 划分一局的线,
 					'g1' => $game1,
 					'g2' => $game2,
-					's' => $game_serve_person,
+					's' => $GAME['isTieBreak'] ? 0 : $game_serve_person,
 					'w' => $game_win_person,
 					'tb' => $GAME['isTieBreak'],
 					'b' => $is_broken,
@@ -391,7 +391,7 @@ class PbPController extends Controller
 						$point1 = $p1;
 						$point2 = $p2;
 						if ($p1 == 50 && $p2 == 40) {$p1 = 'A'; $p2 = '';}
-						if ($p2 == 40 && $p1 == 50) {$p2 = 'A'; $p1 = '';}
+						else if ($p1 == 40 && $p2 == 50) {$p2 = 'A'; $p1 = '';}
 
 						/*-----------------------------每分都输出pbp----------------------------*/
 						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
@@ -614,7 +614,7 @@ class PbPController extends Controller
 							'x' => ($x + 0.5) * 2, // 划分一局的线,
 							'g1' => $game1,
 							'g2' => $game2,
-							's' => $server,
+							's' => 0,
 							'w' => $winner,
 							'tb' => true,
 							'b' => false,
