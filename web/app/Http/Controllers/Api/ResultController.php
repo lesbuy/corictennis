@@ -710,6 +710,16 @@ class ResultController extends Controller
 					];
 				}
 
+				$umpire = null;
+				if (isset($kvmap["umpireid"]) && $kvmap["umpireid"] != "") {
+					$umpire = [
+						'p' => $kvmap["umpireid"],
+						'f' => $kvmap["umpirefirst"],
+						'l' => $kvmap["umpirelast"],
+						'i' => $kvmap["umpireioc"],
+					];
+				}
+
 				@$courts[$courtname][] = [
 					'matchid' => $matchId, //0
 					'sex' => $sex, 
@@ -735,7 +745,8 @@ class ResultController extends Controller
 					'whole_link' => $wholeLink, 
 					'bets_id' => $matchid_bets,
 					'gender' => $sextype,
-					'fs_id' => @$kvmap['fsid'],
+					'fs_id' => @$kvmap['fsid'], //30
+					'umpire' => $umpire,
 				];
 
 			}
