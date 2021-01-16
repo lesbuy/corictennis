@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Api;
+use Config;
 
 class CalendarController extends Controller
 {
@@ -25,16 +27,27 @@ class CalendarController extends Controller
             $eid = $arr[$kv["eid"]];
             $city = $arr[$kv["city"]];
             $date = $arr[$kv["monday"]];
-            $prize = @arr[$kv["prizeNum"]];
-            $ioc = arr[$kv["loc"]];
-            $gender = arr[$kv["gender"]]; // M, W, J
+            $prize = @$arr[$kv["prizeNum"]];
+            $prizeStr = $arr[$kv["prize"]];
+            $ioc = $arr[$kv["loc"]];
+            $gender = $arr[$kv["gender"]]; // M, W, J
+            if ($gender == "MW" || $gender == "J") {
+                $drawSize = join("/", [$arr[$kv["drawSizeMS"]], $arr[$kv["drawSizeWS"]]]);
+            } else if ($gender == "M") {
+                $drawSize = $arr[$kv["drawSizeMS"]];
+            } else {
+                $drawSize = $arr[$kv["drawSizeWS"]];
+            }
             $ret['WT'][$date][] = [
                 "eid" => $eid, 
                 "level" => $level, 
                 "city" => $city, 
                 "prize" => $prize, 
                 "gender" => $gender, 
-                "loc" => $ioc
+                "loc" => $ioc,
+                "prizeStr" => $prizeStr,
+                "title" => $arr[$kv["title"]],
+                "drawSize" => $drawSize,
             ];
         }
         if (isset($ret['WT'])) {
@@ -54,10 +67,17 @@ class CalendarController extends Controller
             $eid = $arr[$kv["eid"]];
             $city = $arr[$kv["city"]];
             $date = $arr[$kv["monday"]];
-            $prize = @arr[$kv["prizeNum"]];
-            $prizeStr = arr[$kv["prize"]];
-            $ioc = arr[$kv["loc"]];
-            $gender = arr[$kv["gender"]]; // M, W, J
+            $prize = @$arr[$kv["prizeNum"]];
+            $prizeStr = $arr[$kv["prize"]];
+            $ioc = $arr[$kv["loc"]];
+            $gender = $arr[$kv["gender"]]; // M, W, J
+            if ($gender == "MW" || $gender == "J") {
+                $drawSize = join("/", [$arr[$kv["drawSizeMS"]], $arr[$kv["drawSizeWS"]]]);
+            } else if ($gender == "M") {
+                $drawSize = $arr[$kv["drawSizeMS"]];
+            } else {
+                $drawSize = $arr[$kv["drawSizeWS"]];
+            }
 
             // 只要大于40k的都放到CH里，包括了挑战赛，125k，以及大于50k的女子itf赛
             if ($prize > 40000) $category = "CH";
@@ -123,19 +143,14 @@ class CalendarController extends Controller
                 "city" => $city, 
                 "prize" => $prize, 
                 "gender" => $gender, 
-                "loc" => $ioc
+                "loc" => $ioc,
+                "prizeStr" => $prizeStr,
+                "title" => $arr[$kv["title"]],
+                "drawSize" => $drawSize,
             ];
         }
         if (isset($ret['ITF'])) {
             foreach ($ret['ITF'] as $k => $v) {
-                $ret['ITF'][$k][] = [
-                    "eid" => 1, 
-                    "level" => "", 
-                    "city" => "blank",
-                    "prize" => 29999999, 
-                    "gender" => "M", 
-                    "loc" => ""
-                ];
                 usort($ret['ITF'][$k], "self::prizeSort");
             }
         }
