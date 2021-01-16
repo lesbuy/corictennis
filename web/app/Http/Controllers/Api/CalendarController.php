@@ -165,7 +165,8 @@ class CalendarController extends Controller
             }
         }
 
-		$ret['year'] = $year;
+        $ret['year'] = $year;
+        $ret["pageTitle"] = $year . " " . __('frame.menu.calendar');
         return json_encode($ret);
         /*
 		return view('draw.calendar', [
