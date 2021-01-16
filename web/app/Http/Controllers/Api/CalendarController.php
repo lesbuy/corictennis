@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App;
+use Config;
 
 class CalendarController extends Controller
 {
@@ -25,9 +27,9 @@ class CalendarController extends Controller
             $eid = $arr[$kv["eid"]];
             $city = $arr[$kv["city"]];
             $date = $arr[$kv["monday"]];
-            $prize = @arr[$kv["prizeNum"]];
-            $ioc = arr[$kv["loc"]];
-            $gender = arr[$kv["gender"]]; // M, W, J
+            $prize = @$arr[$kv["prizeNum"]];
+            $ioc = $arr[$kv["loc"]];
+            $gender = $arr[$kv["gender"]]; // M, W, J
             $ret['WT'][$date][] = [
                 "eid" => $eid, 
                 "level" => $level, 
@@ -54,10 +56,10 @@ class CalendarController extends Controller
             $eid = $arr[$kv["eid"]];
             $city = $arr[$kv["city"]];
             $date = $arr[$kv["monday"]];
-            $prize = @arr[$kv["prizeNum"]];
-            $prizeStr = arr[$kv["prize"]];
-            $ioc = arr[$kv["loc"]];
-            $gender = arr[$kv["gender"]]; // M, W, J
+            $prize = @$arr[$kv["prizeNum"]];
+            $prizeStr = $arr[$kv["prize"]];
+            $ioc = $arr[$kv["loc"]];
+            $gender = $arr[$kv["gender"]]; // M, W, J
 
             // 只要大于40k的都放到CH里，包括了挑战赛，125k，以及大于50k的女子itf赛
             if ($prize > 40000) $category = "CH";

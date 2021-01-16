@@ -60,5 +60,7 @@ Route::middleware('cors')->group(function () {
 
 		Route::get('{lang}/stat/{home}/{away}', 'StatController@query');
 		Route::get('{lang}/pbp/{home}/{away}', 'PbPController@query');
+
+		Route::get('{lang}/calendar/{year}', 'CalendarController@getCalendarByYear');
 	});
 });
