@@ -213,6 +213,9 @@ class H2HController extends Controller
 
 			$date = $row_arr[$out_schema['start_date']];
 			$level = $row_arr[$out_schema['level']];
+			if (in_array($level, ["WTA1000", "WATA500", "WTA250", "WTA125"])) {
+				$level = substr($level, 3);
+			}
 			$sfc = $row_arr[$out_schema['sfc']];
 			$city = $row_arr[$out_schema['city']];
 			$year = $row_arr[$out_schema['year']];

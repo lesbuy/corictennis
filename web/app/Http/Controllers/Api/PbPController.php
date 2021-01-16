@@ -375,7 +375,7 @@ class PbPController extends Controller
 						$dotValue = [];
 						if ($bp || $sp || $mp) {
 							$bsm_count = ceil(abs($p1 - $p2) / 15);
-							if ($bsm_count == 1) $bsm_count = ""; 
+							if ($bsm_count <= 1) $bsm_count = ""; 
 							if ($bp) $dotValue[] = $bsm_count . 'BP';
 							if ($sp) $dotValue[] = $bsm_count . 'SP';
 							if ($mp) $dotValue[] = $bsm_count . 'MP';
@@ -553,7 +553,7 @@ class PbPController extends Controller
 					$dotValue = [];
 					if ($bp || $sp || $mp) {
 						$bsm_count = abs($p1 - $p2);
-						if ($bsm_count == 1) $bsm_count = ""; 
+						if ($bsm_count <= 1) $bsm_count = ""; 
 						if ($bp) $dotValue[] = $bsm_count . 'BP';
 						if ($sp) $dotValue[] = $bsm_count . 'SP';
 						if ($mp) $dotValue[] = $bsm_count . 'MP';
@@ -710,8 +710,6 @@ class PbPController extends Controller
 				} else if ($winner == 2) {
 					--$y;
 				}
-				//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
-				//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
 
 				$ptrans = $ep["pointflagtranslation"];
 				$point1 = intval($ep["game_points"]['home']);
@@ -773,16 +771,6 @@ class PbPController extends Controller
 					];
 					/*--------------------------------------------------------------------*/
 
-					/*
-					if ($server == 1) {
-						$color = Config::get('const.sideColor.home'); 
-						$servePerson = $this->p1 . ' ' . __('pbp.lines.toServe');
-					} else if ($server == 2) {
-						$color = Config::get('const.sideColor.away');
-						$servePerson = $this->p2 . ' ' . __('pbp.lines.toServe');
-					}
-					*/
-
 					/*------------------------------一局结束输出serve-------------------------------*/
 					//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
 					/*----------------------------------------------------------------------------------*/
@@ -794,13 +782,6 @@ class PbPController extends Controller
 						foreach (range(0, 1) as $r) {
 							$pbp[$set][] = ['x' => (++$x) * 2, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
 						}
-
-						/*
-						$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
-						if ($m < 10) $m = 10;
-						$param[$set]['min'] = -$m;
-						$param[$set]['max'] = $m;
-						*/
 
 						$game1 = $game2 = 0;
 
@@ -845,7 +826,7 @@ class PbPController extends Controller
 							$bsm_count = abs($point1 - $point2);
 						}
 						
-						if ($bsm_count == 1) $bsm_count = ""; 
+						if ($bsm_count <= 1) $bsm_count = ""; 
 						if ($bp) $dotValue[] = $bsm_count . 'BP';
 						if ($sp) $dotValue[] = $bsm_count . 'SP';
 						if ($mp) $dotValue[] = $bsm_count . 'MP';
@@ -883,31 +864,6 @@ class PbPController extends Controller
 				}
 
 			}
-		}
-
-		/*
-		$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
-		if ($m < 10) $m = 10;
-		$param[$set]['min'] = -$m;
-		$param[$set]['max'] = $m;
-		*/
-
-		if ($in_progress) {
-
-			/*
-			if ($server == 1) {
-				$color = Config::get('const.sideColor.home'); 
-				$servePerson = $this->p1 . ' ' . __('pbp.lines.toServe');
-			} else if ($server == 2) {
-				$color = Config::get('const.sideColor.away');
-				$servePerson = $this->p2 . ' ' . __('pbp.lines.toServe');
-			}
-			*/
-
-			/*------------------------------一局结束输出serve-------------------------------*/
-			//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
-			/*----------------------------------------------------------------------------------*/
-
 		}
 
 		return [
