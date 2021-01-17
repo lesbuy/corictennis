@@ -49,6 +49,7 @@ class CalendarController extends Controller
                 "title" => $arr[$kv["title"]],
                 "drawSize" => $drawSize,
                 "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $arr[$kv["title"]], $year),
+                "name" => translate_tour($city, $level),
             ];
         }
         if (isset($ret['WT'])) {
@@ -149,6 +150,7 @@ class CalendarController extends Controller
                 "title" => $arr[$kv["title"]],
                 "drawSize" => $drawSize,
                 "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $arr[$kv["title"]], $year),
+                "name" => translate_tour($city, $pr),
             ];
         }
         if (isset($ret['ITF'])) {
