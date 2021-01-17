@@ -1,0 +1,88 @@
+<?php
+
+return [
+
+	'menu' => [
+
+		'login' => ['cn' => '登入', 'en' => 'Login', ],
+		'logout' => ['cn' => '登出', 'en' => 'Logout', ],
+		'me' => ['cn' => '我', 'en' => 'Me', ],
+		'rank' => ['cn' => '即时/冠军排名', 'en' => 'Live Rankings', ],
+		'atp_s_year' => ['cn' => 'ATP即时排名', 'en' => 'ATP', ],
+		'atp_d_year' => ['cn' => 'ATP双打即时排名', 'en' => 'ATP Doubles', ],
+		'wta_s_year' => ['cn' => 'WTA即时排名', 'en' => 'WTA', ],
+		'wta_d_year' => ['cn' => 'WTA双打即时排名', 'en' => 'WTA Doubles', ],
+		'atp_s_race' => ['cn' => 'ATP即时冠军排名', 'en' => 'ATP Race To London', ],
+		'atp_d_race' => ['cn' => 'ATP双打即时冠军排名', 'en' => 'ATP Doubles To London', ],
+		'wta_s_race' => ['cn' => 'WTA即时冠军排名', 'en' => 'WTA Road To Singapore', ],
+		'wta_d_race' => ['cn' => 'WTA双打即时冠军排名', 'en' => 'WTA Doubles To Singapore', ],
+		'atp_s_nextgen' => ['cn' => 'ATP新生力量即时排名', 'en' => 'ATP Nextgen To Milan', ],
+		'custom' => ['cn' => '任意时间段排名', 'en' => 'Any Interval Rankings', ],
+
+		'score' => ['cn' => '比分/赛程/赛果', 'en' => 'Scores & OOP', ],
+		'h2h' => ['cn' => 'Ｈ２Ｈ', 'en' => 'H2H', ],
+		'live' => ['cn' => '比分板', 'en' => 'Live Scores', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+
+	],
+
+	'datePicker' => [
+
+		'clear' => ['cn' => '清除', 'en' => 'Clear', ],
+		'close' => ['cn' => '关闭', 'en' => 'Close', ],
+		'today' => ['cn' => '今天', 'en' => 'Today', ],
+		'year' => ['cn' => '年', 'en' => '', ],
+
+		'jan' => ['cn' => '一月', 'en' => 'Jan', ],
+		'feb' => ['cn' => '二月', 'en' => 'Feb', ],
+		'mar' => ['cn' => '三月', 'en' => 'Mar', ],
+		'apr' => ['cn' => '四月', 'en' => 'Apr', ],
+		'may' => ['cn' => '五月', 'en' => 'May', ],
+		'jun' => ['cn' => '六月', 'en' => 'Jun', ],
+		'jul' => ['cn' => '七月', 'en' => 'Jul', ],
+		'aug' => ['cn' => '八月', 'en' => 'Aug', ],
+		'sep' => ['cn' => '九月', 'en' => 'Sep', ],
+		'oct' => ['cn' => '十月', 'en' => 'Oct', ],
+		'nov' => ['cn' => '十一月', 'en' => 'Nov', ],
+		'dec' => ['cn' => '十二月', 'en' => 'Dec', ],
+
+		'sun' => ['cn' => '日', 'en' => 'Su', ],
+		'mon' => ['cn' => '一', 'en' => 'Mo', ],
+		'tue' => ['cn' => '二', 'en' => 'Tu', ],
+		'wed' => ['cn' => '三', 'en' => 'We', ],
+		'thu' => ['cn' => '四', 'en' => 'Th', ],
+		'fri' => ['cn' => '五', 'en' => 'Fr', ],
+		'sat' => ['cn' => '六', 'en' => 'Sa', ],
+
+		'showMonthAfterYear' => ['cn' => 'Y B', 'en' => 'B, Y', ],
+		'firstDay' => ['cn' => '1', 'en' => '0', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+		'' => ['cn' => '', 'en' => '', ],
+
+	],
+];
