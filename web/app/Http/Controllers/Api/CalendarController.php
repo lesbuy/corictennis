@@ -48,7 +48,7 @@ class CalendarController extends Controller
                 "prizeStr" => $prizeStr,
                 "title" => $arr[$kv["title"]],
                 "drawSize" => $drawSize,
-                "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $title, $year),
+                "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $arr[$kv["title"]], $year),
             ];
         }
         if (isset($ret['WT'])) {
@@ -148,7 +148,7 @@ class CalendarController extends Controller
                 "prizeStr" => $prizeStr,
                 "title" => $arr[$kv["title"]],
                 "drawSize" => $drawSize,
-                "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $title, $year),
+                "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $arr[$kv["title"]], $year),
             ];
         }
         if (isset($ret['ITF'])) {
