@@ -38,6 +38,13 @@ class CalendarController extends Controller
             } else {
                 $drawSize = $arr[$kv["drawSizeWS"]];
             }
+            $surface = $arr[$kv["surface"]];
+            if (strpos($surface, "(I)") !== false) {
+                $isIndoor = true;
+                $surface = str_replace("(I)", "", $surface);
+            } else {
+                $isIndoor = false;
+            }
             $ret['WT'][$date][] = [
                 "eid" => $eid, 
                 "level" => $level, 
@@ -50,6 +57,8 @@ class CalendarController extends Controller
                 "drawSize" => $drawSize,
                 "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $arr[$kv["title"]], $year),
                 "name" => translate_tour($city, $level),
+                "surface" => $surface,
+                "isIndoor" => $isIndoor,
             ];
         }
         if (isset($ret['WT'])) {
@@ -79,6 +88,13 @@ class CalendarController extends Controller
                 $drawSize = $arr[$kv["drawSizeMS"]];
             } else {
                 $drawSize = $arr[$kv["drawSizeWS"]];
+            }
+            $surface = $arr[$kv["surface"]];
+            if (strpos($surface, "(I)") !== false) {
+                $isIndoor = true;
+                $surface = str_replace("(I)", "", $surface);
+            } else {
+                $isIndoor = false;
             }
 
             // 只要大于40k的都放到CH里，包括了挑战赛，125k，以及大于50k的女子itf赛
@@ -151,6 +167,8 @@ class CalendarController extends Controller
                 "drawSize" => $drawSize,
                 "levelImg" => get_tour_logo_by_id_type_name($eid, $level, $city, $arr[$kv["title"]], $year),
                 "name" => translate_tour($city, $pr),
+                "surface" => $surface,
+                "isIndoor" => $isIndoor,
             ];
         }
         if (isset($ret['ITF'])) {
