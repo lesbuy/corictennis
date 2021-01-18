@@ -51,7 +51,7 @@ class Calc {
 		$this->period = $period;
 
 		if ($gender == 'atp') {
-			$this->max_valid = 18;
+			$this->max_valid = 19;
 		} else {
 			if ($sd == 's') {
 				$this->max_valid = 16;
@@ -532,7 +532,7 @@ class Calc {
 
 		// 本段把赛事按额外、强制、非强制分开
 		// wta双打所有的分数都不是强记
-		if (in_array($arr[$this->sm['level']], ['AC', 'WC', 'YEC']) && $arr[$this->sm['eid']] != 1081 && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
+		if (in_array($arr[$this->sm['level']], ['WC', 'YEC']) && $arr[$this->sm['eid']] != 1081 && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
 			$this->bonus[] = $arr;
 		} else if (!preg_match('/^Q[0-9]/', $arr[$this->sm['final_round']]) && in_array($arr[$this->sm['level']], ['GS', '1000', 'PM']) && $arr[$this->sm['eid']] != "0410" && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
 			$this->mandatory[] = $arr;
