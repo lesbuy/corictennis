@@ -129,7 +129,8 @@ function get_tour_logo_by_id_type_name($id, $type, $city = "", $title = "", $yea
 	} else if ($type == "M25" || $type == "M15" || $type == "FU") {
 		return Config::get('const.logo')('ITF-men-2019');
 	} else {
-		if ($type == "WTA1000") return Config::get('const.logo')('WTA-1000');
+		if ($type == "WTA1000M") return Config::get('const.logo')('WTA-1000');
+		else if ($type == "WTA1000") return Config::get('const.logo')('WTA-1000');
 		else if ($type == "WTA500") return Config::get('const.logo')('WTA-500');
 		else if ($type == "WTA250") return Config::get('const.logo')('WTA-250');
 		else if ($type == "WTA125") return Config::get('const.logo')('WTA-125');

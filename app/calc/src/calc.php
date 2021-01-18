@@ -341,10 +341,10 @@ class Calc {
 		self::removeDupliByIdx($this->mandatory, $this->sm["eid"]);
 		self::removeDupliByIdx($this->bonus, $this->sm["eid"]);
 
-		// --------------------------特殊处理，把20200501之后的比赛全部算作非强制项
+		// --------------------------特殊处理，把20200501之后的比赛全部算作非强制项。把轮次为资格赛的比赛都算作非强制项
 		$_mandatory = [];
 		foreach ($this->mandatory as $item) {
-			if ($item[$this->sm["start_date"]] > 20200501) {
+			if ($item[$this->sm["start_date"]] > 20200501 || preg_match('/^Q[0-9]$/', $item[$this->sm["final_round"]])) {
 				$this->optional[] = $item;
 			} else {
 				$_mandatory[] = $item;
@@ -382,7 +382,7 @@ class Calc {
 			$master_point = array_sum(
 				array_map(
 					function ($d) {
-						return in_array($d["level"], ["GS", "YEC", "PM", "P5"]) && !preg_match('/^Q[0-9]/', $d[$this->sm["final_round"]]) && $d[$this->sm["point"]] != 10000 ? $d[$this->sm["point"]] : 0;
+						return in_array($d["level"], ["GS", "YEC", "PM", "P5", "WTA1000M", "WTA1000"]) && !preg_match('/^Q[0-9]/', $d[$this->sm["final_round"]]) && $d[$this->sm["point"]] != 10000 ? $d[$this->sm["point"]] : 0;
 					}, 
 					array_merge($this->bonus, $this->mandatory, $this->optional)
 				)
@@ -396,7 +396,7 @@ class Calc {
 			$tour_point = array_sum(
 				array_map(
 					function ($d) {
-						return in_array($d["level"], ["GS", "YEC", "PM", "P5", "XXI", "P700", "Int"]) && !preg_match('/^Q[0-9]/', $d[$this->sm["final_round"]]) && $d[$this->sm["point"]] != 10000 ? $d[$this->sm["point"]] : 0;
+						return in_array($d["level"], ["GS", "YEC", "PM", "P5", "XXI", "P700", "Int", "WTA1000M", "WTA1000", "WTA500", "WTA250"]) && !preg_match('/^Q[0-9]/', $d[$this->sm["final_round"]]) && $d[$this->sm["point"]] != 10000 ? $d[$this->sm["point"]] : 0;
 					}, 
 					array_merge($this->bonus, $this->mandatory, $this->optional)
 				)
@@ -534,9 +534,9 @@ class Calc {
 		// wta双打所有的分数都不是强记
 		if (in_array($arr[$this->sm['level']], ['WC', 'YEC']) && $arr[$this->sm['eid']] != 1081 && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
 			$this->bonus[] = $arr;
-		} else if (!preg_match('/^Q[0-9]/', $arr[$this->sm['final_round']]) && in_array($arr[$this->sm['level']], ['GS', '1000', 'PM']) && $arr[$this->sm['eid']] != "0410" && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
+		} else if (/*!preg_match('/^Q[0-9]/', $arr[$this->sm['final_round']]) && */in_array($arr[$this->sm['level']], ['GS', '1000', 'PM', 'WTA1000M']) && $arr[$this->sm['eid']] != "0410" && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
 			$this->mandatory[] = $arr;
-		} else if (!preg_match('/^Q[0-9]/', $arr[$this->sm['final_round']]) && in_array($arr[$this->sm['level']], ['P5']) && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
+		} else if (/*!preg_match('/^Q[0-9]/', $arr[$this->sm['final_round']]) && */in_array($arr[$this->sm['level']], ['P5', 'WTA1000']) && !($arr[$this->sm['sd']] == "d" && $this->gender == "wta")) {
 			$this->premier5[] = $arr;
 		} else if ($arr[$this->sm['point']] != 0) { // 有分数的肯定记入，分数为-1的也计入（强制分）
 			$this->optional[] = $arr;

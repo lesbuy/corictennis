@@ -9,7 +9,7 @@ class Calendar extends CalendarBase {
 		"International" => "WTA250",
 		"Premier" => "WTA500",
 		"Premier 5" => "WTA1000",
-		"Premier Mandatory" => "WTA1000",
+		"Premier Mandatory" => "WTA1000M",
 	];
 
 	protected function preProcessSelf() {
