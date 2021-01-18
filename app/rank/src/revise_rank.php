@@ -10,6 +10,7 @@ $calced = [];
 
 $fp = fopen(join("/", [DATA, "calc", $gender, $sd, "year", "rank"]), "r");
 while ($line = trim(fgets($fp))) {
+    $arr = explode("\t", $line);
     $pid = $arr[0];
     $rank = $arr[2];
     $point = $arr[5];
@@ -38,6 +39,7 @@ echo join("\t", [
 
 $fp = fopen(join("/", [DATA, "rank", $gender, $sd, "current"]), "r");
 while ($line = trim(fgets($fp))) {
+    $arr = explode("\t", $line);
     $pid = $arr[0];
     $name = $arr[1];
     $rank = $arr[2];
