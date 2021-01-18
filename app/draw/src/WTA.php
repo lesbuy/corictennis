@@ -455,6 +455,11 @@ class Event extends Base{
 				}
 				if ($_round == "") $_round = $round;
 
+
+				// 临时加的
+				if ($this->tour == "2028" && $round == "QF" && $event == "WS") $point = 100;
+				
+
 				// $round是规范化的轮次名
 				// id：1代表Winner，2代表Final，3代表Semifinals，以此增加
 				// alias表示按签位数的轮次名

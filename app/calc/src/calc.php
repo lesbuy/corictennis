@@ -357,11 +357,13 @@ class Calc {
 		// --------------------------结束特殊处理
 
 		// 如果optional里有分数为0且轮次是资格赛的，直接去除，就当没参赛
-		foreach ($this->optional as $idx => $item) {
-			if ($item[$this->sm["point"]] == 0 && preg_match('/^Q[0-9]$/', $item[$this->sm["final_round"]])) {
-				array_splice($this->optional, $idx, 1);
+		$_optional = [];
+		foreach ($this->optional as $item) {
+			if ($item[$this->sm["point"]] != 0 || !preg_match('/^Q[0-9]$/', $item[$this->sm["final_round"]])) {
+				$_optional[] = $item;
 			}
 		}
+		$this->optional = $_optional;
 
 		// 超出数量的扔到non-countable里
 		$non_countable = [];
