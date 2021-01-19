@@ -226,14 +226,17 @@ class ResultController extends Controller
 			$true_eid 为draw系统里的eid。若为空，则是分日赛程，不为空则是分站赛程
 		*/
 
+		$favoriteIOC = "CHN";
+		$favoriteIOCs = implode("|", explode(",", $favoriteIOC));
+
 		// 获取赛事列表
 		if ($only_live) {
 			$cmd = "cat $this->files | awk -F \"\\t\" '$30 < 2' | cut -f4-8,22 | sort -uf | sort -k1gr,1";
 		} else {
 			if ($unixtime > 0) {
-				$cmd = "cat $this->files | awk -F\"\\t\" 'substr($14,length($14)-9) >= " . $unixtime . "-5400 && substr($14,length($14)-9) <= " . $unixtime . "+86400' | cut -f4-8,22 | sort -uf | sort -k1gr,1";
+				$cmd = "cat $this->files | awk -F\"\\t\" 'substr($14,length($14)-9) >= " . $unixtime . "-5400 && substr($14,length($14)-9) <= " . $unixtime . "+86400' | cut -f4-8,22- | awk -F\"\\t\" '{print $1\"\\t\"$2\"\\t\"$3\"\\t\"$4\"\\t\"$5\"\\t\"$6\"\\t\"($23 ~ /(" . $favoriteIOCs . ")/ || $24 ~ /(" . $favoriteIOCs . ")/);}' | sort -ruf | sort -sru -t\" \" -k1gr,1 -k2,2 -k3,3 -k4,4 -k5,5 -k6,6";
 			} else {
-				$cmd = "cat $this->files | cut -f4-8,22 | sort -uf | sort -k1gr,1";
+				$cmd = "cat $this->files | cut -f4-8,22- | awk -F\"\\t\" '{print $1\"\\t\"$2\"\\t\"$3\"\\t\"$4\"\\t\"$5\"\\t\"$6\"\\t\"($23 ~ /(" . $favoriteIOCs . ")/ || $24 ~ /(" . $favoriteIOCs . ")/);}' | sort -ruf | sort -sru -t\"	\" -k1gr,1 -k2,2 -k3,3 -k4,4 -k5,5 -k6,6";
 			}
 		}
 
@@ -246,10 +249,10 @@ class ResultController extends Controller
 
 			foreach ($r as $row) {
 				$arr = explode("\t", $row);
-				if (count($arr) != 6) {
+				if (count($arr) != 6 && count($arr) != 7) {
 					continue;
 				} else {
-
+					$containsCHN = intval(@$arr[6]);
 					$eid = $arr[5];
 					$city = translate_tour(trim(str_replace('.', '', strtolower($arr[2]))));
 					$title = $arr[1];
@@ -283,7 +286,7 @@ class ResultController extends Controller
 							$pr = intval(preg_replace('/[^\d]/', '', $arr[4]));
 							if (strpos($eid, "M-ITF") !== false) $gen = "M"; else $gen = "W";
 							$city = $gen . $pr . $suffix . ' ' . $city;
-							if ($prize < 40000 && $true_eid === null) {
+							if ($prize < 40000 && $true_eid === null && !$containsCHN) {
 								$is_tournament = false;
 							}
 						}
