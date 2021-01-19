@@ -106,7 +106,7 @@ class SelectController extends Controller
 		if (!isset($type) || !$type) $type = 'atp';
 		if (!isset($period) || !$period) $period = 'year';
 
-		$this->tablename = join('_', ['rank', $type, $sd, $period, 'en']);
+		$this->tablename = join('_', ['calc', $type, $sd, $period]);
 
 		$rows = DB::table($this->tablename)->select('w_tour')->where('w_tour', '<>', '')->distinct()->get();
 
@@ -167,7 +167,7 @@ class SelectController extends Controller
 
 		$ret[] = ["ALL", -1];
 
-		for ($i = 2020; $i >= 1968; --$i) {
+		for ($i = 2021; $i >= 1968; --$i) {
 			$ret[] = [$i, $i];
 		}
 

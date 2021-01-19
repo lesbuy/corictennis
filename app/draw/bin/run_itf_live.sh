@@ -10,38 +10,34 @@ fi
 
 touch PROGRESS.run.itf_live
 
-current_monday=`date -d "last Monday" +%Y-%m-%d`
-monday1=`date -d "$current_monday -7 days" +%Y-%m-%d`
-monday2=`date -d "$current_monday +7 days" +%Y-%m-%d`
-monday3=`date -d "$current_monday -14 days" +%Y-%m-%d`
-monday4=`date -d "$current_monday +14 days" +%Y-%m-%d`
+year=2021
 
 cat /dev/null > tmp_itf_live
 
-now=`date +%s`
-grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/ITF | 
-while read line
-do
-	eid=`echo "$line" | cut -f2`
-	unix=`echo "$line" | cut -f7`
-	year=`echo "$line" | cut -f5`
-	weeks=`echo "$line" | cut -f22`
+YDAY=`date +%Y-%m-%d`
+LDAY=`date -d "$YDAY -1 day" +%Y-%m-%d`
+NDAY=`date -d "$YDAY +1 day" +%Y-%m-%d`
 
-	if [[ $weeks == "2" ]]
-	then
-		endtime=$((unix+86400*15))
-	else
-		endtime=$((unix+86400*8))
-	fi
+php ../src/live.php W-ITF-TUR-01A $year >> tmp_itf_live
 
-	starttime=$((unix-86400*4))
+cat $SHARE/itf_completed/$LDAY $SHARE/itf_completed/$YDAY $SHARE/itf_completed/$NDAY | awk 'BEGIN {
+	FS = OFS = "\t";
+}
+{
+	matchid2eid[$9] = $22;
+}
+END {
+	while ((getline < "tmp_itf_live") > 0) {
+		$2 = matchid2eid[$1];
+		$22 = matchid2eid[$1];
+		for (i = 1; i <= NF; ++i) {
+			printf("%s\t", $i);
+		}
+		printf("\n");
+	}
+}' > tmp_itf_live2
 
-	if [[ $now -gt $starttime && $now -lt $endtime ]]
-	then
-		php ../src/live.php $eid $year >> tmp_itf_live
-	fi
-done
-
-mv tmp_itf_live itf_live
+mv tmp_itf_live2 itf_live
+rm tmp_itf_live
 
 rm PROGRESS.run.itf_live

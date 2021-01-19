@@ -103,7 +103,7 @@ return [
 			'frame' => PHP_SAPI === 'cli' ? false : url('/js/frame.js?') . "t=201912191525",
 			'rankpage' => PHP_SAPI === 'cli' ? false : url('/js/rankpage.js?') . "t=201812300235",
 			'breakdown' => PHP_SAPI === 'cli' ? false : url('/js/breakdown.js?') . "t=201812300235",
-			'result' => PHP_SAPI === 'cli' ? false : url('/js/result.js?') . "t=201903042254",
+			'result' => PHP_SAPI === 'cli' ? false : url('/js/result.js?') . "t=202101181620",
 			'h2h' => PHP_SAPI === 'cli' ? false : url('/js/h2h.js?') . "t=201905102245",
 			'draw' => PHP_SAPI === 'cli' ? false : url('/js/draw.js?') . "t=202001290035",
 			'dc' => PHP_SAPI === 'cli' ? false : url('/js/dc.js?') . "t=201812300235",

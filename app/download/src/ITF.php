@@ -71,6 +71,7 @@ class Down extends DownBase {
 				if (!isset($Event['name'])) continue;
 			   
 				$sex = substr($k, 0, 1);
+				if ($sex == "W") $sex = "F";
 
 				$sextip = $Event['name'];
 				if (in_string($sextip, "Main")) {
@@ -115,7 +116,7 @@ class Down extends DownBase {
 
 								// 如果没找到wt pid
 								if ($wtpid === null) {
-									fputs(STDERR, join("\t", ["TO SEEK WTPID", $itfpid, $first, $last]). "\n");
+									fputs(STDERR, join("\t", ["TO SEEK WTPID", $itfpid, $first, $last, $sex]). "\n");
 
 									// 如果itf_profile也找不到，那就set一次itf_profile，并记下当前时间。去找一次wt pid，找不到就休息9天再找
 									if (!$this->redis->cmd('KEYS', 'itf_profile_' . $itfpid)->get()

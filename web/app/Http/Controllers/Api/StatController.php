@@ -1332,7 +1332,7 @@ class StatController extends Controller
 			$score[] = [$a, $b, $c, $d];
 		}
 
-		$url = "https://ls.fn.betradar.com/itf/en/Europe:Berlin/gismo/match_detailsextended/$this->matchid";
+		$url = "https://ls.fn.sportradar.com/itf/en/Europe:Berlin/gismo/match_detailsextended/$this->matchid";
 		$html = file_get_contents($url);
 		$XML = json_decode(trim($html), true);
 		$match = $XML["doc"][0]["data"];

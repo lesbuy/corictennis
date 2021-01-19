@@ -6,6 +6,7 @@ require_once(APP . '/conf/wt_bio.php');
 class Event extends Base{
 
 	protected $itf_point_prize;
+	protected $mode = "normal";
 
 	public function process() {
 		$this->preprocess();
@@ -20,6 +21,7 @@ class Event extends Base{
 	}
 
 	public function processLive() {
+		$this->mode = "only-live";
 		$this->parseLive();
 	}
 
@@ -449,7 +451,11 @@ class Event extends Base{
 	
 		foreach ($xml['doc'][0]['data'] as $amatch) {
 			$matchid = $amatch['matchid'];
-			if (!isset($this->matches[$matchid])) continue;
+
+			// normal模式下，找不到比赛就跳过。only-live模式不需要找比赛
+			if (!isset($this->matches[$matchid]) && $this->mode == "normal") continue;
+
+			if ($amatch["type"] != "score_change_tennis") continue;
 
 			self::getResult($matchid, $amatch['match']);
 
@@ -469,6 +475,7 @@ class Event extends Base{
 		$event = @$match['event'];
 
 		$match['tipmsg'] = '';
+		$match['bestof'] = 3;
 
 		$winner = "";
 		$status = @$m['status']['name'];

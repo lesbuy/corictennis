@@ -49,7 +49,7 @@ class Calendar extends CalendarBase {
 			$t->monday = get_monday($t->start);
 			$t->monday_unix = strtotime($t->monday);
 			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $t->weeks = 2;
-			$t->title = $tour['tournamentName'];
+			$t->title = trim($tour['tournamentName']);
 			if (strpos($t->title, "+H") !== false) $t->hospital = true;
 			$t->city = preg_replace('/,.*$/', '', $tour['location']);
 			$t->nation = $tour["hostNation"];

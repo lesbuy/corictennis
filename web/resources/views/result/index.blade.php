@@ -190,6 +190,7 @@ function update_data(data) {
 		for (var matchId in data[tourId]) {
 			if (typeof(matchId) === "function") continue;
 			matchInfo = data[tourId][matchId];
+		console.log(tourId + " " + matchId);
 			var matchBlock = $('#iResult' + tourId + ' .cResultMatch[match-id="' + matchId + '"]');
 			if (matchBlock.length == 0) continue;
 			if (matchBlock.attr('match-status') == 2) continue;
