@@ -644,8 +644,8 @@ class ResultController extends Controller
 					$is_double = 0;
 				}
 
-//				$p1 = join('<br>', array_map('self::mergeName', $ioc1, $seed1, $p1, $rank1));
-//				$p2 = join('<br>', array_map('self::mergeName', $ioc2, $seed2, $p2, $rank2));
+				//$p1 = join('<br>', array_map('self::mergeName', $ioc1, $seed1, $p1, $rank1));
+				//$p2 = join('<br>', array_map('self::mergeName', $ioc2, $seed2, $p2, $rank2));
 
 				if (in_array($eid, ['M990', 'DC', '7696'])) $bestof = 5;
 				else if (in_array($eid, ['AO', 'RG', 'WC', 'UO', 'M993', 'M994', 'M995', 'M996']) && substr($matchId, 0, 2) == 'MS') $bestof = 5;
@@ -686,31 +686,72 @@ class ResultController extends Controller
 					'p' => [],
 				];
 
+				$first1 = explode("/", @$kvmap['p1first']);
+				$first2 = explode("/", @$kvmap['p2first']);
+				$last1 = explode("/", @$kvmap['p1last']);
+				$last2 = explode("/", @$kvmap['p2last']);
+
 				$tmp_ar = explode("/", $id1);
 				foreach ($tmp_ar as $tmp_k => $tmp_v) {
-					$name = translate2long($tmp_v);
-					$engname = translate2long($tmp_v, null, null, null, 'en');
-					if ($name === null) $name = $p1[$tmp_k];
-					if ($engname === null) $name = $p1[$tmp_k];
-					$player1['p'][] = [
-						'id' => $tmp_v,
-						'name' => $name,
-						'eng' => $engname,
-						'ioc' => @$ioc1[$tmp_k],
-					];
+					if (strpos($tmp_v, "|") === false) {
+						$name = translate2long($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k]);
+						$engname = translate2long($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k], 'en');
+						if ($name === null) $name = $p1[$tmp_k];
+						if ($engname === null) $name = $p1[$tmp_k];
+						$player1['p'][] = [
+							'id' => $tmp_v,
+							'name' => $name,
+							'eng' => $engname,
+							'ioc' => @$ioc1[$tmp_k],
+						];
+					} else {
+						$tmp_players_ids = explode("|", $tmp_v);
+						$tmp_players_firsts = explode("|", @$first1[$tmp_k]);
+						$tmp_players_lasts = explode("|", @$last1[$tmp_k]);
+						$tmp_players_iocs = explode("|", @$ioc1[$tmp_k]);
+						foreach ($tmp_players_ids as $tk => $tv) {
+							if ($tk == 0) continue;
+							$name = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
+							$engname = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
+							$player1['p'][$tmp_k]['possible'][] = [
+								'id' => $tv,
+								'name' => $name,
+								'eng' => $engname,
+								'ioc' => @$tmp_players_iocs[$tk],
+							];
+						}
+					}
 				}
 				$tmp_ar = explode("/", $id2);
 				foreach ($tmp_ar as $tmp_k => $tmp_v) {
-					$name = translate2long($tmp_v);
-					$engname = translate2long($tmp_v, null, null, null, 'en');
-					if ($name === null) $name = $p2[$tmp_k];
-					if ($engname === null) $name = $p2[$tmp_k];
-					$player2['p'][] = [
-						'id' => $tmp_v,
-						'name' => $name,
-						'eng' => $engname,
-						'ioc' => @$ioc2[$tmp_k],
-					];
+					if (strpos($tmp_v, "|") === false) {
+						$name = translate2long($tmp_v);
+						$engname = translate2long($tmp_v, null, null, null, 'en');
+						if ($name === null) $name = $p2[$tmp_k];
+						if ($engname === null) $name = $p2[$tmp_k];
+						$player2['p'][] = [
+							'id' => $tmp_v,
+							'name' => $name,
+							'eng' => $engname,
+							'ioc' => @$ioc2[$tmp_k],
+						];
+					} else {
+						$tmp_players_ids = explode("|", $tmp_v);
+						$tmp_players_firsts = explode("|", @$first2[$tmp_k]);
+						$tmp_players_lasts = explode("|", @$last2[$tmp_k]);
+						$tmp_players_iocs = explode("|", @$ioc2[$tmp_k]);
+						foreach ($tmp_players_ids as $tk => $tv) {
+							if ($tk == 0) continue;
+							$name = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
+							$engname = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
+							$player2['p'][$tmp_k]['possible'][] = [
+								'id' => $tv,
+								'name' => $name,
+								'eng' => $engname,
+								'ioc' => @$tmp_players_iocs[$tk],
+							];
+						}
+					}
 				}
 
 				$umpire = null;
