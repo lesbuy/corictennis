@@ -694,14 +694,20 @@ class ResultController extends Controller
 				$tmp_ar = explode("/", $id1);
 				foreach ($tmp_ar as $tmp_k => $tmp_v) {
 					if (strpos($tmp_v, "|") === false) {
-						$name = translate2long($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k]);
-						$engname = translate2long($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k], 'en');
-						if ($name === null) $name = $p1[$tmp_k];
-						if ($engname === null) $name = $p1[$tmp_k];
+						$namelong = translate2long($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k]);
+						$engnamelong = translate2long($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k], 'en');
+						if ($namelong === null) $namelong = $p1[$tmp_k];
+						if ($engnamelong === null) $engnamelong = $p1[$tmp_k];
+						$nameshort = translate2short($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k]);
+						$engnameshort = translate2short($tmp_v, @$first1[$tmp_k], @$last1[$tmp_k], @$ioc1[$tmp_k], 'en');
+						if ($nameshort === null) $nameshort = $p1[$tmp_k];
+						if ($engnameshort === null) $engnameshort = $p1[$tmp_k];
 						$player1['p'][] = [
 							'id' => $tmp_v,
-							'name' => $name,
-							'eng' => $engname,
+							'name' => $namelong,
+							'eng' => $engnamelong,
+							'nameShort' => $nameshort,
+							'engShort' => $engnameshort,
 							'ioc' => @$ioc1[$tmp_k],
 						];
 					} else {
@@ -711,28 +717,39 @@ class ResultController extends Controller
 						$tmp_players_iocs = explode("|", @$ioc1[$tmp_k]);
 						foreach ($tmp_players_ids as $tk => $tv) {
 							if ($tk == 0) continue;
-							$name = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
-							$engname = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
+							$namelong = translate2long($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
+							$engnamelong = translate2long($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
+							$nameshort = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
+							$engnameshort = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
 							$player1['p'][$tmp_k]['possible'][] = [
 								'id' => $tv,
-								'name' => $name,
-								'eng' => $engname,
+								'name' => $namelong,
+								'eng' => $engnamelong,
+								'nameShort' => $nameshort,
+								'engShort' => $engnameshort,
 								'ioc' => @$tmp_players_iocs[$tk],
 							];
 						}
 					}
 				}
+
 				$tmp_ar = explode("/", $id2);
 				foreach ($tmp_ar as $tmp_k => $tmp_v) {
 					if (strpos($tmp_v, "|") === false) {
-						$name = translate2long($tmp_v);
-						$engname = translate2long($tmp_v, null, null, null, 'en');
-						if ($name === null) $name = $p2[$tmp_k];
-						if ($engname === null) $name = $p2[$tmp_k];
+						$namelong = translate2long($tmp_v, @$first2[$tmp_k], @$last2[$tmp_k], @$ioc2[$tmp_k]);
+						$engnamelong = translate2long($tmp_v, @$first2[$tmp_k], @$last2[$tmp_k], @$ioc2[$tmp_k], 'en');
+						if ($namelong === null) $namelong = $p2[$tmp_k];
+						if ($engnamelong === null) $engnamelong = $p2[$tmp_k];
+						$nameshort = translate2short($tmp_v, @$first2[$tmp_k], @$last2[$tmp_k], @$ioc2[$tmp_k]);
+						$engnameshort = translate2short($tmp_v, @$first2[$tmp_k], @$last2[$tmp_k], @$ioc2[$tmp_k], 'en');
+						if ($nameshort === null) $nameshort = $p2[$tmp_k];
+						if ($engnameshort === null) $engnameshort = $p2[$tmp_k];
 						$player2['p'][] = [
 							'id' => $tmp_v,
-							'name' => $name,
-							'eng' => $engname,
+							'name' => $namelong,
+							'eng' => $engnamelong,
+							'nameShort' => $nameshort,
+							'engShort' => $engnameshort,
 							'ioc' => @$ioc2[$tmp_k],
 						];
 					} else {
@@ -742,12 +759,16 @@ class ResultController extends Controller
 						$tmp_players_iocs = explode("|", @$ioc2[$tmp_k]);
 						foreach ($tmp_players_ids as $tk => $tv) {
 							if ($tk == 0) continue;
-							$name = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
-							$engname = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
+							$namelong = translate2long($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
+							$engnamelong = translate2long($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
+							$nameshort = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk]);
+							$engnameshort = translate2short($tv, @$tmp_players_firsts[$tk], @$tmp_players_lasts[$tk], @$tmp_players_iocs[$tk], 'en');
 							$player2['p'][$tmp_k]['possible'][] = [
 								'id' => $tv,
-								'name' => $name,
-								'eng' => $engname,
+								'name' => $namelong,
+								'eng' => $engnamelong,
+								'nameShort' => $nameshort,
+								'engShort' => $engnameshort,
 								'ioc' => @$tmp_players_iocs[$tk],
 							];
 						}
