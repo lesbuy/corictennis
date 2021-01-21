@@ -373,11 +373,6 @@ class ResultController extends Controller
 		$winner = 0;
 		if (strpos($result1 . $result2, 'iconfont') !== false || strpos($result1 . $result2, 'WINNER') !== false) {
 			$status = 2;
-			if (strpos($result1, 'iconfont') !== false || strpos($result1, 'WINNER') !== false) {
-				$winner = 1;
-			} else {
-				$winner = 2;
-			}
 			$pointflag = '';
 		} else {
 			$status = 1;
@@ -388,16 +383,26 @@ class ResultController extends Controller
 		self::reviseResultFlag($result1);
 		self::reviseResultFlag($result2);
 
+		$winner = $serving = 0;
+		if ($result1 == "Winner") {
+			$winner = 1;
+		} else if ($result2 == "Winner") {
+			$winner = 2;
+		} else if ($result1 == "Serve") {
+			$serving = 1;
+		} else if ($result2 == "Serve") {
+			$serving = 2;
+		}
+
 		return [
 			'state' => $status, 
-			't1Status' => $result1, 
-			't2Status' => $result2, 
 			't1Score' => $this->reviewScore($score1), 
 			't2Score' => $this->reviewScore($score2), 
 			't1Point' => $point1, 
 			't2Point' => $point2, 
 			'dura' => $dura, 
 			'flag' => $pointflag,
+			'serving' => $serving,
 			'winner' => $winner,
 		];
 	}
