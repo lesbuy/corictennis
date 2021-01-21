@@ -84,19 +84,19 @@ abstract class CalendarBase {
 		}
 
 		$res = $this->preProcess();
-		if (!$res[0]) {print_line($res[1]); exit;}
+		if (!$res[0]) {print_err($res[1]); exit;}
 
 		$res = $this->preProcessSelf();
-		if (!$res[0]) {print_line($res[1]); exit;}
+		if (!$res[0]) {print_err($res[1]); exit;}
 
 		$res = $this->download();
-		if (!$res[0]) {print_line($res[1]); exit;}
+		if (!$res[0]) {print_err($res[1]); exit;}
 
 		$res = $this->parse();
-		if (!$res[0]) {print_line($res[1]); exit;}
+		if (!$res[0]) {print_err($res[1]); exit;}
 
 		$res = $this->output();
-		if (!$res[0]) {print_line($res[1]); exit;}
+		if (!$res[0]) {print_err($res[1]); exit;}
 	}
 
 	// 公共预处理 
