@@ -279,7 +279,7 @@ class ResultController extends Controller
 					$title = $arr[1];
 					$prize = $arr[0];
 					$sfc = reviseSurfaceWithoutIndoor($arr[3]);
-//					$sfc = Config::get('const.groundColor.' . $sfc);
+					//$sfc = Config::get('const.groundColor.' . $sfc);
 					$levels = explode("/", $arr[4]);
 					$logos = [];
 					foreach ($levels as $level) {
@@ -370,8 +370,14 @@ class ResultController extends Controller
 		}
 
 		// 如果比赛结束，修正status
+		$winner = 0;
 		if (strpos($result1 . $result2, 'iconfont') !== false || strpos($result1 . $result2, 'WINNER') !== false) {
 			$status = 2;
+			if (strpos($result1, 'iconfont') !== false || strpos($result1, 'WINNER') !== false) {
+				$winner = 1;
+			} else {
+				$winner = 2;
+			}
 			$pointflag = '';
 		} else {
 			$status = 1;
@@ -382,7 +388,18 @@ class ResultController extends Controller
 		self::reviseResultFlag($result1);
 		self::reviseResultFlag($result2);
 
-		return [$status, $result1, $result2, $score1, $score2, $point1, $point2, $dura, $pointflag];
+		return [
+			'state' => $status, 
+			't1Status' => $result1, 
+			't2Status' => $result2, 
+			't1Score' => $this->reviewScore($score1), 
+			't2Score' => $this->reviewScore($score2), 
+			't1Point' => $point1, 
+			't2Point' => $point2, 
+			'dura' => $dura, 
+			'flag' => $pointflag,
+			'winner' => $winner,
+		];
 	}
 
 	protected function get_matches($eid, $show_status, $unixtime) {
@@ -434,7 +451,7 @@ class ResultController extends Controller
 
 				$sex = translate('sexname', $kvmap['sexid']);
 				$has_detail = true;
-//				if ($kvmap['sexid'] < 5 || $kvmap['sexid'] > 20) $has_detail = true; else $has_detail = false;
+				//if ($kvmap['sexid'] < 5 || $kvmap['sexid'] > 20) $has_detail = true; else $has_detail = false;
 
 				$round = translate('roundname', $kvmap['round']);
 
