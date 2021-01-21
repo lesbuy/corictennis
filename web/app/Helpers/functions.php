@@ -236,6 +236,7 @@ function rename2short($first, $last, $ioc = NULL) {
 }
 
 function translate2short($pid, $first = null, $last = null, $ioc = null, $lang = null) {
+	if (!$pid && !$first && !$last) return null;
 	if (strtoupper($pid) == "BYE") return translate('shortname', 'Bye');
 	else if (strtoupper($pid) == "QUAL") return translate('shortname', 'Qualifier');
 
@@ -283,6 +284,7 @@ function rename2long($first, $last, $ioc = NULL) {
 }
 
 function translate2long($pid, $first = null, $last = null, $ioc = null, $lang = null) {
+	if (!$pid && !$first && !$last) return null;
 	if (strtoupper($pid) == "BYE") return translate('shortname', 'Bye');
 	else if (strtoupper($pid) == "QUAL") return translate('shortname', 'Qualifier');
 
