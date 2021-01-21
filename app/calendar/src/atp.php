@@ -28,9 +28,9 @@ class Calendar extends CalendarBase {
 			$content = http($this->url, null, null, null);
 			if ($content == "") return [false, "download failed"];
 			$this->content = $content;
-			file_put_contents("atp_calendar", $content);
+			file_put_contents("../src/atp_calendar", $content);
 		} else {
-			$this->content = file_get_contents("atp_calendar");
+			$this->content = file_get_contents("../src/atp_calendar");
 		}
 		return [true, ""];
 	}
