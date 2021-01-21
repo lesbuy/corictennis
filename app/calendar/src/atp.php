@@ -28,6 +28,7 @@ class Calendar extends CalendarBase {
 			$content = http($this->url, null, null, null);
 			if ($content == "") return [false, "download failed"];
 			$this->content = $content;
+			file_put_contents("atp_calendar", $content);
 		} else {
 			$this->content = file_get_contents("atp_calendar");
 		}
@@ -41,32 +42,41 @@ class Calendar extends CalendarBase {
 		$redis = new_redis();
 
 		foreach ($html->find('.tourney-result') as $tr) {
+			/*
 			$json_content = trim($tr->find('script[type="application/ld+json"]', 0)->innertext);
 			if (!$json_content) return [false, "no json content in tourney result"];
 			$content = json_decode($json_content, true);
 			if (!$content) return [false, "json content parsed error in tourney result"];
+			*/
 
 			$t = new TournamentInfo;
 			$t->asso = $this->asso;
-			$t->level = preg_replace('/^.*\//', "", $content["image"][0]);
+			$t->level = $tr->find('.tourney-badge-wrapper img', 0)->src;
+			if (!$t->level) continue;
+			$t->level = preg_replace('/^.*\//', "", $t->level);
 			if (!isset($this->mapLevel[$t->level])) continue;
 			$t->level = $this->mapLevel[$t->level];
-			if ($t->level == "GS") continue;	
-			$urlArr = explode("/", $content["organizer"]["url"]);
+			if ($t->level == "GS") continue;
+			
+			$urlArr = explode("/", $tr->find('.tourney-title', 0)->href);
 			$t->liveID = $urlArr[4];
 			$t->eventID = sprintf("%04d", $t->liveID);
 			$t->year = 2021;
 			$t->gender = "M";
-			$t->start = date('Y-m-d', strtotime($content['startDate']));
-			$t->end = date('Y-m-d', strtotime($content['endDate']));
+
+			$dateArr = explode("-", $tr->find('.tourney-dates', 0)->innertext);
+			$t->start = date('Y-m-d', strtotime(str_replace(".", "-", trim($dateArr[0]))));
+			$t->end = date('Y-m-d', strtotime(str_replace(".", "-", trim($dateArr[1]))));
 			$t->monday = get_monday($t->start);
 			$t->monday_unix = strtotime($t->monday);
 			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $t->weeks = 2;
-			$t->title = $content["organizer"]["name"];
+			$t->title = $tr->find('.tourney-title', 0)->{"data-ga-label"};
 			if (strpos($t->title, "Cancel") !== false || strpos($t->title, "Postpone") !== false) continue;
-			$t->city = $content["location"]["name"];
+
+			$cityArr = explode(",", $tr->find('.tourney-location', 0)->innertext);
+			$t->city = trim($cityArr[0]);
 			if (in_array($t->eventID, ["9210", "7696", "8888", "0605"])) $t->city = $t->title;
-			$t->nation = trim(preg_replace('/^.*,/', "", $content["location"]["address"]["addressCountry"]));
+			$t->nation = trim($cityArr[count($cityArr) - 1]);
 			if (preg_match('/^[A-Z]{3}$/', $t->nation)) {
 				$t->nation3 = $t->nation;
 			} else {
