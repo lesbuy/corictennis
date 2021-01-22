@@ -22,6 +22,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Auth::routes();
 
+Route::options('/{all}', function(Request $request) {
+    $origin = $request->header('ORIGIN', '*');
+    header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Max-Age: 2592000");
+    header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+    header('Access-Control-Allow-Headers: Origin, Access-Control-Request-Headers, SERVER_NAME, Access-Control-Allow-Headers, cache-control, token, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie, X-CSRFtoken');
+})->where(['all' => '([a-zA-Z0-9-]|/)+']);
+
 Route::middleware('cors')->group(function () {
 	Route::group(['namespace' => 'Api'], function() {
 

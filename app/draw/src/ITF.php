@@ -409,7 +409,6 @@ class Event extends Base{
 
 					$match_seq = @explode(";", $amatch['param1'])[1];
 					$matchid = $amatch['_id'];
-//					echo $matchid . "\n";
 
 					$order = $amatch['courtdisplayorder'];
 					$name = @explode(";", $amatch['param1'])[0];
@@ -424,10 +423,25 @@ class Event extends Base{
 						$time = $amatch['match']['timeinfo']['started'];
 					}
 
-					if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
+					if (!isset($this->matches[$matchid])) {  // 如果找不到这场比赛，再试试按双方选手去找，并且更新正确的matchid
+						$p1 = $amatch['param6'] . ($amatch['param8'] ? "/" . $amatch['param8'] : "");
+						$p2 = $amatch['param7'] . ($amatch['param9'] ? "/" . $amatch['param9'] : "");
+
+						foreach ($this->matches as $_matchID => &$bmatch) {
+							if (substr($bmatch["t1"], 2) == $p1 && substr($bmatch["t2"], 2) == $p2) {
+								$bmatch["uuid"] = $matchid;
+								$this->matches[$matchid] = $bmatch;
+								$_event = $bmatch['event'];
+								$this->draws[$_event]["draw"]["KO"][0][$bmatch["x"]][$bmatch["y"]] = $matchid;
+								break;
+							}
+						}
+						//continue; // 如果签表没有这场比赛就跳过
+					}
 					$this->matches[$matchid]['date'] = $isodate;
 					$event = $this->matches[$matchid]['event'];
 					
+
 					$this->oop[$day]['courts'][$order]['matches'][$match_seq] = [
 						'id' => $matchid,
 						'time' => $time,
@@ -489,13 +503,13 @@ class Event extends Base{
 		if ($mStatus != "" && in_string("FGHIJKLM", $mStatus)) { // 已经决出结果了，不更改
 			//  do nothing
 		} else if ($winner) { // 有winner 说明比完了
-			if ($winner == 1) $mStatus == "F"; else if ($winner == 2) $mStatus == "G";
+			if ($winner == 1) $mStatus = "F"; else if ($winner == 2) $mStatus = "G";
 			if ($status == "Retired") {
-				if ($winner == 1) $mStatus == "H"; else if ($winner == 2) $mStatus == "I";
+				if ($winner == 1) $mStatus = "H"; else if ($winner == 2) $mStatus = "I";
 			} else if ($status == "Default") {
-				if ($winner == 1) $mStatus == "J"; else if ($winner == 2) $mStatus == "K";
+				if ($winner == 1) $mStatus = "J"; else if ($winner == 2) $mStatus = "K";
 			} else if ($m['walkover']) {
-				if ($winner == 1) $mStatus == "L"; else if ($winner == 2) $mStatus == "M";
+				if ($winner == 1) $mStatus = "L"; else if ($winner == 2) $mStatus = "M";
 			}
 		} else if ($status == "Interrupted") {
 			$mStatus = 'C';
@@ -603,7 +617,7 @@ class Event extends Base{
 	}
 
 	protected function sortByCourtIdDesc($a, $b) {
-		return $a['courtdisplayorder'] < $b['courtdisplayorder'] ? -1 : 1;
+		return $a['courtdisplayorder'] <= $b['courtdisplayorder'] ? -1 : 1;
 	}
 
 }
