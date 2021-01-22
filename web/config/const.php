@@ -1115,7 +1115,7 @@ return [
 
 	],
 
-	'schema_completed' => ['sexid', 'isq', 'year', 'totalprize', 'tour', 'city', 'surface', 'level', 'matchid', 'courtseq', 'courtname', 'matchseq', 'round', 'schedule', 'p1eng', 'p2eng', 'ioc1', 'ioc2', 'p1chn', 'p2chn', 'dura', 'eid', 'p1id', 'p2id', 'p1rank', 'p2rank', 'score', 'h2h', 'updatetime', 'mstatus', 'p1seed', 'p2seed', 'fsid', 'bestof', 'p1first', 'p1last', 'p2first', 'p2last', 'p1ioc', 'p2ioc', 'p1id_bets', 'p2id_bets', 'matchid_bets', 'odd1_bets', 'odd2_bets', 'umpireid', 'umpirefirst', 'umpirelast', 'umpireioc'],
+	'schema_completed' => ['sexid', 'isq', 'year', 'totalprize', 'tour', 'city', 'surface', 'level', 'matchid', 'courtseq', 'courtname', 'matchseq', 'round', 'schedule', 'p1eng', 'p2eng', 'ioc1', 'ioc2', 'p1chn', 'p2chn', 'dura', 'eid', 'p1id', 'p2id', 'p1rank', 'p2rank', 'score', 'h2h', 'updatetime', 'mstatus', 'p1seed', 'p2seed', 'fsid', 'bestof', 'p1first', 'p1last', 'p2first', 'p2last', 'p1ioc', 'p2ioc', 'p1id_bets', 'p2id_bets', 'matchid_bets', 'odd1_bets', 'odd2_bets', 'umpireid', 'umpirefirst', 'umpirelast', 'umpireioc', 'mStatus'],
 
 	'schema_drawsheet' => ['sextip', 'id', 'round', 'mStatus', 'score1', 'score2', 'P1A', 'P1B', 'P2A', 'P2B', 'Seed1', 'Seed2', 'P1ANation', 'P1BNation', 'P2ANation', 'P2BNation', 'P1AFirst', 'P1BFirst', 'P2AFirst', 'P2BFirst', 'P1ALast', 'P1BLast', 'P2ALast', 'P2BLast'],
 

@@ -316,6 +316,7 @@ abstract class Base{
 					isset($m['umpire']['f']) ? $m['umpire']['f'] : "",
 					isset($m['umpire']['l']) ? $m['umpire']['l'] : "",
 					isset($m['umpire']['i']) ? $m['umpire']['i'] : "",
+					$m['mStatus'],
 				]) . "\n", $fp);
 			}
 		}

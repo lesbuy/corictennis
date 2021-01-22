@@ -35,7 +35,7 @@ $event->outputRawMatches();
 $event->outputRawTeams();
 #$event->outputH2H();
 #$event->outputRounds();
-#$event->outputRawOOPs();
+$event->outputRawOOPs();
 #$event->outputPlayers();
 #$event->outputOOPs();
 #$event->outputLive();

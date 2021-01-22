@@ -399,7 +399,8 @@ class Event extends Base{
 						return $d['param4'] == $itf_tour_id;
 					}
 				));
-				usort($date_matches, 'self::sortByCourtIdDesc');
+				//usort($date_matches, 'self::sortByCourtIdDesc');
+				usort($date_matches, 'self::sortByMatchID');
 
 				foreach ($date_matches as $amatch) {
 
@@ -426,9 +427,12 @@ class Event extends Base{
 					if (!isset($this->matches[$matchid])) {  // 如果找不到这场比赛，再试试按双方选手去找，并且更新正确的matchid
 						$p1 = $amatch['param6'] . ($amatch['param8'] ? "/" . $amatch['param8'] : "");
 						$p2 = $amatch['param7'] . ($amatch['param9'] ? "/" . $amatch['param9'] : "");
+						$matchRound = $amatch['match']['roundname']['shortname'];
 
 						foreach ($this->matches as $_matchID => &$bmatch) {
-							if (substr($bmatch["t1"], 2) == $p1 && substr($bmatch["t2"], 2) == $p2) {
+							if ((substr($bmatch["t1"], 2) == $p1 && substr($bmatch["t2"], 2) == $p2) ||
+								(substr($bmatch["t1"], 2) == $p1 && $bmatch["r2"] == $matchRound) || 
+								(substr($bmatch["t2"], 2) == $p2 && $bmatch["r2"] == $matchRound)) {
 								$bmatch["uuid"] = $matchid;
 								$this->matches[$matchid] = $bmatch;
 								$_event = $bmatch['event'];
@@ -493,7 +497,7 @@ class Event extends Base{
 
 		$winner = "";
 		$status = @$m['status']['name'];
-		if ($status == "Ended" || $status == "Retired" || $status == "Defaulted") {
+		if ($status == "Ended" || $status == "Retired" || $status == "Defaulted" || $status == "Walkover" || $m['walkover']) {
 			$winner = $m["result"]["winner"];
 			if ($winner == "home") $winner = 1;
 			else if ($winner == "away") $winner = 2;
@@ -618,6 +622,10 @@ class Event extends Base{
 
 	protected function sortByCourtIdDesc($a, $b) {
 		return $a['courtdisplayorder'] <= $b['courtdisplayorder'] ? -1 : 1;
+	}
+
+	protected function sortByMatchID($a, $b) {
+		return $a['_id'] <= $b['_id'] ? -1 : 1;
 	}
 
 }
