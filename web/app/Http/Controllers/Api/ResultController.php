@@ -713,6 +713,8 @@ class ResultController extends Controller
 				$last1 = explode("/", @$kvmap['p1last']);
 				$last2 = explode("/", @$kvmap['p2last']);
 
+				// 解选手信息。如果id的格式为 |p1|p2 表示该id有p1和p2两个可能
+				// 如果为 p1/p2 说明是双打。 |p1|p2/|p3|p4 也是双打，但是或者是p1/p3或者p2/p4
 				$tmp_ar = explode("/", $id1);
 				foreach ($tmp_ar as $tmp_k => $tmp_v) {
 					if (strpos($tmp_v, "|") === false) {
