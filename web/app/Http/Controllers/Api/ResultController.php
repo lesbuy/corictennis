@@ -818,7 +818,7 @@ class ResultController extends Controller
 					'dura' => $dura, 
 					'start' => $time, 
 					'winner' => $winner,
-					'inserve' => $inserve,
+					'serving' => $inserve,
 					'status' => $status, 
 					'bestof' => $bestof, 
 					'flag' => $pointflag, 
