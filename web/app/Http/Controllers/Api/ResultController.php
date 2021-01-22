@@ -448,7 +448,7 @@ class ResultController extends Controller
 				$arr = explode("\t", $row);
 				$schema = Config::get('const.schema_completed');
 				unset($kvmap);
-				foreach ($arr as $k => $v) $kvmap[Config::get('const.schema_completed.' . $k)] = $v;
+				foreach ($  as $k => $v) $kvmap[Config::get('const.schema_completed.' . $k)] = $v;
 
 				$courtname = $kvmap['courtseq'] . "\t" . translate('courtname', str_replace('.', '', strtolower($kvmap['courtname'])), true);
 
@@ -475,6 +475,8 @@ class ResultController extends Controller
 				} else {
 					$sextype = '';
 				}
+
+				$mStatus = @$kvmap["mStatus"];
 
 				$time = "";
 				if ($kvmap['schedule'] != "") {
@@ -694,7 +696,7 @@ class ResultController extends Controller
 					'seed' => $seed1,
 					'rank' => $rank1,
 					'odd' => $odds1,
-					'score' => self::reviewScore($score1),
+					'score' => self::reviewScore($score1, $mStatus),
 					'point' => $point1,
 					'p' => [],
 				];
@@ -703,7 +705,7 @@ class ResultController extends Controller
 					'seed' => $seed2,
 					'rank' => $rank2,
 					'odd' => $odds2,
-					'score' => self::reviewScore($score2),
+					'score' => self::reviewScore($score2, $mStatus),
 					'point' => $point2,
 					'p' => [],
 				];
@@ -810,6 +812,15 @@ class ResultController extends Controller
 					];
 				}
 
+				$result_tag = "";
+				if ($mStatus == "H" || $mStatus == "I") {
+					$result_tag = "Ret.";
+				} else if ($mStatus == "J" || $mStatus == "K") {
+					$result_tag = "Def.";
+				} else if ($mStatus == "L" || $mStatus == "M") {
+					$result_tag = "W/O";
+				}
+
 				@$courts[$courtname][] = [
 					'matchid' => $matchId, //0
 					'sex' => $sex, 
@@ -837,6 +848,8 @@ class ResultController extends Controller
 					'gender' => $sextype,
 					'fs_id' => @$kvmap['fsid'], //30
 					'umpire' => $umpire,
+					'result_tag' => $result_tag,
+					'mStatus' => $mStatus,
 				];
 
 			}
@@ -1124,7 +1137,16 @@ class ResultController extends Controller
 
 	}
 
-	private function reviewScore($score_arr) {
+	private function reviewScore($score_arr, $mStatus = "") {
+		if ($mStatus == "L" || $mStatus == "M") {
+			return [
+				[null, null, null],
+				[null, null, null],
+				[null, null, null],
+				[null, null, null],
+				[null, null, null],
+			];
+		}
 		$ret = [];
 		foreach ($score_arr as $set) {
 			if ($set === "") {
