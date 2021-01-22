@@ -448,7 +448,7 @@ class ResultController extends Controller
 				$arr = explode("\t", $row);
 				$schema = Config::get('const.schema_completed');
 				unset($kvmap);
-				foreach ($  as $k => $v) $kvmap[Config::get('const.schema_completed.' . $k)] = $v;
+				foreach ($arr as $k => $v) $kvmap[Config::get('const.schema_completed.' . $k)] = $v;
 
 				$courtname = $kvmap['courtseq'] . "\t" . translate('courtname', str_replace('.', '', strtolower($kvmap['courtname'])), true);
 
