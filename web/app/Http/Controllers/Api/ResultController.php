@@ -395,7 +395,7 @@ class ResultController extends Controller
 		}
 
 		return [
-			'state' => $status, 
+			'status' => $status, 
 			't1Score' => $this->reviewScore($score1), 
 			't2Score' => $this->reviewScore($score2), 
 			't1Point' => $point1, 
