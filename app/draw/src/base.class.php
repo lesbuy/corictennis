@@ -38,6 +38,8 @@ abstract class Base{
 	protected $llist = [];
 	protected $match_uuid2matchid = [];
 
+	protected $web_const = [];
+
 	protected $redis = null;
 
 	public function __construct($tour, $year) {
@@ -104,6 +106,7 @@ abstract class Base{
 				$this->wta_level = 'ITF';
 			}
 
+			$this->web_const = require_once(join("/", [WEB, 'config', 'const.php']));
 		}
 	}
 
@@ -193,8 +196,6 @@ abstract class Base{
 
 	public function outputOOP($day, $fp = STDOUT) {
 
-		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
-
 		$date_string = $this->oop[$day]['date'];
 		foreach ($this->oop[$day]['courts'] as $courtId => $court) {
 			$courtName = $court['name'];
@@ -207,8 +208,8 @@ abstract class Base{
 				$m = $this->matches[$matchid];
 				$event = $m['event'];
 
-				$eventid = $web_const['grandslam']['type2id'][$event];
-				$eventid4oop = $web_const['grandslam']['id2oopid'][$eventid];
+				$eventid = $this->web_const['grandslam']['type2id'][$event];
+				$eventid4oop = $this->web_const['grandslam']['id2oopid'][$eventid];
 
 				if (isset($m['true_unix']) && $m['true_unix'] > $matchtime) {
 					$matchtime = $m['true_unix'];

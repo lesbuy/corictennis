@@ -108,8 +108,8 @@ class Calendar extends CalendarBase {
 				$fin = "";
 			}
 			if ($t->level != "AC") { // atp cup不用修改签位
-				$t->drawMaleSingles = ceil_power($t->drawMaleSingles);
-				$t->drawMaleDoubles = ceil_power($t->drawMaleDoubles);
+				//$t->drawMaleSingles = ceil_power($t->drawMaleSingles);
+				//$t->drawMaleDoubles = ceil_power($t->drawMaleDoubles);
 			}
 			$t->inOutdoor = substr($io, 0, 1);
 			$t->surface = $sfc;

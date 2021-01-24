@@ -549,9 +549,9 @@ class Event extends Base{
 							$teamUUID = $event . join("/", $uuids);
 							$entry = $seed = "";
 
-							if ($SIDE["seed"]["type_short"] !== null && $SIDE["seed"]["type_short"] != "S") {
+							if (isset($SIDE["seed"]) && $SIDE["seed"]["type_short"] !== null && $SIDE["seed"]["type_short"] != "S") {
 								$entry = $SIDE["seed"]["type_short"];
-							} else if ($SIDE["seed"]["type_short"] == "S") {
+							} else if (isset($SIDE["seed"]) && $SIDE["seed"]["type_short"] == "S") {
 								$seed = $SIDE["seed"]["seeding"];
 							}
 							$seeds = [];
@@ -577,6 +577,7 @@ class Event extends Base{
 						}
 						$this->matches[$matchid]['event'] = $event;
 						$this->matches[$matchid]['r1'] = $amatch["match"]["roundname"]["shortname"];
+						if ($this->matches[$matchid]['r1'] == "Q") $this->matches[$matchid]['r1'] = "QR";
 					} // end if draws
 
 					$this->matches[$matchid]['uuid'] = $matchid;
