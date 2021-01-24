@@ -427,7 +427,7 @@ class Event extends Base{
 						$time = $amatch['match']['timeinfo']['started'];
 					}
 
-					if (!isset($this->matches[$matchid])) {  // 如果找不到这场比赛，再试试按双方选手去找，并且更新正确的matchid
+					if (!isset($this->matches[$matchid]) && count($this->draws) > 0) {  // 如果找不到这场比赛，再试试按双方选手去找，并且更新正确的matchid
 						$p1 = $amatch['param6'] . ($amatch['param8'] ? "/" . $amatch['param8'] : "");
 						$p2 = $amatch['param7'] . ($amatch['param9'] ? "/" . $amatch['param9'] : "");
 						$matchRound = $amatch['match']['roundname']['shortname'];
@@ -549,10 +549,10 @@ class Event extends Base{
 							$teamUUID = $event . join("/", $uuids);
 							$entry = $seed = "";
 
-							if ($amatch["seed"]["type_short"] !== null && $amatch["seed"]["type_short"] != "S") {
-								$entry = $amatch["seed"]["type_short"];
-							} else if ($amatch["seed"]["type_short"] == "S") {
-								$seed = $amatch["seed"]["seeding"];
+							if ($SIDE["seed"]["type_short"] !== null && $SIDE["seed"]["type_short"] != "S") {
+								$entry = $SIDE["seed"]["type_short"];
+							} else if ($SIDE["seed"]["type_short"] == "S") {
+								$seed = $SIDE["seed"]["seeding"];
 							}
 							$seeds = [];
 							if ($seed) $seeds[] = $seed;
