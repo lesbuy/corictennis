@@ -1065,7 +1065,12 @@ abstract class Base{
 			$name2 = $team2['p'][0]['s'];
 			$name1s = $team1['p'][0]['s2'];
 			$name2s = $team2['p'][0]['s2'];
-			$sd = strtolower($this->draws[$event]['sd']);
+			if (isset($this->draws[$event])) {
+				$sd = strtolower($this->draws[$event]['sd']);
+			} else {
+				$sd = count($team1['p']) == 2 || count($team2['p']) == 2 ? "d" : "s";
+			}
+			
 			$res1 = $res2 = [];                                                           
             $fsid = $betsid = $betsp1 = $betsp2 = $unix = "";
             $odd1 = $odd2 = ""; 
