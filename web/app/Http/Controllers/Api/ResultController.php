@@ -648,6 +648,15 @@ class ResultController extends Controller
 					}
 				}
 
+				if ($point1 == 40 && ($point2 == "A" || $point2 == "AD")) {
+					$point1 = "";
+					$point2 = "A";
+				}
+				if ($point2 == 40 && ($point1 == "A" || $point1 == "AD")) {
+					$point2 = "";
+					$point1 = "A";
+				}
+
 				self::reviseResultFlag($result1);
 				self::reviseResultFlag($result2);
 
