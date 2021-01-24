@@ -576,8 +576,10 @@ class Event extends Base{
 							}
 						}
 						$this->matches[$matchid]['event'] = $event;
+						$this->matches[$matchid]['r1'] = $amatch["match"]["roundname"]["shortname"];
 					} // end if draws
 
+					$this->matches[$matchid]['uuid'] = $matchid;
 					$this->matches[$matchid]['date'] = $isodate;
 					$event = $this->matches[$matchid]['event'];
 					

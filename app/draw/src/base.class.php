@@ -193,6 +193,8 @@ abstract class Base{
 
 	public function outputOOP($day, $fp = STDOUT) {
 
+		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
+
 		$date_string = $this->oop[$day]['date'];
 		foreach ($this->oop[$day]['courts'] as $courtId => $court) {
 			$courtName = $court['name'];
@@ -204,6 +206,9 @@ abstract class Base{
 				if (!isset($this->matches[$matchid])) continue;
 				$m = $this->matches[$matchid];
 				$event = $m['event'];
+
+				$eventid = $web_const['grandslam']['type2id'][$event];
+				$eventid4oop = $web_const['grandslam']['id2oopid'][$eventid];
 
 				if (isset($m['true_unix']) && $m['true_unix'] > $matchtime) {
 					$matchtime = $m['true_unix'];
@@ -267,8 +272,8 @@ abstract class Base{
 
 				output_content(join("\t", [
 					$date_string,
-					$this->draws[$event]['eventid2'],
-					$this->draws[$event]['qm'] == 'M' ? 0 : 1,
+					isset($this->draws[$event]['eventid2']) ? $this->draws[$event]['eventid2'] : $eventid4oop,
+					$m['r1'] == "Q" || preg_match('/^Q[0-9]$/', $m['r1']) ? 1 : 0,
 					$this->year,
 					$this->atpprize + $this->wtaprize,
 					$this->tourname,
