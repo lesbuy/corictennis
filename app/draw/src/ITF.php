@@ -365,6 +365,9 @@ class Event extends Base{
 
 	protected function parseSchedule() {
 
+		$this->redis = new_redis();
+		$bio = new Bio();
+
 		$itf_tour_id = join('-', [$this->tour, $this->year]);
 		$tour_begins = false;
 		$j = -2;
@@ -442,10 +445,142 @@ class Event extends Base{
 						}
 						//continue; // 如果签表没有这场比赛就跳过
 					}
+
+					// 如果连draws都找不到，那就只从schedule里找人吧
+					if (count($this->draws) == 0) {
+						$gender = "atp";
+						if (substr($amatch["param4"], 0, 1) == "W") {
+							$gender = "wta";
+						}
+						$sd = "S";
+						if ($amatch["param8"] !== null) {
+							$sd = "D";
+						}
+						$qm = "M";
+						if ($amatch["match"]["roundname"]["shortname"] == "Q") {
+							$qm = "Q";
+						}
+						if ($gender == "atp" && $qm == "M") {
+							$event = "M";
+						} else if ($gender == "atp" && $qm == "Q") {
+							$event = "Q";
+						} else if ($gender == "wta" && $qm == "M") {
+							$event = "W";
+						} else if ($gender == "wta" && $qm == "Q") {
+							$event = "P";
+						}
+						$event .= $sd;
+
+						$pidhomeA = $amatch["param6"];
+						$pidawayA = $amatch["param7"];
+						$pidhomeB = $amatch["param8"];
+						$pidawayB = $amatch["param9"];
+						foreach (["home", "away"] as $side) {
+							$SIDE = $amatch["match"]["teams"][$side];
+							$uuids = [];
+							$pids = [];
+							foreach (["A", "B"] as $partner) {
+								$itfpid = ${"pid" . $side . $partner};
+								if ($itfpid === null) continue;
+								$uuids[] = $itfpid;
+
+								$first = $last = $ioc = "";
+								if (isset($SIDE["surname"])) {
+									$last = $SIDE["surname"];
+									$a = explode(",", $SIDE["name"]);
+									$first = trim(@$a[1]);
+									$ioc = $SIDE["cc"]["ioc"];
+								} else {
+									$b = $SIDE["children"][$partner == "A" ? 0 : 1];
+									$last = $b["surname"];
+									$a = explode(",", $b["name"]);
+									$first = trim(@$a[1]);
+									$ioc = $b["cc"]["ioc"];
+								}
+
+								$wtpid = null;
+								// 先从redis里面 itf_redirect找
+								$_get_wtpid = $this->redis->cmd('HGET', 'itf_redirect', $itfpid)->get();
+								if ($_get_wtpid) {
+									$wtpid = substr($_get_wtpid, 12);
+									//fputs(STDERR, "MEMORY FOUND: " . $itfpid . " => " . $wtpid . "\n");
+								}
+
+								// 如果没找到wt pid
+								if ($wtpid === null) {
+									fputs(STDERR, join("\t", ["TO SEEK WTPID", $itfpid, $first, $last, $gender]). "\n");
+
+									// 如果itf_profile也找不到，那就set一次itf_profile，并且一小时后过期
+									if (!$this->redis->cmd('KEYS', 'itf_profile_' . $itfpid)->get()) {
+										$l_en = $bio->rename2long($first, $last, $ioc);
+										$s_en = $bio->rename2short($first, $last, $ioc);
+										$this->redis->cmd('HMSET', 'itf_profile_' . $itfpid, 'first', $first, 'last', $last, 'ioc', $ioc, 'l_en', $l_en, 's_en', $s_en, 'update_time', time())->set();
+										$this->redis->cmd('EXPIRE', 'itf_profile_' . $itfpid, 3600)->set();
+									}
+								}
+
+								$pid = $itfpid;
+								// 如果能找到wtpid，那么就查找他的名字
+								if ($wtpid !== null) {
+									$find_wtpid = $this->redis->cmd('HMGET', join("_", [$gender, 'profile', $wtpid]), 'first', 'last')->get();
+									$first = $find_wtpid[0];
+									$last = $find_wtpid[1];
+
+									$pid = $wtpid;
+								}
+
+								$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+								$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
+
+								$this->players[$itfpid] = [
+									'p' => $pid,
+									'g' => $gender == "atp" ? "M" : "F",
+									'f' => $first,
+									'l' => $last,
+									'i' => $ioc,
+									's' => $short3,
+									's2' => $last2,
+									'rs' => @$this->rank['s'][$pid],
+									'rd' => @$this->rank['d'][$pid],
+								];
+								$pids[] = $pid;
+							}
+
+							$teamUUID = $event . join("/", $uuids);
+							$entry = $seed = "";
+
+							if ($amatch["seed"]["type_short"] !== null && $amatch["seed"]["type_short"] != "S") {
+								$entry = $amatch["seed"]["type_short"];
+							} else if ($amatch["seed"]["type_short"] == "S") {
+								$seed = $amatch["seed"]["seeding"];
+							}
+							$seeds = [];
+							if ($seed) $seeds[] = $seed;
+							if ($entry) $seeds[] = $entry;
+
+							$this->teams[$teamUUID] = [
+								'uuid' => $teamUUID,
+								's' => $seed,
+								'e' => $entry,
+								'se' => join("/", $seeds),
+								'r' => @$this->rank['s'][join("/", $pids)],
+								'p' => array_map(function ($d) {
+									return $this->players[$d];
+								}, $uuids),
+							];
+
+							if ($side == "home") {
+								$this->matches[$matchid]['t1'] = $teamUUID;
+							} else if ($side == "away") {
+								$this->matches[$matchid]['t2'] = $teamUUID;
+							}
+						}
+						$this->matches[$matchid]['event'] = $event;
+					} // end if draws
+
 					$this->matches[$matchid]['date'] = $isodate;
 					$event = $this->matches[$matchid]['event'];
 					
-
 					$this->oop[$day]['courts'][$order]['matches'][$match_seq] = [
 						'id' => $matchid,
 						'time' => $time,
