@@ -61,6 +61,8 @@ Route::middleware('cors')->group(function () {
 
 		Route::get('{lang}/h2h/query/{gender}/{sd}/{homes}/{aways}', 'H2HController@query')->where('gender', '^(atp|wta)$')->where('sd', '^(s|d)$');
 
+		Route::post('{lang}/draw/{eid}/{year}', 'DrawController@query')->where(['year' => '^196[8-9]|19[7-9][0-9]|200[0-9]|201[0-9]|202[0-9]$', 'eid' => '^((?!list).)*$']);
+
 		Route::group(['prefix' => '{lang}/i18n'], function () {
 			Route::get('', 'I18nController@fetch');
 			Route::get('null', 'I18nController@fetch_null');
