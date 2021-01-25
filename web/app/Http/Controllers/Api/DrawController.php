@@ -817,13 +817,18 @@ class DrawController extends Controller
 		$ret['city'] = [];
 		$ret['surface'] = [];
 
+		$ret["cityDisplay"] = "";
+		$ret["countryDisplay"] = "";
+		$ret["ioc"] = "";
+		$ret["levelImg"] = [];
+
 		$cityData = [['City']];
 
 		if (!$this->is_dcpk) {
 			foreach ($r as $row) {
 				$arr = explode("\t", $row);
 				$level = preg_replace('/^.*:/', '', $arr[0]);
-				$levels = explode('/', $level);
+				
 				$city = $arr[9];
 				$year = $arr[4];
 				$history[] = [$year, $levels, $city];
@@ -834,12 +839,17 @@ class DrawController extends Controller
 					if (!in_array($arr[7], $ret['title'])) $ret['title'][] = $arr[7];
 					if (!in_array($arr[8], $ret['surface'])) $ret['surface'][] = $arr[8];
 					self::get_display_country($arr[10], $ret['country'], $ret['region']);
-					$ret['levels'] = array_merge($ret['levels'], $levels);
+					
+					$ret["cityDisplay"] = translate_tour($city, $level);
+					$ret["countryDisplay"] = translate('nationname', $arr[10]);
+					$ret["ioc"] = $arr[10];
 					if (!in_array($city, $ret['city'])) {
 						$ret['city'][] = $city;
 						$cityData[] = [$city];
 					}
 					$ret['date'][] = $arr[5];
+					$ret['levels'][] = $level;
+					$ret["levelImg"][] = get_tour_logo_by_id_type_name($ret["eid"], $level, $city, $arr[7]);
 				}
 			}
 		} else {
