@@ -834,7 +834,7 @@ class DrawController extends Controller
 				
 				$city = $arr[9];
 				$year = $arr[4];
-				$history[] = [$year, $levels, $city];
+				$history[] = [$year, $level, $city];
 
 				if ($year == $this->year) {
 					$ret['status'] = -1;
