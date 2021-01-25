@@ -357,7 +357,7 @@ class Down extends DownBase {
 			$nodes[] = $node;
 			$new_nodes[] = $new_node;
 			print_err($pid, $first, $last);
-			sleep(2);
+			sleep(3);
 		}
 		fclose($fp);
 		print_err("download and insert bio ", toc($tic));

@@ -394,6 +394,15 @@ class ResultController extends Controller
 			$serving = 2;
 		}
 
+		if ($point1 == 40 && ($point2 == "A" || $point2 == "AD")) {
+			$point1 = "";
+			$point2 = "A";
+		}
+		if ($point2 == 40 && ($point1 == "A" || $point1 == "AD")) {
+			$point2 = "";
+			$point1 = "A";
+		}
+
 		return [
 			'status' => $status, 
 			't1Score' => $this->reviewScore($score1), 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Draw;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -74,6 +74,9 @@ class DrawController extends Controller
 		}
 
 		self::process_prize($ret);
+
+		$title = __('frame.menu.draw') . '(' . $year . " " . join("/", array_map(function ($d) {return translate('tourname', strtolower($d));}, $ret['city'])) . ')';
+		$ret['pageTitle'] = $title;
 
 		if (isset($ret['part'][0])) {
 			$ret['status'] = 0;

@@ -531,12 +531,21 @@ class Activity {
 						}
 					} else if (strpos($this->city, "OLYMPICS") !== false) {
 						$this->level = "OL";
+					} else if ($tlevel == "PM") {
+						if ($this->year >= 2021) $this->level = "WTA1000M";
+						else $this->level = "PM";
+					} else if ($tlevel == "P5") {
+						if ($this->year >= 2021) $this->level = "WTA1000";
+						else $this->level = "P5";
 					} else if ($tlevel == "P") {
-						$this->level = "P700";
+						if ($this->year >= 2021) $this->level = "WTA500";
+						else $this->level = "P700";
 					} else if ($tlevel == "C") {
-						$this->level = "125K";
+						if ($this->year >= 2021) $this->level = "WTA125";
+						else $this->level = "125K";
 					} else if ($tlevel == "IS") {
-						$this->level = "Int";
+						if ($this->year >= 2021) $this->level = "WTA250";
+						else $this->level = "Int";
 					} else if ($tlevel == "I") {
 						$this->level = "T1";
 					} else if ($tlevel == "II") {
