@@ -30,8 +30,8 @@ $event = new Event($tour, $year);
 $event->process();
 
 #$event->calaTeamFinal();
-$event->outputRawDraws();
-$event->outputRawMatches();
+#$event->outputRawDraws();
+#$event->outputRawMatches();
 $event->outputRawTeams();
 #$event->outputH2H();
 #$event->outputRounds();
