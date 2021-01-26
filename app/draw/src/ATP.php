@@ -324,23 +324,6 @@ class Event extends Base{
 				else if ($name == "Qualifiers") $round = "Qualify";
 				else if ($name == "Group Stage") $round = "RR";
 
-				if ($this->tour == "M009") {
-					if ($event == "WS") {
-						if ($round == "W") $point = 900;
-						else if ($round == "F") $point = 585;
-						else if ($round == "SF") $point = 350;
-						else if ($round == "QF") $point = 190;
-						else if ($round == "R3") $point = 105;
-						else if ($round == "R2") $point = 60;
-						else if ($round == "R1") $point = 1;
-					} else if ($event == "PS") {
-						if ($round == "Qualify") $point = 30;
-						else if ($round == "Q2") $point = 20;
-						else if ($round == "Q1") $point = 1;
-					}
-				}
-
-
 				$prize = intval(preg_replace('/[^0-9]/', '', $prize));
 
 				$_round = "";
@@ -762,7 +745,10 @@ class Event extends Base{
 					$event_raw = substr($matchid, 0, 2);
 					$event = self::transSextip($event_raw, count($amatch->Players->Player));
 
-					if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
+					if (!isset($this->matches[$matchid])) {
+						//continue; // 如果签表没有这场比赛就跳过
+						$this->get_info_from_match($matchid, $amatch);
+					}
 					$matches = &$this->oop[$day]['courts'][$order]['matches'];
 					$matches[$match_seq] = [
 						'id' => $matchid,
@@ -959,6 +945,116 @@ class Event extends Base{
 
 		return true;
 
+	}
+
+	private function get_info_from_match ($matchid, $amatch) {
+		$event = substr($matchid, 0, 2);
+		$teams = [];
+		foreach ($amatch->Players as $team) {
+			$pids = [];
+			foreach ($team->Player as $player) {
+				$pid = $player->attributes()->id . '';
+				$pids[] = $pid;
+				if (isset($this->players[$pid])) continue;
+				$first = $player->FirstName;
+				$last = $player->SurName;
+				$ioc = $player->Country;
+				$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+				$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
+				$this->players[$pid] = [
+					'p' => $pid,
+					'g' => "M",
+					'f' => $first,
+					'l' => $last,
+					'i' => $ioc,
+					's' => $short3,
+					's2' => $last2,
+					'rs' => isset($this->rank['s'][$pid]) ? $this->rank['s'][$pid] : '',
+					'rd' => isset($this->rank['d'][$pid]) ? $this->rank['d'][$pid] : '',
+				];
+			}
+			$entry = $team->EntryType . "";
+			if ($entry == "LL") $entry = "L";
+			else if ($entry == "WC") $entry = "W";
+			else if ($entry == "Alt") $entry = "A";
+			else if ($entry == "PR") $entry = "P";
+			else if ($entry == "SE") $entry = "S";
+			else if ($entry == "ITF") $entry = "I";
+			else if ($entry == "JE") $entry = "J";
+			$seed = $team->Seed . "";
+
+			$seeds = [];
+			if ($seed) $seeds[] = $seed;
+			if ($entry) $seeds[] = $entry;
+
+			$uuid = $event . join("/", $pids);
+			$teams[] = $uuid;
+
+			$rank = isset($this->rank['s'][join("/", $pids)]) ? $this->rank['s'][join("/", $pids)] : '-';
+
+			$this->teams[$uuid] = [
+				'uuid' => $uuid,
+				's' => $seed,
+				'e' => $entry,
+				'se' => join("/", $seeds),
+				'r' => $rank,
+				'p' => array_map(function ($d) {
+					return $this->players[$d];
+				}, $pids),
+				'matches' => [],
+				'win' => 0,
+				'loss' => 0,
+				'streak' => 0,
+				'round' => '',
+				'point' => 0,
+				'prize' => 0,
+				'indraw' => 1,
+				'next' => null,
+			];
+		}
+
+		$roundID = intval($amatch->RoundId);
+		if ($roundID == 10) {
+			$r = "RR";
+		} else if ($roundID == 2) {
+			$r = "SF";
+		} else if ($roundID == 1) {
+			$r = "F";
+		}
+		if ($r == "RR") {
+			if ($this->tour == 8888) {
+				$group = intval(substr($matchid, 2, 1));
+				$groupMatchSeq = intval(substr($matchid, 3, 1));
+				if ($groupMatchSeq == 1) {
+					$x = 1; $y = 2;
+				} else if ($groupMatchSeq == 2) {
+					$x = 1; $y = 3;
+				} else if ($groupMatchSeq == 3) {
+					$x = 2; $y = 3;
+				}
+			} else {
+				$group = 1;
+				$x = $y = 0;
+			}
+			$this->matches[$matchid] = [
+				'uuid' => $matchid,
+				'id' => $matchid,
+				'event' => $event,
+				'r' => 0,
+				'r1' => "RR",
+				'r2' => "RR",
+				't1' => $teams[0],
+				't2' => $teams[1],
+				'bestof' => ($this->tour == "7696" ? 5 : 3),
+				'mStatus' => "",
+				'h2h' => '',
+				'group' => $group,
+				'group_name' => $this->draws[$event]['group_id2name'][$group],
+				'x' => $x,
+				'y' => $y,
+				'type' => (!$group ? 'KO' : 'RR'),
+			];
+		}
 	}
 
 }
