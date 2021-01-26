@@ -745,9 +745,10 @@ class Event extends Base{
 					$event_raw = substr($matchid, 0, 2);
 					$event = self::transSextip($event_raw, count($amatch->Players->Player));
 
-					if (!isset($this->matches[$matchid])) {
-						//continue; // 如果签表没有这场比赛就跳过
-						$this->get_info_from_match($matchid, $amatch);
+					if (!isset($this->matches[$matchid])) continue; // 如果签表没有这场比赛就跳过
+					
+					if ($this->tour == 8888) {
+						$this->get_player_from_match($matchid, $amatch);
 					}
 					$matches = &$this->oop[$day]['courts'][$order]['matches'];
 					$matches[$match_seq] = [
@@ -947,7 +948,7 @@ class Event extends Base{
 
 	}
 
-	private function get_info_from_match ($matchid, $amatch) {
+	private function get_player_from_match ($matchid, $amatch) {
 		$event = substr($matchid, 0, 2);
 		$teams = [];
 		foreach ($amatch->Players as $team) {
