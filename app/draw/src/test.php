@@ -31,7 +31,7 @@ $event->process();
 
 #$event->calaTeamFinal();
 #$event->outputRawDraws();
-#$event->outputRawMatches();
+$event->outputRawMatches();
 $event->outputRawTeams();
 #$event->outputH2H();
 #$event->outputRounds();

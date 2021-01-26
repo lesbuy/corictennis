@@ -45,7 +45,7 @@ do
 		starttime=$((unix-7*86400))
 		endtime=$((unix+15*86400))
 	else
-		starttime=$((unix-4*86400))
+		starttime=$((unix-6*86400))
 		endtime=$((unix+9*86400))
 	fi
 
