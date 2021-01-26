@@ -837,6 +837,8 @@ class ResultController extends Controller
 					$result_tag = "Def.";
 				} else if ($mStatus == "L" || $mStatus == "M") {
 					$result_tag = "W/O";
+				} else if ($mStatus == "Z") {
+					$result_tag = "Abn.";
 				}
 
 				@$courts[$courtname][] = [
