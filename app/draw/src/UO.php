@@ -14,8 +14,6 @@ class Event extends Base{
 		$file = join("/", [SCRIPT, 'gs', 'ori', $this->year, $this->tour, 'type']);
 		if (!file_exists($file)) return false;
 
-		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
-
 		$this->preprocess();
 
 		$fp = fopen($file, "r");
@@ -26,7 +24,7 @@ class Event extends Base{
 			$event_size = $line_arr[2];
 			$event_round = $line_arr[3];
 			$eventid4oop = $line_arr[4];
-			$eventid = $web_const['grandslam']['type2id'][$event];
+			$eventid = $this->web_const['grandslam']['type2id'][$event];
 
 			$this->draws[$event] = [
 				'uuid' => $event_raw,

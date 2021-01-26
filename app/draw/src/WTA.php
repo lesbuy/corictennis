@@ -343,8 +343,6 @@ class Event extends Base{
 		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
 
-		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
-
 		foreach ($xml["Draws"]["Events"]["Event"] as $Event) {
 
 			$this->tourname = $Event["TournamentTitle"];
@@ -376,8 +374,8 @@ class Event extends Base{
 
 			$event_size = intval($Event["DrawSize"]);
 			$event_round = count($Event["Results"]["Round"]);
-			$eventid = $web_const['grandslam']['type2id'][$event];
-			$eventid4oop = $web_const['grandslam']['id2oopid'][$eventid];
+			$eventid = $this->web_const['grandslam']['type2id'][$event];
+			$eventid4oop = $this->web_const['grandslam']['id2oopid'][$eventid];
 
 			$ko_type = $Event["Type"];
 			if (strpos($event, "D") !== false) {

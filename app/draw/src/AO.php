@@ -11,7 +11,6 @@ class Event extends Base{
 	private $roundConf;
 
 	public function process() {
-		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
 
 		$this->preprocess();
 
@@ -21,7 +20,7 @@ class Event extends Base{
 			$event_size = $eventInfo["draw"];
 			$event_round = $eventInfo["round"];
 			$eventid4oop = $eventInfo["eventid2"];
-			$eventid = $web_const['grandslam']['type2id'][$event];
+			$eventid = $this->web_const['grandslam']['type2id'][$event];
 
 			$this->draws[$event] = [
 				'uuid' => $event_raw,
