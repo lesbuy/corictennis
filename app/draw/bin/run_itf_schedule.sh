@@ -32,7 +32,7 @@ do
 	then
 		endtime=$((unix+86400*15))
 	else
-		endtime=$((unix+86400*8))
+		endtime=$((unix+86400*9))
 	fi
 
 	starttime=$((unix-86400*4))

@@ -220,7 +220,7 @@ abstract class Base{
 
 				if ($m['mStatus'] == "" || $m['mStatus'] == "A") {
 					$status = 0;
-				} else if (strpos("FGHIJKLM", $m['mStatus']) !== false) {
+				} else if (strpos("FGHIJKLMZ", $m['mStatus']) !== false) {
 					$status = 2;
 				} else if ($m['mStatus'] == "B") {
 					$status = 1;
@@ -274,7 +274,7 @@ abstract class Base{
 				output_content(join("\t", [
 					$date_string,
 					isset($this->draws[$event]['eventid2']) ? $this->draws[$event]['eventid2'] : $eventid4oop,
-					$m['r1'] == "Q" || preg_match('/^Q[0-9]$/', $m['r1']) ? 1 : 0,
+					$m['r1'] == "Q" || preg_match('/^Q[0-9R]$/', $m['r1']) ? 1 : 0,
 					$this->year,
 					$this->atpprize + $this->wtaprize,
 					$this->tourname,

@@ -133,8 +133,6 @@ class Event extends Base{
 		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
 
-		$web_const = require_once(join("/", [WEB, 'config', 'const.php']));
-
 		foreach ($xml as $k => $Event) {
 			if (!isset($Event['name'])) continue;
 
@@ -167,8 +165,8 @@ class Event extends Base{
 
 			$event_round = $Event['maxRounds'];
 			$event_size = $Event['drawsizeFrom'];
-			$eventid = $web_const['grandslam']['type2id'][$event];
-			$eventid4oop = $web_const['grandslam']['id2oopid'][$eventid];
+			$eventid = $this->web_const['grandslam']['type2id'][$event];
+			$eventid4oop = $this->web_const['grandslam']['id2oopid'][$eventid];
 
 			$ko_type = "KO";
 
@@ -635,14 +633,15 @@ class Event extends Base{
 
 		$winner = "";
 		$status = @$m['status']['name'];
-		if ($status == "Ended" || $status == "Retired" || $status == "Defaulted" || $status == "Walkover" || $m['walkover']) {
+		if ($status == "Ended" || $status == "Retired" || $status == "Defaulted" || $status == "Walkover" || $m['walkover'] || $m["matchstatus"] == "result") {
 			$winner = $m["result"]["winner"];
 			if ($winner == "home") $winner = 1;
 			else if ($winner == "away") $winner = 2;
+			else $winner = 0;
 		}
 
 		$mStatus = @$match['mStatus'];
-		if ($mStatus != "" && in_string("FGHIJKLM", $mStatus)) { // 已经决出结果了，不更改
+		if ($mStatus != "" && in_string("FGHIJKLMZ", $mStatus)) { // 已经决出结果了，不更改
 			//  do nothing
 		} else if ($winner) { // 有winner 说明比完了
 			if ($winner == 1) $mStatus = "F"; else if ($winner == 2) $mStatus = "G";
@@ -653,6 +652,8 @@ class Event extends Base{
 			} else if ($m['walkover']) {
 				if ($winner == 1) $mStatus = "L"; else if ($winner == 2) $mStatus = "M";
 			}
+		} else if ($status == "Abandoned") {
+			$mStatus = 'Z';
 		} else if ($status == "Interrupted") {
 			$mStatus = 'C';
 		} else if ($m['matchstatus'] == 'live') {

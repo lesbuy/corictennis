@@ -741,6 +741,8 @@ class Activity {
 			$aff = " Ret.";
 		} else if (strpos($games, "DEF") !== false) {
 			$aff = " Def.";
+		} else if (strpos($games, "ABN") !== false) {
+			$aff = " Abn.";
 		}
 		$games = preg_replace('/\(.*\)/', '', $games);
 
