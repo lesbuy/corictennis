@@ -1009,7 +1009,7 @@ class DrawController extends Controller
 		*/
 		if (!$status) return ["", "", ""];
 		if ($status == "A") { // 如果状态是未开始，那么s1表示比赛的unixtime，s2表示球场并翻译
-			return ["<span class=unixtime>" . $s1 . "</span>", strtoupper(translate('courtname', strtolower($s2))), ""];
+			return [$s1, strtoupper(translate('courtname', strtolower($s2))), ""];
 		}
 
 		if (in_array($status, ['L', 'M'])) {
@@ -1020,6 +1020,8 @@ class DrawController extends Controller
 			$suffix = 'def.';
 		} else if ($status == "Z") {
 			$suffix = "abn.";
+		} else if ($status == "B") {
+			$suffix = "live";
 		} else {
 			$suffix = '';
 		}
