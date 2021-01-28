@@ -423,7 +423,7 @@ class DrawController extends Controller
 		$position = [];
 
 		// 从第0轮到第round - 1轮
-		for ($j = 0; $j < $round; ++$j) {
+		for ($j = 1; $j <= $round; ++$j) {
 			$position[$j] = [];
 		}
 
@@ -452,10 +452,7 @@ class DrawController extends Controller
 			foreach ([1, 2] as $k) {
 				$i = $cur_round;
 				$j = $cur_mid;
-
-				$position[$i][$j] = [
-					"team" . $k => ${'p' . $k},
-				];
+				$position[$i][$j]["team" . $k] = ${'p' . $k};
 			}
 
 			$mStatus = $match['mStatus'] . '';
