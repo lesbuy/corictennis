@@ -191,12 +191,15 @@ class DrawController extends Controller
 			if (preg_match('/[PQ]/', $type)) {
 				self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 2); //资格赛都展现单边
 			} else if ($this->width >= $this->height) { // 横屏
+				/*
 				if ($round > 5) {
 					self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, $round - 4, 4, $round, 2); // 16强签表
 					self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round - 2, $round, 1); // 分区4强签表
 				} else {
 					self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 1); // 完整签表
 				}
+				*/
+				self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 2); // 完整签表
 			} else { // 竖屏
 				if ($round < 5) {
 					self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 2); // 完整签表
