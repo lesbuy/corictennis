@@ -199,7 +199,7 @@ class DrawController extends Controller
 					self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 1); // 完整签表
 				}
 				*/
-				self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 2); // 完整签表
+				self::process_rounds_grid_tour($ret, $p_info, $XML, $type, $drawCount, $round); // 完整签表
 			} else { // 竖屏
 				if ($round < 5) {
 					self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 2); // 完整签表
@@ -414,6 +414,77 @@ class DrawController extends Controller
 			'playerNum' => $player_num,
 		];
 
+	}
+
+	protected function process_rounds_grid_tour(&$ret, &$p_info, &$XML, $type, $drawCount, $round) {
+		//																MS					total
+		$tic = self::tic();
+
+		$position = [];
+
+		// 从第0轮到第round - 1轮
+		for ($j = 0; $j < $round; ++$j) {
+			$position[$j] = [];
+		}
+
+		$matchIdTrans = [];
+		foreach ($XML['match'] as $match) {
+
+			//$match = $match['@attributes'];
+			if (strpos($match['sextip'], 'RR') !== false) continue;
+
+			$matchId = intval($match['id']);
+
+			// 巡回赛的matchid体系不太一样
+			$matchIdTrans[$matchId] = preg_replace('/^.*\//', '', $match['id']);
+
+			$cur_round = floor(($matchId % 1000) / 100); // 第3位
+			$cur_mid = $matchId % 100; // 比赛在本轮中的序号
+
+			$p1 = []; $p2 = [];
+			if ($match['P1A']) $p1[] = self::revise_gs_pid($match['P1A']);
+			if ($match['P2A']) $p2[] = self::revise_gs_pid($match['P2A']);
+			if ($match['P1B']) $p1[] = self::revise_gs_pid($match['P1B']);
+			if ($match['P2B']) $p2[] = self::revise_gs_pid($match['P2B']);
+
+			if (self::revise_gs_pid($match['P1A']) === 0 || self::revise_gs_pid($match['P2A']) === 0 || self::revise_gs_pid($match['P1B']) === 0 || self::revise_gs_pid($match['P2B']) === 0) continue;
+
+			foreach ([1, 2] as $k) {
+				$i = $cur_round;
+				$j = $cur_mid;
+
+				$position[$i][$j] = [
+					"team" . $k => ${'p' . $k},
+				];
+			}
+
+			$mStatus = $match['mStatus'] . '';
+			$score1 = $match['score1'] . '';
+			$score2 = $match['score2'] . '';
+
+			$score = $this->revise_score($mStatus, $score1, $score2);
+
+			$position[$i][$j]['score1'] = $score[0];
+			$position[$i][$j]['score2'] = $score[1];
+			$position[$i][$j]['scoretag'] = $score[2];
+
+			$winner = 0;
+			if (in_array($mStatus, ["F", "H", "J", "L"])) {
+				$winner = 1;
+			} else if (in_array($mStatus, ["G", "I", "K", "M"])) {
+				$winner = 2;
+			}
+			$position[$i][$j]['winner'] = $winner;
+		}
+
+		$ret['part'][] = [
+			'KO' => true,
+			'type' => $type,
+			'position' => $position,
+			'p_info' => $p_info,
+		];
+
+		//echo "\t\t\t\tprocess time " . self::tac($tic) . "\n";
 	}
 
 	protected function process_rounds_grid_gs(&$ret, &$p_info, &$XML, $type, $drawCount, $startRound, $rounds, $round, $display_style) {
@@ -929,6 +1000,56 @@ class DrawController extends Controller
 		} else {
 			return $pid . '';
 		}
+	}
+
+	protected function revise_score($status, $s1, $s2) {
+		/*
+			return [
+				[7, [6, 5], 1], // 前者分，如果是字符串则表示比赛时间
+				[5, 7, 6], // 后者分，如果是字符串则表示比赛球场
+				"", // 比赛标记（如ret, w/o 等）
+			]
+		*/
+		if (!$status) return ["", "", ""];
+		if ($status == "A") { // 如果状态是未开始，那么s1表示比赛的unixtime，s2表示球场并翻译
+			return ["<span class=unixtime>" . $s1 . "</span>", strtoupper(translate('courtname', strtolower($s2))), ""];
+		}
+
+		if (in_array($status, ['L', 'M'])) {
+			return ["", "", "w/o."];
+		} else if (in_array($status, ['H', 'I'])) {
+			$suffix = 'ret.';
+		} else if (in_array($status, ['J', 'K'])) {
+			$suffix = 'def.';
+		} else if ($status == "Z") {
+			$suffix = "abn.";
+		} else {
+			$suffix = '';
+		}
+
+		$score1 = $score2 = [];
+		for ($i = 1; $i <= 5; ++$i) {
+			if (substr($s1, 2 * ($i - 1), 1)){ 
+				$a = ord(substr($s1, 2 * ($i - 1), 1)) - ord("A");
+				$b = ord(substr($s2, 2 * ($i - 1), 1)) - ord("A");
+				$c = ord(substr($s1, 2 * ($i - 1) + 1, 1)) - ord("A");
+				$d = ord(substr($s2, 2 * ($i - 1) + 1, 1)) - ord("A");
+				if ($c > 0 || $d > 0) {
+					if ($c > $d) {
+						$score1[] = $a;
+						$score2[] = [$b, $d];
+					} else {
+						$score1[] = [$a, $c];
+						$score2[] = $b;
+					}
+				} else {
+					$score1[] = $a;
+					$score2[] = $b;
+				}
+			}
+		}
+		return [$score1, $score2, $suffix];
+
 	}
 
 	protected function revise_gs_score($status, $s1, $s2, $reverse = false) {
