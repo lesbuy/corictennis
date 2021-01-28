@@ -53,7 +53,7 @@ class FrameController extends Controller
 		App::setLocale($lang);
 
 		$menu = [
-			['key' => __('frame.menu.home'), 'open' => -1, 'route' => self::add_lang("")],
+			['key' => __('frame.menu.home'), 'open' => -1, 'route' => self::add_lang("/home")],
 			['key' => __('frame.menu.rank'), 'open' => 0, 'children' => [
 				['key' => __('frame.menu.atp_s_year'), 'open' => -1, 'route' => self::add_lang('/rank/atp/s/year')],
 				['key' => __('frame.menu.wta_s_year'), 'open' => -1, 'route' => self::add_lang('/rank/wta/s/year')],
