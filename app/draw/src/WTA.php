@@ -1180,15 +1180,22 @@ class Event extends Base{
 				$time = strtotime($isodate . " " . $acourt["DisplayTime"] . " " . $acourt["UTCOffset"]);
 				$next_time = $time;
 
+				if (!isset($acourt["Matches"]["Match"][0])) {
+					$acourt["Matches"]["Match"] = [$acourt["Matches"]["Match"]];
+				}
+
+				$lastMatchSeq = 0; // 表示上一场比赛的序号
 				foreach ($acourt["Matches"]["Match"] as $amatch) {
+					$match_seq = $amatch["seq"]; // 当前比赛的序号
+
 					if ($amatch["NotBeforeISOTime"] != "") {
 						$time = strtotime($isodate . " " . $amatch["NotBeforeISOTime"]);
 					} else {
-						$time = $next_time;
+						$time = $next_time + ($match_seq - $lastMatchSeq - 1) * 5400;
 					}
 					$next_time = $time + 5400;
+					$lastMatchSeq = $match_seq;
 
-					$match_seq = $amatch["seq"];
 					$matchid = $amatch["MatchId"];
 
 					$event_raw = substr($matchid, 0, 2);
@@ -1311,7 +1318,7 @@ class Event extends Base{
 						}
 					}
 
-					if (isset($amatch["Official"])) {
+					if (isset($amatch["Official"]) && isset($amatch["Official"]["OfficialItfId"]) && $amatch["Official"]["OfficialItfId"] != "") {
 						$match["umpire"] = [
 							'p' => $amatch["Official"]["OfficialItfId"],
 							'f' => $amatch["Official"]["FirstName"],

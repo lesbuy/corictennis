@@ -750,3 +750,9 @@ function fetch_rank($pid, $gender = "atp", $sd = "s") {
 	unset($r); exec($cmd, $r);
 	if ($r) return $r[0]; else return "-";
 }
+
+/* ------------------------------   */
+function print_line() {
+    $argv = func_get_args();
+    echo join("\t", $argv) . "\n";
+}

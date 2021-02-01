@@ -107,7 +107,7 @@ class ResultController extends Controller
 	}
 
 	// 显示天单个赛事
-	public function eid(Request $req, $lang, $date, $eid = null, $tz = null) {
+	public function eid(Request $req, $lang, $date, $joint_eid = null, $tz = null) {
 
 		App::setLocale($lang);
 
@@ -132,7 +132,7 @@ class ResultController extends Controller
 
 		$show_status = $req->input('show_status', -1);
 
-		$courts = self::get_init_tours($eid, $is_tournament, $show_status, $unixtime);
+		$courts = self::get_init_tours(null, $is_tournament, $show_status, $unixtime, $joint_eid);
 		return $courts;
 	}
 
@@ -247,6 +247,8 @@ class ResultController extends Controller
 			$true_eid 为draw系统里的eid。若为空，则是分日赛程，不为空则是分站赛程
 		*/
 
+		$rett = [];
+
 		$favoriteIOC = "CHN";
 		$favoriteIOCs = implode("|", explode(",", $favoriteIOC));
 
@@ -257,7 +259,7 @@ class ResultController extends Controller
 			if ($unixtime > 0) {
 				$cmd = "cat $this->files | awk -F\"\\t\" 'substr($14,length($14)-9) >= " . $unixtime . "-5400 && substr($14,length($14)-9) <= " . $unixtime . "+86400' | cut -f4-8,22- | awk -F\"\\t\" '{print $1\"\\t\"$2\"\\t\"$3\"\\t\"$4\"\\t\"$5\"\\t\"$6\"\\t\"($23 ~ /(" . $favoriteIOCs . ")/ || $24 ~ /(" . $favoriteIOCs . ")/);}' | sort -ruf | sort -sru -t\" \" -k1gr,1 -k2,2 -k3,3 -k4,4 -k5,5 -k6,6";
 			} else {
-				$cmd = "cat $this->files | cut -f4-8,22- | awk -F\"\\t\" '{print $1\"\\t\"$2\"\\t\"$3\"\\t\"$4\"\\t\"$5\"\\t\"$6\"\\t\"($23 ~ /(" . $favoriteIOCs . ")/ || $24 ~ /(" . $favoriteIOCs . ")/);}' | sort -ruf | sort -sru -t\"	\" -k1gr,1 -k2,2 -k3,3 -k4,4 -k5,5 -k6,6";
+				$cmd = "cat $this->files | cut -f4-8,22- | awk -F\"\\t\" '{print $1\"\\t\"$2\"\\t\"$3\"\\t\"$4\"\\t\"$5\"\\t\"$6\"\\t\"($35 ? $35 : $6)\"\\t\"($23 ~ /(" . $favoriteIOCs . ")/ || $24 ~ /(" . $favoriteIOCs . ")/);}' | sort -ruf | sort -sru -t\"	\" -k1gr,1 -k2,2 -k3,3 -k4,4 -k5,5 -k6,6 -k7,7";
 			}
 		}
 
@@ -270,11 +272,13 @@ class ResultController extends Controller
 
 			foreach ($r as $row) {
 				$arr = explode("\t", $row);
-				if (count($arr) != 6 && count($arr) != 7) {
+				if (count($arr) != 6 && count($arr) != 7 && count($arr) != 8) {
 					continue;
 				} else {
-					$containsCHN = intval(@$arr[6]);
+					$containsCHN = intval(@$arr[7]);
 					$eid = $arr[5];
+					$joint_eid = @$arr[6];
+					if (!$joint_eid) $joint_eid = $eid;
 					$city = translate_tour(trim(str_replace('.', '', strtolower($arr[2]))));
 					$title = $arr[1];
 					$prize = $arr[0];
@@ -320,27 +324,45 @@ class ResultController extends Controller
 						}
 					}
 
-					$ret[] = [
-						'eid' => $eid, 
-						'city' => $city, 
-						'sfc' => strtolower($sfc), 
-						'open' => (int)$is_tournament, 
-						'loaded' => (int)$is_tournament, 
-						'title' => $title, 
-						'logos' => $logos, 
-						'courts' => self::get_init_tours($eid, $is_tournament, $show_status, $unixtime), 
-						'year' => $year,
-					];
+					$courts = self::get_init_tours($eid, $is_tournament, $show_status, $unixtime, $joint_eid);
+
+					if (!isset($rett[$joint_eid])) {
+						$rett[$joint_eid] = [
+							'joint_eid' => $joint_eid,
+							'sub_tour' => [[
+								'eid' => $eid, 
+								'title' => $title, 
+								'logos' => $logos[0], 
+							]],
+							'city' => $city, 
+							'sfc' => strtolower($sfc), 
+							'open' => (int)$is_tournament, 
+							'loaded' => (int)$is_tournament, 
+							'courts' => $courts, 
+							'year' => $year,
+						];
+					} else {
+						$rett[$joint_eid]['sub_tour'][] = [
+							'eid' => $eid, 
+							'title' => $title, 
+							'logos' => $logos[0], 
+						];
+						if (count($rett[$joint_eid]['courts']) == 0 && count($courts) > 0) { // 如果之前没有球场信息，现在有了，就加进去
+							$rett[$joint_eid]['courts'] = $courts;
+							$rett[$joint_eid]['open'] = $rett[$joint_eid]['loaded'] = 1;
+						}
+					}
 				}
 			}
 		}
+		$ret = array_values($rett);
 	}
 
-	protected function get_init_tours($eid, $is_tournament, $show_status = -1, $unixtime) {
+	protected function get_init_tours($eid, $is_tournament, $show_status = -1, $unixtime, $joint_eid = NULL) {
 
 		if (!$is_tournament) return [];
 
-		return self::get_matches($eid, $show_status, $unixtime);
+		return self::get_matches($eid, $show_status, $unixtime, $joint_eid);
 
 	}
 
@@ -416,11 +438,13 @@ class ResultController extends Controller
 		];
 	}
 
-	protected function get_matches($eid, $show_status, $unixtime) {
+	protected function get_matches($eid, $show_status, $unixtime, $joint_eid) {
 
 		$file = $this->down_path . '/live_score*';
 
-		$cmd = "awk -F \"\\t\" '$22 == \"$eid\"' $file";
+		if (!$eid) $eid = $joint_eid;
+
+		$cmd = "awk -F \"\\t\" '($32 != \"\" && $32 == \"$joint_eid\") || $22 == \"$eid\"' $file";
 		unset($r); exec($cmd, $r);
 
 		$live_info = [];
@@ -429,7 +453,8 @@ class ResultController extends Controller
 			foreach ($r as $row) {
 				$arr = explode("\t", $row);
 				$matchId = $arr[0];
-				@$live_info[$matchId] = [$arr[16], $arr[17], $arr[29], $arr[28]];  // score, time, pointflag, updatetime
+				$true_eid = $arr[31];
+				@$live_info[$true_eid][$matchId] = [$arr[16], $arr[17], $arr[29], $arr[28]];  // score, time, pointflag, updatetime
 			}
 		}
 
@@ -442,9 +467,9 @@ class ResultController extends Controller
 		}
 
 		if ($unixtime == 0) {
-			$cmd = "awk -F \"\\t\" '$22 == \"$eid\"' $this->files";
+			$cmd = "awk -F \"\\t\" '($51 != \"\" && $51 == \"$joint_eid\") || $22 == \"$eid\"' $this->files | sort -t\"	\" -k10g,10 -k12g,12";
 		} else {
-			$cmd = "awk -F \"\\t\" '$22 == \"$eid\" && substr($14,length($14)-9) >= " . $unixtime . "-5400 && substr($14,length($14)-9) <= " . $unixtime . "+86400' $this->files";
+			$cmd = "awk -F \"\\t\" '($51 != \"\" && $51 == \"$joint_eid\") || $22 == \"$eid\" && substr($14,length($14)-9) >= " . $unixtime . "-5400 && substr($14,length($14)-9) <= " . $unixtime . "+86400' $this->files | sort -t\"	\" -k10g,10 -k12g,12";
 		}
 		unset($r); exec($cmd, $r);
 
@@ -463,6 +488,8 @@ class ResultController extends Controller
 
 				$matchId = $kvmap['matchid'];
 
+				$true_eid = @$kvmap["eid"];
+
 				$sex = translate('sexname', $kvmap['sexid']);
 				$has_detail = true;
 				//if ($kvmap['sexid'] < 5 || $kvmap['sexid'] > 20) $has_detail = true; else $has_detail = false;
@@ -477,9 +504,9 @@ class ResultController extends Controller
 					$sextype = 'atp';
 				} else if (strpos($kvmap['tour'], "W-WITF-") !== false || strpos($kvmap['tour'], "W-ITF-") !== false) {
 					$sextype = 'wta';
-				} else if ($eid == "DC") {
+				} else if ($joint_eid == "DC") {
 					$sextype = 'atp';
-				} else if ($eid == "FC") {
+				} else if ($joint_eid == "FC") {
 					$sextype = 'wta';
 				} else {
 					$sextype = '';
@@ -572,15 +599,15 @@ class ResultController extends Controller
 				$className = join(" ", array_map('self::addPlayerSelect', $join_id));
 
 				if ($sextype) {
-					$h2hLink = 'open_h2h("' . $eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '", "' . $sd . '")';
+					$h2hLink = 'open_h2h("' . $true_eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '", "' . $sd . '")';
 				} else {
 					$h2hLink = '';
 				}
 
-				$statLink = 'open_stat("' . $eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '")';
+				$statLink = 'open_stat("' . $true_eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '")';
 
 				if ($has_detail) {
-					$detailLink = 'open_detail("' . @$kvmap['fsid'] . '", "' . $eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '")';
+					$detailLink = 'open_detail("' . @$kvmap['fsid'] . '", "' . $true_eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '")';
 				} else {
 					$detailLink = "";
 				}
@@ -626,8 +653,8 @@ class ResultController extends Controller
 				// status != 2时才会根据live_score进行修正
 				if ($status != 2) {
 
-					if (isset($live_info[$matchId])) {
-						$score_json = $live_info[$matchId][0];
+					if (isset($live_info[$true_eid][$matchId])) {
+						$score_json = $live_info[$true_eid][$matchId][0];
 						if ($score_json) {
 							$score = json_decode($score_json);
 							if (count($score) != 2) {
@@ -644,8 +671,8 @@ class ResultController extends Controller
 						}
 
 						// 修正比赛时间
-						if ($live_info[$matchId][1] != "") $dura = $live_info[$matchId][1] ? date('H:i', strtotime($live_info[$matchId][1])) : "";
-						$pointflag = $live_info[$matchId][2];
+						if ($live_info[$true_eid][$matchId][1] != "") $dura = $live_info[$true_eid][$matchId][1] ? date('H:i', strtotime($live_info[$true_eid][$matchId][1])) : "";
+						$pointflag = $live_info[$true_eid][$matchId][2];
 
 						// 如果比赛结束，修正status
 						if (strpos($result1 . $result2, 'iconfont') !== false || strpos($result1 . $result2, 'WINNER') !== false) {
@@ -689,9 +716,9 @@ class ResultController extends Controller
 				//$p1 = join('<br>', array_map('self::mergeName', $ioc1, $seed1, $p1, $rank1));
 				//$p2 = join('<br>', array_map('self::mergeName', $ioc2, $seed2, $p2, $rank2));
 
-				if (in_array($eid, ['M990', 'DC', '7696'])) $bestof = 5;
-				else if (in_array($eid, ['AO', 'RG', 'WC', 'UO', 'M993', 'M994', 'M995', 'M996']) && substr($matchId, 0, 2) == 'MS') $bestof = 5;
-				else if (in_array($eid, ['WC', 'M995']) && (substr($matchId, 0, 3) == 'QS3' || substr($matchId, 0, 2) == 'MD')) $bestof = 5;
+				if (in_array($true_eid, ['M990', 'DC', '7696'])) $bestof = 5;
+				else if (in_array($true_eid, ['AO', 'RG', 'WC', 'UO', 'M993', 'M994', 'M995', 'M996']) && substr($matchId, 0, 2) == 'MS') $bestof = 5;
+				else if (in_array($true_eid, ['WC', 'M995']) && (substr($matchId, 0, 3) == 'QS3' || substr($matchId, 0, 2) == 'MD')) $bestof = 5;
 				else $bestof = 3;
 
 				$pointflag = self::revisePointFlag($pointflag);
@@ -843,8 +870,10 @@ class ResultController extends Controller
 					$result_tag = "Interrupted";
 				}
 
-				@$courts[$courtname][] = [
+				$matchSeq = intval(@$kvmap["matchseq"]);
+				@$courts[$courtname][$matchSeq] = [
 					'matchid' => $matchId, //0
+					'matchseq' => intval(@$kvmap["matchseq"]),
 					'sex' => $sex, 
 					'round' => $round, 
 					'team1' => $player1, //5
@@ -872,6 +901,7 @@ class ResultController extends Controller
 					'umpire' => $umpire,
 					'result_tag' => $result_tag,
 					'mStatus' => $mStatus,
+					'true_eid' => $true_eid,
 				];
 
 			}

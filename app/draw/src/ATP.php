@@ -729,18 +729,20 @@ class Event extends Base{
 				$local_time = $acourt->DisplayTime . '';
 				$next_time = strtotime($isodate . ' ' . $local_time . ' ' . $tz);
 
+				$lastMatchSeq = 0;
 				foreach ($acourt->Matches->Match as $amatch) {
-					$match_seq = $amatch->attributes()->seq . '';
+					$match_seq = intval($amatch->attributes()->seq);
 					$matchid = $amatch->MatchId . '';
 
 					$local_time = $amatch->NotBeforeISOTime . '';
 					if ($local_time == "") {
-						$time = $next_time;
+						$time = $next_time + ($match_seq - $lastMatchSeq - 1) * 5400;
 					} else {
 						$time = strtotime($isodate . ' ' . $local_time);
 					}
 
 					$next_time = $time + 5400;
+					$lastMatchSeq = $match_seq;
 
 					$event_raw = substr($matchid, 0, 2);
 					$event = self::transSextip($event_raw, count($amatch->Players->Player));

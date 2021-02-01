@@ -22,6 +22,8 @@ return [
 		'1/2' => 'Top Half',
 		'2/2' => 'Bottom Half',
 		'1/1' => 'Winner',
+		'nthRound' => 'Round :p1',
+		'qualify' => 'Qualify',
 		'sections' => 'Sections',
 		'qf' => 'Quarterfinals',
 		'eighth' => 'Round 16',

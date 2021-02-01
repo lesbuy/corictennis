@@ -185,11 +185,12 @@ class DrawController extends Controller
 			//echo "\t\t\t\tload $file id " . self::tac($tic) . "\n";
 
 			if ($maxRRRound) {
-				self::process_rounds_grid_rr($ret, $p_info, $XML, $type);
+				//self::process_rounds_grid_rr($ret, $p_info, $XML, $type);
 			}
 
 			if (preg_match('/[PQ]/', $type)) {
-				self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 2); //资格赛都展现单边
+				//self::process_rounds_grid_gs($ret, $p_info, $XML, $type, $drawCount, 0, $round, $round, 2); //资格赛都展现单边
+				self::process_rounds_grid_tour($ret, $p_info, $XML, $type, $drawCount, $round); //资格赛都展现单边
 			} else if ($this->width >= $this->height) { // 横屏
 				/*
 				if ($round > 5) {
@@ -256,6 +257,8 @@ class DrawController extends Controller
 			}
 		}
 
+		$p_info[''] = ['', '', '', '　'];
+		$p_info['BYE'] = ['', '', '', '　'];
 		$p_info['LIVE'] = ['', 'LIVE', __('draw.notice.LIVE'), __('draw.notice.LIVE')];
 		$p_info['TBD'] = ['', 'LIVE', __('draw.notice.TBD'), __('draw.notice.TBD')];
 		$p_info['COMEUP'] = ['', 'LIVE', __('draw.notice.COMEUP'), __('draw.notice.COMEUP')];
@@ -421,6 +424,8 @@ class DrawController extends Controller
 		$tic = self::tic();
 
 		$position = [];
+		$is_double = false;
+		if (substr($type, 1, 1) == "D") $is_double = true;
 
 		// 从第0轮到第round - 1轮
 		for ($j = 1; $j <= $round; ++$j) {
@@ -434,6 +439,7 @@ class DrawController extends Controller
 			if (strpos($match['sextip'], 'RR') !== false) continue;
 
 			$matchId = intval($match['id']);
+			$is_bye = false;
 
 			// 巡回赛的matchid体系不太一样
 			$matchIdTrans[$matchId] = preg_replace('/^.*\//', '', $match['id']);
@@ -441,14 +447,14 @@ class DrawController extends Controller
 			$cur_round = floor(($matchId % 1000) / 100); // 第3位
 			$cur_mid = $matchId % 100; // 比赛在本轮中的序号
 
-			$p1 = []; $p2 = [];
-			if ($match['P1A']) $p1[] = self::revise_gs_pid($match['P1A']);
-			if ($match['P2A']) $p2[] = self::revise_gs_pid($match['P2A']);
-			if ($match['P1B']) $p1[] = self::revise_gs_pid($match['P1B']);
-			if ($match['P2B']) $p2[] = self::revise_gs_pid($match['P2B']);
-
-			if (self::revise_gs_pid($match['P1A']) === 0 || self::revise_gs_pid($match['P2A']) === 0 || self::revise_gs_pid($match['P1B']) === 0 || self::revise_gs_pid($match['P2B']) === 0) continue;
-
+			if (!$is_double) {
+				$p1 = [self::revise_pid($match['P1A'])]; 
+				$p2 = [self::revise_pid($match['P2A'])];
+			} else {
+				$p1 = [self::revise_pid($match['P1A']), self::revise_pid($match['P1B'])];
+				$p2 = [self::revise_pid($match['P2A']), self::revise_pid($match['P2B'])];
+			}
+			
 			foreach ([1, 2] as $k) {
 				$i = $cur_round;
 				$j = $cur_mid;
@@ -471,7 +477,38 @@ class DrawController extends Controller
 			} else if (in_array($mStatus, ["G", "I", "K", "M"])) {
 				$winner = 2;
 			}
+			if (count($p2) == 0 || $p2[0] == "BYE") {
+				$winner = 1;
+				$is_bye = true;
+			} else if (count($p1) == 0 || $p1[0] == "BYE") {
+				$winner = 2;
+				$is_bye = true;
+			}
 			$position[$i][$j]['winner'] = $winner;
+			$position[$i][$j]['isBye'] = $is_bye;
+		}
+
+		$roundDef = [];
+		if (preg_match('/^[PQ]/', $type)) {
+			for ($i = 1; $i <= $round; ++$i) {
+				if ($i < $round) {
+					$roundDef[$i] = __('draw.section.nthRound', ['p1' => $i]);
+				} else {
+					$roundDef[$i] = __('draw.section.qualify');
+				}
+			}
+		} else {
+			for ($i = 1; $i <= $round; ++$i) {
+				if ($i == $round) {
+					$roundDef[$i] = __('draw.section.final');
+				} else if ($i == $round - 1) {
+					$roundDef[$i] = __('draw.section.sf');
+				} else if ($i == $round - 2) {
+					$roundDef[$i] = __('draw.section.qf');
+				} else {
+					$roundDef[$i] = __('draw.section.nthRound', ['p1' => $i]);
+				}
+			}
 		}
 
 		$ret['part'][] = [
@@ -479,6 +516,10 @@ class DrawController extends Controller
 			'type' => $type,
 			'position' => $position,
 			'p_info' => $p_info,
+			'rounds' => $round,
+			'roundDef' => $roundDef,
+			'isDouble' => $is_double,
+			'isQuali' => preg_match('/^[PQ]/', $type),
 		];
 
 		//echo "\t\t\t\tprocess time " . self::tac($tic) . "\n";
@@ -593,7 +634,6 @@ class DrawController extends Controller
 					$win = $p1;
 				} else if (in_array($match['mStatus'], ['G', 'I', 'K', 'M'])) {
 					$win = $p2;
-				} else if ($match['mStatus'] == "B") {
 					$win = ["LIVE"];
 				} else if ($match['mStatus'] == "A") {
 					$win = ["COMEUP"];
@@ -998,6 +1038,23 @@ class DrawController extends Controller
 			return $pid . '';
 		}
 	}
+
+	protected function revise_pid($pid) {
+		if (in_array($pid, ["COMEUP", "TBD", "atpLIVE"])) {
+			return "";
+		} else if (strpos($pid, 'atp') === 0) {
+			return strtoupper(substr($pid, 3)). '';
+		} else if (strpos($pid, 'wta') === 0) {
+			return preg_replace('/^wta0*/', '', $pid);
+		} else if (strpos($pid, 'coric') === 0) {
+			return substr($pid, 5);
+		} else if ($pid == 'BYE') {
+			return "BYE";
+		} else {
+			return $pid . '';
+		}
+	}
+
 
 	protected function revise_score($status, $s1, $s2) {
 		/*

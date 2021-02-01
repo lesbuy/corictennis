@@ -239,7 +239,10 @@ return [
 	'goran ivanisevic stadium' => '戈兰·伊万尼塞维奇球场',
 	'melbourne arena' => '墨尔本球场',
 	'1573 arena' => '国窖1573球场',
+	'1573' => '国窖1573球场',
 	'butch buchholz' => '布奇·巴克霍尔兹球场',
 	'gsb centre court' => 'GSB中心球场',
 	'estadio' => '中心球场',
+	'mca' => '玛格丽特·考特球场',
+	'john cain arena' => '约翰·凯因球场',
 ];

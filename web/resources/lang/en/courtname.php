@@ -239,7 +239,10 @@ return [
 	'goran ivanisevic stadium' => 'Goran Ivanisevic Stadium',
 	'melbourne arena' => 'Melbourne Arena',
 	'1573 arena' => '1573 Arena',
+	'1573' => '1573 Arena',
 	'butch buchholz' => 'Butch Buchholz',
 	'gsb centre court' => 'GSB Centre Court',
 	'estadio' => 'Estadio',
+	'mca' => 'Margaret Court Arena',
+	'john cain arena' => 'John Cain Arena',
 ];

@@ -27,8 +27,6 @@ fi
 # 当前赛事起始日是当前已经下载的activity日期的下一周
 curr_start=`date -d "$wta_activity_end +7 day" +%Y-%m-%d`
 
-echo FLOP from $flop_start to $calc_start \(excluded\)
-echo DOWN from $calc_start to $curr_start \(excluded\)
 echo NNEW from $curr_start to $wta_liveranking_end \(included\)
 
 flop=`date -d "$flop_start" +%Y%m%d`
@@ -38,8 +36,10 @@ live=`date -d "$wta_liveranking_end" +%Y%m%d`
 
 echo $flop $calc $curr $live
 
+echo FLOP from $flop to $calc \(excluded\)
 awk -F"\t" -v flop=$flop -v calc=$calc '$15 == "s" && $8 >= flop && $8 < calc' $DATA/activity/wta/* $DATA/calc/wta/s/mandatory0 > $DATA/calc/wta/s/year/flop
-awk -F"\t" -v curr=$curr -v calc=$calc '$15 == "s" && $8 >= calc && $8 < curr' $DATA/activity/wta/* $DATA/calc/wta/s/mandatory0 > $DATA/calc/wta/s/year/loaded
-
 awk -F"\t" -v flop=$flop -v calc=$calc '$15 == "d" && $8 >= flop && $8 < calc' $DATA/activity/wta/*  > $DATA/calc/wta/d/year/flop
+
+echo DOWN from $calc to $curr \(excluded\)
+awk -F"\t" -v curr=$curr -v calc=$calc '$15 == "s" && $8 >= calc && $8 < curr' $DATA/activity/wta/* $DATA/calc/wta/s/mandatory0 > $DATA/calc/wta/s/year/loaded
 awk -F"\t" -v curr=$curr -v calc=$calc '$15 == "d" && $8 >= calc && $8 < curr' $DATA/activity/wta/*  > $DATA/calc/wta/d/year/loaded

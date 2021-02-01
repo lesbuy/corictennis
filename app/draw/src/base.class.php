@@ -8,6 +8,7 @@ abstract class Base{
 
 	protected $year = null;
 	protected $tour = ""; // eid
+	protected $joint_eid = "";
 	protected $tourname = "";
 	protected $city = "";
 	protected $surface = "";
@@ -39,11 +40,22 @@ abstract class Base{
 	protected $match_uuid2matchid = [];
 
 	protected $web_const = [];
+	private $eid2joint = [];
 
 	protected $redis = null;
 
 	public function __construct($tour, $year) {
 		$this->tour = $tour;
+		$this->joint_eid = $tour;
+
+		$fp = fopen("../conf/eid_map", "r");
+		while ($line = trim(fgets($fp))) {
+			$arr = explode("\t", $line);
+			$this->eid2joint[$arr[0]] = $arr[1];
+		}
+		fclose($fp);
+
+		if (isset($this->eid2joint[$tour])) $this->joint_eid = $this->eid2joint[$tour];
 		$this->year = $year;
 
 		$cmd = "awk -F\"\t\" '$2 == \"$tour\"' " . join("/", [ROOT, 'store', 'calendar', $this->year, '*']);
@@ -231,8 +243,8 @@ abstract class Base{
 				}
 
 				$update_time = time();
-				$team1 = in_array($m['t1'], [$event, $event . 'LIVE', $event . 'COMEUP', $event . 'TBD']) ? [] : $this->teams[$m['t1']];
-				$team2 = in_array($m['t2'], [$event, $event . 'LIVE', $event . 'COMEUP', $event . 'TBD']) ? [] : $this->teams[$m['t2']];
+				$team1 = in_array($m['t1'], [$event, $event . 'LIVE', $event . 'COMEUP', $event . 'TBD', $event . 'TBD/TBD']) ? [] : $this->teams[$m['t1']];
+				$team2 = in_array($m['t2'], [$event, $event . 'LIVE', $event . 'COMEUP', $event . 'TBD', $event . 'TBD/TBD']) ? [] : $this->teams[$m['t2']];
 				$betsp1 = $betsp2 = "";
 				if ($team1 && isset($team1['b'])) $betsp1 = $team1['b'];
 				if ($team2 && isset($team2['b'])) $betsp2 = $team2['b'];
@@ -273,56 +285,57 @@ abstract class Base{
 
 				output_content(join("\t", [
 					$date_string,
-					isset($this->draws[$event]['eventid2']) ? $this->draws[$event]['eventid2'] : $eventid4oop,
+					isset($this->draws[$event]['eventid2']) ? $this->draws[$event]['eventid2'] : $eventid4oop, // 1
 					$m['r1'] == "Q" || preg_match('/^Q[0-9R]$/', $m['r1']) ? 1 : 0,
 					$this->year,
 					$this->atpprize + $this->wtaprize,
 					$this->tourname,
-					$this->city,
+					$this->city, // 6
 					$this->surface,
 					$this->level,
 					$m['uuid'],
 					$courtId,
-					$courtName,
+					$courtName, // 11
 					$matchSeq,
 					$m['r1'],
 					"Maybe," . date('H:i', $matchtime) . ",,,8," . $matchtime,
 					$team1full,
-					$team2full,
+					$team2full, // 16
 					$team1ioc,
 					$team2ioc,
 					$team1last,
 					$team2last,
-					$matchdura,
+					$matchdura, // 21
 					$this->tour,
 					$t1id,
 					$t2id,
 					in_array($event, ['MS', 'WS', 'QS', 'PS']) ? @$team1['r'] : '',
-					in_array($event, ['MS', 'WS', 'QS', 'PS']) ? @$team2['r'] : '',
+					in_array($event, ['MS', 'WS', 'QS', 'PS']) ? @$team2['r'] : '', // 26
 					$score,
 					$m['h2h'],
 					$update_time,
 					$status,
-					@$team1['se'],
+					@$team1['se'], // 31
 					@$team2['se'],
 					isset($m['fsid']) ? $m['fsid'] : "",
 					$m['bestof'],
 					$t1first,
-					$t1last,
-					$t2first,
+					$t1last, // 36
+					$t2first, 
 					$t2last,
 					$t1ioc,
 					$t2ioc,
-					$betsp1,
+					$betsp1, // 41
 					$betsp2,
 					isset($m['betsid']) ? $m['betsid'] : "",
 					isset($m['odd1']) ? $m['odd1'] : "",
 					isset($m['odd2']) ? $m['odd2'] : "",
-					isset($m['umpire']['p']) ? $m['umpire']['p'] : "",
+					isset($m['umpire']['p']) ? $m['umpire']['p'] : "", // 46
 					isset($m['umpire']['f']) ? $m['umpire']['f'] : "",
 					isset($m['umpire']['l']) ? $m['umpire']['l'] : "",
 					isset($m['umpire']['i']) ? $m['umpire']['i'] : "",
 					$m['mStatus'],
+					$this->joint_eid, // 51
 				]) . "\n", $fp);
 			}
 		}
@@ -371,6 +384,7 @@ abstract class Base{
 				time(),
 				$tip_msg,
 				$bestof,
+				$this->joint_eid,
 			]) . "\n", $fp);
 		}
 	}

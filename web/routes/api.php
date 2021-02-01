@@ -51,7 +51,7 @@ Route::middleware('cors')->group(function () {
 		Route::get('{lang}/user', 'FrameController@user');
 		Route::get('{lang}/result/{date}', 'ResultController@date')->where('date', '^20[1-2][0-9]-[0-1][0-9]-[0-3][0-9]$');
 		Route::get('{lang}/result/{date}/tz={tz}', 'ResultController@date')->where('date', '^20[1-2][0-9]-[0-1][0-9]-[0-3][0-9]$');
-		Route::get('{lang}/result/{date}/eid={eid}', 'ResultController@eid')->where('date', '^20[1-2][0-9]-[0-1][0-9]-[0-3][0-9]$');
+		Route::get('{lang}/result/{date}/joint_eid={joint_eid}', 'ResultController@eid')->where('date', '^20[1-2][0-9]-[0-1][0-9]-[0-3][0-9]$');
 		Route::get('{lang}/result/{date}/eid={eid}/tz={tz}', 'ResultController@eid')->where('date', '^20[1-2][0-9]-[0-1][0-9]-[0-3][0-9]$');
 		Route::get('{lang}/result/live/{ts}', 'ResultController@get_live');
 
