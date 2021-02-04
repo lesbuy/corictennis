@@ -453,7 +453,7 @@ class ResultController extends Controller
 			foreach ($r as $row) {
 				$arr = explode("\t", $row);
 				$matchId = $arr[0];
-				$true_eid = $arr[31];
+				$true_eid = @$arr[31];
 				@$live_info[$true_eid][$matchId] = [$arr[16], $arr[17], $arr[29], $arr[28]];  // score, time, pointflag, updatetime
 			}
 		}
@@ -941,12 +941,22 @@ class ResultController extends Controller
 		if ($match_count > 0) {
 			foreach ($match[1] as $pattern) {
 				$arr = explode("|", $pattern);
-				$flags[] = __('pointflag.' . $arr[0], ['p1' => @$arr[1], 'p2' => @$arr[2]]);
+				$pflag = __('pointflag.' . $arr[0], ['p1' => @$arr[1], 'p2' => @$arr[2]]);
+				if ($pflag != 'pointflag.' . $arr[0]) {
+					$flags[] = $pflag;
+				} else {
+					$flags[] = $arr[0];
+				}
 			}
 		} else {
-			$flags[] = __('pointflag.' . $pf);
+			$pflag = __('pointflag.' . $pf);
+			if ($pflag != 'pointflag.' . $pf) {
+				$flags[] = $pflag;
+			} else {
+				$flags[] = $pf;
+			}
 		}
-		return join('/', $flags);
+		return join(' | ', $flags);
 	}
 
 	protected function reviseResultFlag (&$re) {

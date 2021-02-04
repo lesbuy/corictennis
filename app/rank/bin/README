@@ -7,3 +7,5 @@ wta_activity.sh #从官网下载最新赛事纪录，需要的时候就跑一下
 reload_list_wta_activity.sh #下载完成之后运行，以下载失败的和新加的pid，形成新的list_wta_activity
 #all_wta_activity.sh #从all_wta_pid列表下载此人全部的赛事
 下载完activity之后要去  ~/app/conf/calc 修改activity_end 到当前的周一
+
+下载完activity之后更新h2h，运行 atp_h2h.sh 或 wta_h2h.sh

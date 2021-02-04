@@ -33,6 +33,10 @@ Route::post('/foo/foo/foo/foo', function () {
     return date("Y-m-d H:i:s");
 });
 
+Route::group(['domain' => 'new.rank-tennis.com'], function () {
+	return "Please go to https://www.rank-tennis.com/";
+});
+
 Route::get('/test-sql', function() {
 	DB::enableQueryLog();
 	$ones = DB::table('panel_searches')->select('pid', 'first', 'last', 'ioc', DB::raw('count(pid) as ct'))->where('created_at', '>=', '2018-12-27')->groupBy(['pid', 'first', 'last', 'ioc'])->orderBy('ct')->get();
@@ -304,7 +308,7 @@ Route::group(['domain' => 'www.rank-tennis.com'], function () {
 		Route::get('{lang}/result/{date}', 'ResultController@date')->where('date', '^20[1-2][0-9]-[0-1][0-9]-[0-3][0-9]$')->name('result');
 		Route::get('{lang}/newresult/{date}', 'ResultController@date');
 		Route::get('{lang}/result', function($lang) {
-			return redirect()->route('result', ['lang' => $lang, 'date' => date('Y-m-d', time() - 3600 * 9)]);
+			return redirect()->route('result', ['lang' => $lang, 'date' => date('Y-m-d', time() - 3600 * 6)]);
 		});
 		Route::get('{lang}/live', 'ResultController@live')->name('live');
 		Route::post('{lang}/result/{date}', 'ResultController@eid')->where('date', '^20[1-2][0-9]-[0-1][0-9]-[0-3][0-9]$');

@@ -427,7 +427,7 @@ class Event extends Base{
 					$this->matches[$match_id] = [
 						'uuid' => $match_id,
 						'id' => $match_id,
-						'event' => $event,
+						'event' => $this->tour != "8888" ? $event : substr($match_id, 0, 2),
 						'r' => 0,
 						'r1' => "RR",
 						'r2' => "RR",
@@ -559,7 +559,7 @@ class Event extends Base{
 					$this->matches[$ori_matchid] = [
 						'uuid' => $ori_matchid,
 						'id' => $ori_matchid,
-						'event' => $event,
+						'event' => $this->tour != "8888" ? $event : substr($ori_matchid, 0, 2),
 						'r' => $r1,
 						'r1' => $r2,
 						'r2' => $r3,
@@ -606,7 +606,7 @@ class Event extends Base{
 					$this->matches[$ori_matchid] = [
 						'uuid' => $ori_matchid,
 						'id' => $ori_matchid,
-						'event' => $event,
+						'event' => $this->tour != "8888" ? $event : substr($ori_matchid, 0, 2),
 						'r' => $r1,
 						'r1' => $r2,
 						'r2' => $r3,
@@ -677,6 +677,7 @@ class Event extends Base{
 						$next_match = &$this->matches[$_next_match[0]];
 						$next_match['t' . $_next_match[1]] = $winner;
 					}
+
 
 				} // end foreach match
 			} // end foreach round
@@ -825,9 +826,10 @@ class Event extends Base{
 		$file = join("/", [SHARE, 'down_result', 'atp_live']);
 		if (!file_exists($file)) return false;
 
-		$xml = simplexml_load_file($file);
+		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
-	
+
+		/*	
 		foreach ($xml->Tournament as $atour) {
 			if ($atour->attributes()->id . '' != $this->tour) continue;
 			foreach ($atour->Match as $amatch) {
@@ -837,16 +839,35 @@ class Event extends Base{
 				$this->live_matches[] = $matchid;
 			}
 		}
+		*/
+
+		foreach ($xml as $tour) {
+			if ($tour["EventId"] != $this->tour) continue;
+			foreach ($tour["Matches"] as $amatch) {
+				$matchid = $amatch["Id"];
+				$this->getResult($matchid, $amatch, "", "", true);
+				$this->live_matches[] = $matchid;
+			}
+		}
 	}
 
-	protected function getResult($matchid, &$m, $match_time = "", $match_court = "") {
+	protected function getResult($matchid, &$m, $match_time = "", $match_court = "", $isLive = false) {
 
-		if (isset($m->attributes()->draw)) {
-			$event_raw = $m->attributes()->draw . '';
+		if (!$isLive) {
+			if (isset($m->attributes()->draw)) {
+				$event_raw = $m->attributes()->draw . '';
+			} else {
+				$event_raw = substr($m->attributes()->mId . '', 0, 2);
+			}
 		} else {
-			$event_raw = substr($m->attributes()->mId . '', 0, 2);
+			$event_raw = substr($matchid, 0, 2);
 		}
-		$event = self::transSextip($event_raw, intval($m->attributes()->isDoubles) + 1);
+
+		if (!$isLive) {
+			$event = self::transSextip($event_raw, intval($m->attributes()->isDoubles) + 1);
+		} else {
+			$event = self::transSextip($event_raw, intval($m["MatchType"] == "doubles") + 1);
+		}
 
 		if (!isset($this->matches[$matchid])) {
 			$this->matches[$matchid] = [];
@@ -854,10 +875,145 @@ class Event extends Base{
 			$this->matches[$matchid]['bestof'] = 3;
 		}
 		$match = &$this->matches[$matchid];
-		$match['tipmsg'] = $m->attributes()->msg . '';
 
-		$winner = $m->attributes()->winner . '';
-		$sScore = @$m->attributes()->sS . '';
+		if (!$isLive) {
+			$match['tipmsg'] = $m->attributes()->msg . '';
+		} else {
+			$m["MatchInfo"] = preg_replace('/([^A-Z])\. /', "$1\r\n", $m["MatchInfo"]);
+			$tt = explode("\r\n", $m["MatchInfo"]);
+			$ttu = [];
+			foreach ($tt as $tts) {
+				$tts = trim($tts);
+				$tts = preg_replace('/\.$/', '', $tts);
+				if (strpos($tts, "1st serve fault") !== false) {
+					$tts = 34;
+				} else if (strpos($tts, "the point on his 1st serve") !== false) {
+					$tts = 41;
+				} else if (strpos($tts, "the point on his 2nd serve") !== false) {
+					$tts = 42;
+				} else if (strpos($tts, "the point on the 1st serve of ") !== false) {
+					preg_match('/^(.*) wins? the point on the 1st serve of (.*)$/', $tts, $preged);
+					if (strpos($preged[1], $preged[2]) !== false) {
+						$tts = 41;
+					} else {
+						$tts = 43;
+					}
+				} else if (strpos($tts, "the point on the 2nd serve of ") !== false) {
+					preg_match('/^(.*) wins? the point on the 2nd serve of (.*)$/', $tts, $preged);
+					if (strpos($preged[1], $preged[2]) !== false) {
+						$tts = 42;
+					} else {
+						$tts = 44;
+					}
+				} else if (strpos($tts, "break point on his 1st serve") !== false || strpos($tts, "break point on the 1st serve") !== false) {
+					$tts = 55;
+				} else if (preg_match('/break point #(\d+) on (his|the) 1st serve/', $tts, $preged)) {
+					$tts = "55-1|" . $preged[1];
+				} else if (strpos($tts, "break point on his 2nd serve") !== false || strpos($tts, "break point on the 2nd serve") !== false) {
+					$tts = 56;
+				} else if (preg_match('/break point #(\d+) on (his|the) 2nd serve/', $tts, $preged)) {
+					$tts = "56-1|" . $preged[1];
+				} else if (strpos($tts, "set point on his 1st serve") !== false || strpos($tts, "set point on the 1st serve") !== false) {
+					$tts = 58;
+				} else if (preg_match('/set point #(\d+) on (his|the) 1st serve/', $tts, $preged)) {
+					$tts = "58-1|" . $preged[1];
+				} else if (strpos($tts, "set point on his 2nd serve") !== false || strpos($tts, "set point on the 2nd serve") !== false) {
+					$tts = 59;
+				} else if (preg_match('/set point #(\d+) on (his|the) 2nd serve/', $tts, $preged)) {
+					$tts = "59-1|" . $preged[1];
+				} else if (strpos($tts, "match point on his 1st serve") !== false || strpos($tts, "match point on the 1st serve") !== false) {
+					$tts = 60;
+				} else if (preg_match('/match point #(\d+) on (his|the) 1st serve/', $tts, $preged)) {
+					$tts = "60-1|" . $preged[1];
+				} else if (strpos($tts, "match point on his 2nd serve") !== false || strpos($tts, "match point on the 2nd serve") !== false) {
+					$tts = 61;
+				} else if (preg_match('/match point #(\d+) on (his|the) 2nd serve/', $tts, $preged)) {
+					$tts = "61-1|" . $preged[1];
+				} else if (strpos($tts, "breaks the serve") !== false || strpos($tts, "break the serve") !== false || in_string($tts, "gets broken") || in_string($tts, "get broken")) {
+					$tts = "Break";
+				} else if ($tts == "Deuce") {
+					$tts = 31;
+				} else if ($tts == "Deuce/Deciding point") {
+					$tts = "31-2";
+				} else if (preg_match('/^Deuce #(\d+)$/', $tts, $preged)) {
+					$tts = "31-1|" . $preged[1];
+				} else if ($tts == "Ace") {
+					$tts = "Ace";
+				} else if (preg_match('/^Ace #(\d+) for the team/', $tts, $preged)) {
+					$tts = "51-1|" . $preged[1];
+				} else if (preg_match('/^Ace #(\d+)/', $tts, $preged)) {
+					$tts = "51|" . $preged[1];
+				} else if ($tts == "Double fault") {
+					$tts = "Double Fault";
+				} else if (preg_match('/^Double fault #(\d+) for the team/', $tts, $preged)) {
+					$tts = "52-1|" . $preged[1];
+				} else if (preg_match('/^Double fault #(\d+)/', $tts, $preged)) {
+					$tts = "52|" . $preged[1];
+				} else if (strpos($tts, "1st serve ace") !== false) {
+					$tts = 53;
+				} else if (strpos($tts, "2nd serve ace") !== false) {
+					$tts = 54;
+				} else if ($tts == "Game point") {
+					$tts = 25;
+				} else if (preg_match('/^(\d+) game points$/', $tts, $preged)) {
+					$tts = "26|" . $preged[1];
+				} else if ($tts == "Break point") {
+					$tts = 3;
+				} else if (preg_match('/^(\d+) break points/', $tts, $preged)) {
+					$tts = "4|" . $preged[1];
+				} else if (preg_match('/^Break point #(\d+)/', $tts, $preged)) {
+					$tts = "4-1|" . $preged[1];
+				} else if ($tts == "Match point") {
+					$tts = 1;
+				} else if (preg_match('/^(\d+) match points/', $tts, $preged)) {
+					$tts = "2|" . $preged[1];
+				} else if (preg_match('/^Match point #(\d+)/', $tts, $preged)) {
+					$tts = "2-1|" . $preged[1];
+				} else if ($tts == "Set point") {
+					$tts = 5;
+				} else if (preg_match('/^(\d+) set points/', $tts, $preged)) {
+					$tts = "6|" . $preged[1];
+				} else if (preg_match('/^Set point #(\d+)/', $tts, $preged)) {
+					$tts = "6-1|" . $preged[1];
+				} else if (strpos($tts, "warming up") !== false) {
+					$tts = 70;
+				} else if (strpos($tts, "won the toss") !== false) {
+					if (strpos($tts, "chosen to receive") !== false) {
+						$tts = 72;
+					} else {
+						$tts = 71;
+					}
+				} else if ($tts == "Ball mark inspection") {
+					$tts = 81;
+				} else if (preg_match('/Umpire (.*) has left the chair/', $tts, $preged)) {
+					$tts = "82|" . $preged[1];
+				} else if (preg_match('/a medical evaluation on (.*)$/', $tts, $preged)) {
+					$tts = "83|" . $preged[1];
+				} else if ($tts == "Toilet break") {
+					$tts = 84;
+				} else if (strpos($tts, "holds serve") !== false) {
+					$tts = "Game";
+				} else if (strpos($tts, "2nd serve") === 0) {
+					$tts = 7;
+				} else if (strpos($tts, "1st serve") === 0) {
+					$tts = 57;
+				} else if (strpos($tts, "Game ") === 0 || strpos($tts, " lead") !== false || strpos($tts, 'Set level ') === 0 || strpos($tts, "win the 1st set") !== false || strpos($tts, "wins the 1st set") !== false || strpos($tts, "win the 2nd set") !== false || strpos($tts, "wins the 2nd set") !== false || strpos($tts, "win the 3rd set") !== false || strpos($tts, "wins the 3rd set") !== false || strpos($tts, "wins the match") !== false || strpos($tts, "win the match") !== false || strpos($tts, "calls Time") !== false) {
+					$tts = "";
+				}
+				if ($tts) {
+					$ttu[] = "{" . $tts . "}";
+				}
+			}
+			$match['tipmsg'] = join("", $ttu);
+		}
+
+		if (!$isLive) {
+			$winner = $m->attributes()->winner . '';
+			$sScore = @$m->attributes()->sS . '';
+		} else {
+			$winner = $m["Winner"];
+			$sScore = "";
+		}
 
 		$score1 = $score2 = [];
 
@@ -884,33 +1040,62 @@ class Event extends Base{
 			}
 		}
 
-		foreach ([1, 2, 3, 4, 5] as $set) {
-			$a = $m->attributes()->{'s' . $set . 'A'} . '';
-			$b = $m->attributes()->{'s' . $set . 'B'} . '';
-			if ($a === '' && $b === '') break;
-			$aa = @$m->attributes()->{'s' . ($set + 1) . 'A'} . '';
-			$bb = @$m->attributes()->{'s' . ($set + 1) . 'B'} . '';
-			if ($aa === '' && $bb === '' && strpos('FGHIJKLM', $mStatus) === false) { // 如果本盘是当前盘，则盘分胜负标记为0
-				$c = $d = 0;
-			} else {
-				if ($a > $b) {$c = 1; $d = -1;}
-				else if ($a < $b) {$c = -1; $d = 1;}
-				else {$c = $d = 0;}
+		if (!$isLive) {
+			foreach ([1, 2, 3, 4, 5] as $set) {
+				$a = $m->attributes()->{'s' . $set . 'A'} . '';
+				$b = $m->attributes()->{'s' . $set . 'B'} . '';
+				if ($a === '' && $b === '') break;
+				$aa = @$m->attributes()->{'s' . ($set + 1) . 'A'} . '';
+				$bb = @$m->attributes()->{'s' . ($set + 1) . 'B'} . '';
+				if ($aa === '' && $bb === '' && strpos('FGHIJKLMZ', $mStatus) === false) { // 如果本盘是当前盘，则盘分胜负标记为0
+					$c = $d = 0;
+				} else {
+					if ($a > $b) {$c = 1; $d = -1;}
+					else if ($a < $b) {$c = -1; $d = 1;}
+					else {$c = $d = 0;}
+				}
+				$tb = $m->attributes()->{'tb' . $set} . '';
+				if ($tb === '') {$e = $f = -1;}
+				else {
+					if ($a > $b) {$f = $tb; $e = $f + 2; if ($e < 7) $e = 7;}
+					else {$e = $tb; $f = $e + 2; if ($f < 7) $f = 7;}
+				}
+				$score1[] = [$a, $c, $e];
+				$score2[] = [$b, $d, $f];
 			}
-			$tb = $m->attributes()->{'tb' . $set} . '';
-			if ($tb === '') {$e = $f = -1;}
-			else {
-				if ($a > $b) {$f = $tb; $e = $f + 2; if ($e < 7) $e = 7;}
-				else {$e = $tb; $f = $e + 2; if ($f < 7) $f = 7;}
+		} else {
+			$fff = ["", "One", "Two", "Three", "Four", "Five"];
+			foreach ([1, 2, 3, 4, 5] as $set) {
+				$a = $m["TeamOne"]["Scores"]["Set" . $fff[$set]];
+				$b = $m["TeamTwo"]["Scores"]["Set" . $fff[$set]];
+				if ($a === null && $b === null) break;
+				if ($set < 5) {
+					$aa = $m["TeamOne"]["Scores"]["Set" . $fff[$set + 1]];
+					$bb = $m["TeamTwo"]["Scores"]["Set" . $fff[$set + 1]];
+				} else {
+					$aa = $bb = null;
+				}
+				if ($aa === null && $bb === null && strpos('FGHIJKLMZ', $mStatus) === false) { // 如果本盘是当前盘，则盘分胜负标记为0
+					$c = $d = 0;
+				} else {
+					if ($a > $b) {$c = 1; $d = -1;}
+					else if ($a < $b) {$c = -1; $d = 1;}
+					else {$c = $d = 0;}
+				}
+				$e = $m["TeamOne"]["Scores"]["Set" . $fff[$set] . "Tiebreak"];
+				$f = $m["TeamTwo"]["Scores"]["Set" . $fff[$set] . "Tiebreak"];
+				if ($e === null && $f === null) {
+					$e = $f = -1;
+				}
+				$score1[] = [$a, $c, $e];
+				$score2[] = [$b, $d, $f];
 			}
-			$score1[] = [$a, $c, $e];
-			$score2[] = [$b, $d, $f];
 		}
 
 		$match['mStatus'] = $mStatus;
 
 		if ($mStatus != "A") {
-			$match['dura'] = $m->attributes()->mt . ''; 
+			$match['dura'] = !$isLive ? $m->attributes()->mt . '' : $m["MatchTime"]; 
 			$match['s1'] = $score1;
 			$match['s2'] = $score2;
 		} else {
@@ -919,14 +1104,27 @@ class Event extends Base{
 		}
 
 		if ($mStatus == "B") {
-			$p1 = $m->attributes()->ptA . '';
-			$p2 = $m->attributes()->ptB . '';
+			if (!$isLive) {
+				$p1 = $m->attributes()->ptA . '';
+				$p2 = $m->attributes()->ptB . '';
+			} else {
+				$p1 = $m["TeamOne"]["Scores"]["CurrentScore"];
+				$p2 = $m["TeamTwo"]["Scores"]["CurrentScore"];
+			}
 			if (($p1 == 50 || $p1 == 'A') && $p2 == 40) {$p1 = 'A'; $p2 = 40;}
 			if (($p2 == 50 || $p2 == 'A') && $p1 == 40) {$p2 = 'A'; $p1 = 40;}
 			$match['p1'] = $p1;
 			$match['p2'] = $p2;
-			$serve = $m->attributes()->serve . '';
-			$match['serve'] = ($serve === "" ? "" : (($serve + 0) % 2 == 0 ? 1 : 2));
+			if (!$isLive) {
+				$serve = $m->attributes()->serve . '';
+				$match['serve'] = ($serve === "" ? "" : (($serve + 0) % 2 == 0 ? 1 : 2));
+			} else {
+				if ($m["TeamOne"]["TeamStatus"] == "now-serving") {
+					$match['serve'] = 1;
+				} else if ($m["TeamTwo"]["TeamStatus"] == "now-serving") {
+					$match['serve'] = 2;
+				}
+			}
 		}
 
 		// fill in next match if completed
@@ -1039,24 +1237,22 @@ class Event extends Base{
 				$group = 1;
 				$x = $y = 0;
 			}
-			$this->matches[$matchid] = [
-				'uuid' => $matchid,
-				'id' => $matchid,
-				'event' => $event,
-				'r' => 0,
-				'r1' => "RR",
-				'r2' => "RR",
-				't1' => $teams[0],
-				't2' => $teams[1],
-				'bestof' => ($this->tour == "7696" ? 5 : 3),
-				'mStatus' => "",
-				'h2h' => '',
-				'group' => $group,
-				'group_name' => $this->draws[$event]['group_id2name'][$group],
-				'x' => $x,
-				'y' => $y,
-				'type' => (!$group ? 'KO' : 'RR'),
-			];
+			$this->matches[$matchid]['uuid'] = $matchid;
+			$this->matches[$matchid]['id'] = $matchid;
+			$this->matches[$matchid]['event'] = $this->tour != "8888" ? $event : substr($matchid, 0, 2);
+			$this->matches[$matchid]['r'] = 0;
+			$this->matches[$matchid]['r1'] = "RR";
+			$this->matches[$matchid]['r2'] = "RR";
+			$this->matches[$matchid]['t1'] = $teams[0];
+			$this->matches[$matchid]['t2'] = $teams[1];
+			$this->matches[$matchid]['bestof'] = ($this->tour == "7696" ? 5 : 3);
+			$this->matches[$matchid]['mStatus'] = "";
+			$this->matches[$matchid]['h2h'] = '';
+			$this->matches[$matchid]['group'] = $group;
+			$this->matches[$matchid]['group_name'] = $this->draws[$event]['group_id2name'][$group];
+			$this->matches[$matchid]['x'] = $x;
+			$this->matches[$matchid]['y'] = $y;
+			$this->matches[$matchid]['type'] = (!$group ? 'KO' : 'RR');
 		}
 	}
 

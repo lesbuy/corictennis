@@ -6,12 +6,6 @@ $gender = get_param($argv, 1, "atp", " atp wta ");
 
 $redis = new_redis();
 
-function swap(&$a, &$b) {
-    $tmp = $b;
-    $b = $a;
-    $a = $tmp;
-}
-
 function compare($a, $b, $gender) {
     if ($gender == "atp") {
         return strcmp($a, $b);

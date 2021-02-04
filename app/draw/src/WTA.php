@@ -57,6 +57,9 @@ class Event extends Base{
 
 		$players = [];
 
+		if (!isset($xml["Draws"]["Events"]["Event"][0])) {
+			$xml["Draws"]["Events"]["Event"] = [$xml["Draws"]["Events"]["Event"]];
+		}
 		foreach ($xml["Draws"]["Events"]["Event"] as $event) {
 			$sextip = $event["EventTypeCode"];
 			$sextip = self::transSextip($sextip, count($event["Draw"]["DrawLine"][0]["Players"]["Player"]) == 2 ? 2 : 1);
@@ -342,6 +345,10 @@ class Event extends Base{
 
 		$xml = json_decode(file_get_contents($file), true);
 		if (!$xml) return false;
+
+		if (!isset($xml["Draws"]["Events"]["Event"][0])) {
+			$xml["Draws"]["Events"]["Event"] = [$xml["Draws"]["Events"]["Event"]];
+		}
 
 		foreach ($xml["Draws"]["Events"]["Event"] as $Event) {
 
@@ -812,6 +819,9 @@ class Event extends Base{
 						$score1 = [];
 						$score2 = [];
 						if (isset($amatch["Result"]["Score"]["Set"])) {
+							if (!isset($amatch["Result"]["Score"]["Set"][0])) {
+								$amatch["Result"]["Score"]["Set"] = [$amatch["Result"]["Score"]["Set"]];
+							}
 							foreach ($amatch["Result"]["Score"]["Set"] as $set) {
 								$sA = $set["sA"];
 								$sB = $set["sB"];
@@ -831,17 +841,18 @@ class Event extends Base{
 					$mStatus = "";
 
 					if ($winner) {
+						$rsn = strtolower($amatch["Result"]["Score"]["rsn"]);
 						if ($winner == "A") {
 							$mStatus = "F";
-							if (strpos($amatch["Result"]["Score"]["rsn"], "Ret") !== false) $mStatus = "H";
-							else if (strpos($amatch["Result"]["Score"]["rsn"], "Def") !== false) $mStatus = "J";
-							else if (strpos($amatch["Result"]["Score"]["rsn"], "W/O") !== false) $mStatus = "L";
+							if (strpos($rsn, "ret") !== false) $mStatus = "H";
+							else if (strpos($rsn, "def") !== false) $mStatus = "J";
+							else if (strpos($rsn, "w/o") !== false) $mStatus = "L";
 							$winner = $match['t1'];
 						} else {
 							$mStatus = "G";
-							if (strpos($amatch["Result"]["Score"]["rsn"], "Ret") !== false) $mStatus = "I";
-							else if (strpos($amatch["Result"]["Score"]["rsn"], "Def") !== false) $mStatus = "K";
-							else if (strpos($amatch["Result"]["Score"]["rsn"], "W/O") !== false) $mStatus = "M";
+							if (strpos($rsn, "ret") !== false) $mStatus = "I";
+							else if (strpos($rsn, "def") !== false) $mStatus = "K";
+							else if (strpos($rsn, "w/o") !== false) $mStatus = "M";
 							$winner = $match['t2'];
 						}
 					}
@@ -1348,6 +1359,7 @@ class Event extends Base{
 		if (!isset($this->oop[1])) return; // 第1天赛程都没有
 		foreach ($xml["matches"] as $matchSeq => $amatch) {
 			$matchid = $amatch["MatchID"];
+			if (!isset($amatch["DateSeq"])) continue;
 			$day = $amatch["DateSeq"];
 			if ($day <= $maxDay) continue;
 
@@ -1411,11 +1423,12 @@ class Event extends Base{
 
 		foreach ($xml as $amatch) {
 			if ($amatch["EventID"] != $this->tour) continue;
-			if ($amatch["MatchState"] == "F" && time() - strtotime($amatch["LastUpdated"]) > 10 * 60) continue;
-			$matchid = $amatch["MatchID"];
-			self::getResult($matchid, $amatch);
+			if ($amatch["MatchState"] == "P" || ($amatch["MatchState"] == "F" && time() - strtotime($amatch["LastUpdated"]) < 10 * 60)) {
+				$matchid = $amatch["MatchID"];
+				self::getResult($matchid, $amatch);
 
-			$this->live_matches[] = $matchid;
+				$this->live_matches[] = $matchid;
+			}
 		}
 	}
 
@@ -1428,17 +1441,18 @@ class Event extends Base{
 			$this->matches[$matchid]['uuid'] = $matchid;
 		}
 		$match = &$this->matches[$matchid];
-		$match['tipmsg'] = $m["Message"];
+		$match['tipmsg'] = @$m["Message"];
 		$match['bestof'] = 3;
 
-		$winner = $m["Winner"];
+		$state = $m["MatchState"];
+		$winner = @$m["Winner"];
 		$sScore = @$m["ScoreString"];
 
 		$score1 = $score2 = [];
 
 		$mStatus = @$match['mStatus'];
 		if ($mStatus != "A") {
-			$match['dura'] = $m["MatchTimeTotal"];
+			$match['dura'] = @$m["MatchTimeTotal"];
 		}
 		if ($mStatus != "" && strpos("FGHIJKLM", $mStatus) !== false) return true;
 
@@ -1453,7 +1467,7 @@ class Event extends Base{
 				if ($winner == 6) $mStatus = "J"; else if ($winner == 7) $mStatus = "K";
 			} else if (strpos($sScore, 'W/O') !== false) {
 				if ($winner == 4) $mStatus = "L"; else if ($winner == 5) $mStatus = "M";
-			} else if ($winner == 0) {
+			} else if ($state == "P") {
 				$mStatus = "B";
 			} else {
 				fputs(STDERR, $matchid . "\t" . $sScore . "\t" . $winner . "\n");
@@ -1462,8 +1476,8 @@ class Event extends Base{
 
 		foreach ([1, 2, 3, 4, 5] as $set) {
 			if ($set > $match["bestof"]) break;
-			$a = trim($m["ScoreSet" . $set . "A"]);
-			$b = trim($m["ScoreSet" . $set . "B"]);
+			$a = trim(@$m["ScoreSet" . $set . "A"]);
+			$b = trim(@$m["ScoreSet" . $set . "B"]);
 			if ($a === '' || $b === '' || $a === null || $b === null) break;
 			$aa = @$m["ScoreSet" . ($set + 1) . "A"];
 			$bb = @$m["ScoreSet" . ($set + 1) . "B"];
