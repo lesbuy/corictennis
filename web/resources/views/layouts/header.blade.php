@@ -417,10 +417,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 			<li>
 				<a data-role=none>{{ __('frame.menu.dc') }}</a>
 				<ul>
+					<li><a data-role=none href="{{ url(App::getLocale() . '/dc/AO/2021/MS') }}">{{ "ATP " . translate_tour('Australian Open') }}</a></li>
+					<li><a data-role=none href="{{ url(App::getLocale() . '/dc/AO/2021/WS') }}">{{ "WTA " . translate_tour('Australian Open') }}</a></li>
 					<li><a data-role=none href="{{ url(App::getLocale() . '/dc/RG/2020/MS') }}">{{ "ATP " . translate_tour('Roland Garros') }}</a></li>
 					<li><a data-role=none href="{{ url(App::getLocale() . '/dc/RG/2020/WS') }}">{{ "WTA " . translate_tour('Roland Garros') }}</a></li>
-					<li><a data-role=none href="{{ url(App::getLocale() . '/dc/UO/2020/MS') }}">{{ "ATP " . translate_tour('US Open') }}</a></li>
-					<li><a data-role=none href="{{ url(App::getLocale() . '/dc/UO/2020/WS') }}">{{ "WTA " . translate_tour('US Open') }}</a></li>
 				</ul>
 			</li>
 			<li>

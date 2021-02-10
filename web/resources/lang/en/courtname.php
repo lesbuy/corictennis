@@ -244,5 +244,6 @@ return [
 	'gsb centre court' => 'GSB Centre Court',
 	'estadio' => 'Estadio',
 	'mca' => 'Margaret Court Arena',
-	'john cain arena' => 'John Cain Arena',
+	'john cain arena' => 'John Caine Arena',
+	'john caine arena' => 'John Caine Arena',
 ];

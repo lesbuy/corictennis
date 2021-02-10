@@ -522,58 +522,61 @@ class Event extends Base{
 
 				$event_size = count($Event->Results->Round[1]->Match) * 2;
 				$_ct = 0;
-				foreach ($Event->Results->Round[1]->Match as $amatch) {
-					++$_ct;
-					$ori_matchid = $amatch->attributes()->Id . "";
-					$teams = [];
+				foreach ($Event->Results->Round as $around) {
+					foreach ($around->Match as $amatch) {
+						++$_ct;
+						$ori_matchid = $amatch->attributes()->Id . "";
+						$teams = [];
 
-					if (isset($amatch->Players)) {
-						foreach ($amatch->Players->PT as $team) {
-							$pids = [];
-							foreach ($team->Player as $p) {
-								$pids[] = $p->attributes()->id . "";
+						if (isset($amatch->Players)) {
+							foreach ($amatch->Players->PT as $team) {
+								$pids = [];
+								foreach ($team->Player as $p) {
+									$pids[] = $p->attributes()->id . "";
+								}
+								$teams[] = $event . join("/", $pids);
 							}
-							$teams[] = $event . join("/", $pids);
+						} else {
+							$teams = [$event, $event];
+							continue;
 						}
-					} else {
-						$teams = [$event, $event];
-					}
-					$r1 = 1;
-					$order = $_ct;
+						$r1 = 1;
+						$order = $_ct;
 
-					$group = 0; $x = $r1; $y = $order;
-					$this->draws[$event]['draw']['KO'][$group][$x][$y] = $ori_matchid;
+						$group = 0; $x = $r1; $y = $order;
+						$this->draws[$event]['draw']['KO'][$group][$x][$y] = $ori_matchid;
 
-					if ($event_size == 8) {
-						$r2 = $r3 = "QF";
-					} else if ($event_size == 4) {
-						$r2 = $r3 = "SF";
-					} else if ($event_size == 2) {
-						$r2 = $r3 = "F";
-					} else {
-						$r3 = "R" . $event_size;
-						$r2 = "R1";
-					}
+						if ($event_size == 8) {
+							$r2 = $r3 = "QF";
+						} else if ($event_size == 4) {
+							$r2 = $r3 = "SF";
+						} else if ($event_size == 2) {
+							$r2 = $r3 = "F";
+						} else {
+							$r3 = "R" . $event_size;
+							$r2 = "R1";
+						}
 
-					// 记录到match里
-					$this->matches[$ori_matchid] = [
-						'uuid' => $ori_matchid,
-						'id' => $ori_matchid,
-						'event' => $this->tour != "8888" ? $event : substr($ori_matchid, 0, 2),
-						'r' => $r1,
-						'r1' => $r2,
-						'r2' => $r3,
-						't1' => $teams[0],
-						't2' => $teams[1],
-						'bestof' => ($this->tour == "7696" ? 5 : 3),
-						'mStatus' => "",
-						'h2h' => '',
-						'group' => $group,
-						'x' => $x,
-						'y' => $y,
-						'type' => (!$group ? 'KO' : 'RR'),
-					];
-				} // end foreach 
+						// 记录到match里
+						$this->matches[$ori_matchid] = [
+							'uuid' => $ori_matchid,
+							'id' => $ori_matchid,
+							'event' => $this->tour != "8888" ? $event : substr($ori_matchid, 0, 2),
+							'r' => $r1,
+							'r1' => $r2,
+							'r2' => $r3,
+							't1' => $teams[0],
+							't2' => $teams[1],
+							'bestof' => ($this->tour == "7696" ? 5 : 3),
+							'mStatus' => "",
+							'h2h' => '',
+							'group' => $group,
+							'x' => $x,
+							'y' => $y,
+							'type' => (!$group ? 'KO' : 'RR'),
+						];
+					} // end foreach round
+				} // end foreach match
 			} // end if RR
 
 			// 组建后面的比赛。RR比赛总轮数减1
@@ -975,6 +978,12 @@ class Event extends Base{
 					$tts = "6|" . $preged[1];
 				} else if (preg_match('/^Set point #(\d+)/', $tts, $preged)) {
 					$tts = "6-1|" . $preged[1];
+				} else if (in_string($tts, "suspended due to rain")) {
+					$tts = 16;
+				} else if (in_string($tts, "suspended due to dark")) {
+					$tts = 17;
+				} else if (in_string($tts, "suspended due to heat")) {
+					$tts = 18;
 				} else if (strpos($tts, "warming up") !== false) {
 					$tts = 70;
 				} else if (strpos($tts, "won the toss") !== false) {

@@ -112,8 +112,8 @@ class DcController extends Controller
 				
 				// 首轮时记下每个id对应的序号
 				if ($round == 1) {
-					$p1 = rename2short($kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']);
-					$p2 = rename2short($kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']);
+					$p1 = translate2short($this->get_pid($kvmap['P1A']), $kvmap['P1AFirst'], $kvmap['P1ALast'], $kvmap['P1ANation']);
+					$p2 = translate2short($this->get_pid($kvmap['P2A']), $kvmap['P2AFirst'], $kvmap['P2ALast'], $kvmap['P2ANation']);
 					if ($kvmap['Seed1']) $p1 .= " [" . $kvmap['Seed1'] . "]";
 					if ($kvmap['Seed2']) $p2 .= " [" . $kvmap['Seed2'] . "]";
 					$id2player[$seq1] = $p1;
@@ -612,5 +612,15 @@ class DcController extends Controller
 			$SF1, $SF2, $SF3, $SF4, $F1, $F2, $F12, $W,
 			$id2player
 		];
+	}
+
+	private function get_pid($p) {
+		if (strpos($p, "atp") === 0 || strpos($p, "itf") === 0) {
+			return substr($p, 3);
+		} else if (strpos($p, "wta") === 0) {
+			return intval(substr($p, 3));
+		} else {
+			return $p;
+		}
 	}
 }

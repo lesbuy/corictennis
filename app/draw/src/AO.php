@@ -54,6 +54,13 @@ class Event extends Base{
 			$this->parseSchedule($i);
 		}
 		$this->parseLive();
+
+		for ($i = 30; $i <= 43; ++$i) {
+			$this->parseResult($i);
+			$this->parseExtra($i);
+			$this->parseSchedule($i);
+		}
+		$this->parseLive();
 		$this->appendH2HandFS();
 		$this->calaTeamFinal();
 
@@ -71,6 +78,9 @@ class Event extends Base{
 		$this->start_date = $this->config["startDate"];
 		$this->eventConf = $this->config["eventConf"];
 		$this->roundConf = $this->config["roundConf"];
+
+		$this->atpid = "0580";
+		$this->wtaid = "0901";
 		/*
 		$file = join("/", [WORK, 'etl', $this->year, $this->tour, 'wclist']);
 		$fp = fopen($file, "r");
@@ -393,9 +403,11 @@ class Event extends Base{
 			'courts' => [],
 		];
 
+		$courtUUID2Order = [];
 		foreach ($json['courts'] as $court) {
 			$uuid = $court['uuid'];
 			$order = $court['order'];
+			$courtUUID2Order[$uuid] = $order;
 			$name = $court['name'];
 			$this->oop[$day]['courts'][$order] = [
 				'name' => $name,
@@ -404,7 +416,7 @@ class Event extends Base{
 		};
 
 		foreach ($json['schedule']['courts'] as $court) {
-			$order = $court['order'];
+			$order = $courtUUID2Order[$court['court_id']];
 			$matches = &$this->oop[$day]['courts'][$order]['matches'];
 
 			foreach ($court['sessions'] as $k => $session) {
@@ -433,7 +445,7 @@ class Event extends Base{
 					}
 				
 					if (isset($this->matches[$matchid])) {
-						$matches[$k * 10 + $m['activity_order']] = [
+						$matches[$k * 4 + $m['activity_order']] = [
 							'id' => $matchid,
 							'time' => $time,
 							'event' => $this->matches[$matchid]['event'],

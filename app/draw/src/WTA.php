@@ -81,7 +81,7 @@ class Event extends Base{
 						$first = $p["FirstName"];
 						$last = $p["SurName"];
 						$ioc = $p["Country"];
-						$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+						$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last))), 0, 3); // 取姓的前3个字母，用于flashscore数据
 						$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
 
 						$players[$pid] = [
@@ -1231,7 +1231,7 @@ class Event extends Base{
 									$first = $p["FirstName"];
 									$last = $p["SurName"];
 									$ioc = $p["Country"];
-									$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last . $first))), 0, 3); // 取姓的前3个字母，用于flashscore数据
+									$short3 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper($last))), 0, 3); // 取姓的前3个字母，用于flashscore数据
 									$last2 = substr(preg_replace('/[^A-Z]/', '', replace_letters(mb_strtoupper(preg_replace('/^.* /', '', str_replace("-", " ", $last))))), 0, 3); // 取名字最后一部分的前3个字母，用于bets数据
 									$this->players[$pid] = [
 										'p' => $pid,

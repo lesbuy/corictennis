@@ -558,7 +558,7 @@ class Calc {
 			}
 		}
 
-		$this->prize += $arr[$this->sm['prize']];
+		$this->prize += intval($arr[$this->sm['prize']]);
 		$this->win += $arr[$this->sm['win']];
 		$this->loss += $arr[$this->sm['loss']];
 		if ($this->streak * $arr[$this->sm['streak']] < 0) {
@@ -582,7 +582,7 @@ class Calc {
 		if ($arr[$this->sm['start_date']] >= $this->current_start_date && $arr[$this->sm['start_date']] < $this->current_end_date) {
 			$this->current_city = $arr[$this->sm['city']];
 			$this->current_round = $arr[$this->sm['final_round']];
-			$this->current_point += $arr[$this->sm['point']];
+			$this->current_point += intval($arr[$this->sm['point']]);
 			$this->current_oppo_pid = $arr[$this->sm['next']];
 			$this->current_partner_pid = $arr[$this->sm['partner_id']];
 			$this->current_prediction = @$arr[$this->sm['prediction']];

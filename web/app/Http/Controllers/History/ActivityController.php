@@ -354,8 +354,8 @@ class ActivityController extends Controller
 					foreach ($matches_arr as $match_string) {
 						$match_arr = explode("!", $match_string);
 
-						if ($md == 'y' && (preg_match('/^Q[0-9]/', $match_arr[$kvmap_match['round']]))) continue;
-						if ($final == 'y' && ($match_arr[$kvmap_match['round']] != "F")) continue;
+						if ($md == 'y' && (preg_match('/^Q[0-9]/', @$match_arr[$kvmap_match['round']]))) continue;
+						if ($final == 'y' && (@$match_arr[$kvmap_match['round']] != "F" || in_array($arr[$kvmap['level'] - 1], ["DC", "FC"]))) continue;
 
 						$lastone = count($ret['tours'][$key]['matches']);
 						foreach (Config::get('const.schema_activity_matches') as $k => $v) {

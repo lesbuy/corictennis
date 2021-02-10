@@ -18,7 +18,7 @@ monday4=`date -d "$current_monday +14 days" +%Y-%m-%d`
 
 cat /dev/null > tmp_live
 
-#php ../src/live.php AO $year >> tmp_live
+php ../src/live.php AO $year >> tmp_live
 
 now=`date +%s`
 grep -E "$current_monday|$monday1|$monday2|$monday3|$monday4" $STORE/calendar/$year/WT $STORE/calendar/$year/CH | 

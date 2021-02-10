@@ -50,16 +50,17 @@ class Down extends DownBase {
 	protected function downOOPFile() {
 		print_line("begin to down oop");
 		$qm = "MD";
-		$day = ceil((time() - strtotime($this->start_date)) / 86400);
-		foreach ([$day, $day + 1, $day + 2, $day + 3] as $day) {
+		$_day = ceil((time() - strtotime($this->start_date)) / 86400) + 0;
+		foreach ([$_day, $_day + 1, $_day + 2, $_day + 3] as $day) {
 			if ($day <= -29 || ($day > -25 && $day < 1) || $day > 14) continue;
 			$originalDay = $day + 29;
-			if ($day < 15) {
+			if ($day < -15) {
 				$day += 29;
 				$qm = "Q";
 			}
 
 			$url = "https://prod-scores-api.ausopen.com/year/$this->year/period/$qm/day/$day/schedule";
+			print_line($url);
 			$html = http($url, null, null, null);
 			if (!$html) {
 				print_line("download $qm $day oop page failed");
@@ -82,11 +83,11 @@ class Down extends DownBase {
 	protected function downResultFile() {
 		print_line("begin to down result");
 		$qm = "MD";
-		$day = ceil((time() - strtotime($this->start_date)) / 86400);
-		foreach ([$day - 1, $day] as $day) {
+		$_day = ceil((time() - strtotime($this->start_date)) / 86400);
+		foreach ([$_day - 1, $_day] as $day) {
 			if ($day <= -29 || ($day > -25 && $day < 1) || $day > 14) continue;
 			$originalDay = $day + 29;
-			if ($day < 15) {
+			if ($day < -15) {
 				$day += 29;
 				$qm = "Q";
 			}

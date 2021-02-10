@@ -32,7 +32,7 @@ fi
 now=`date +%s`
 nowNano=`date +%s%N`
 
-#php ../src/process.php AO $year
+php ../src/process.php AO $year
 
 echo "$tourList" | while read line
 do

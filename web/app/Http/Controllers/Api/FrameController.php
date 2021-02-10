@@ -54,6 +54,7 @@ class FrameController extends Controller
 
 		$menu = [
 			['key' => __('frame.menu.home'), 'open' => -1, 'route' => self::add_lang("/home")],
+			['key' => __('frame.menu.h2h'), 'open' => -1, 'route' => self::add_lang('/h2h')],
 			['key' => __('frame.menu.rank'), 'open' => 0, 'children' => [
 				['key' => __('frame.menu.atp_s_year'), 'open' => -1, 'route' => self::add_lang('/rank/atp/s/year')],
 				['key' => __('frame.menu.wta_s_year'), 'open' => -1, 'route' => self::add_lang('/rank/wta/s/year')],
@@ -67,7 +68,6 @@ class FrameController extends Controller
 			['key' => __('frame.menu.score'), 'open' => -1, 'route' => self::add_lang('/result/' . date('Y-m-d', time() - 3600 * 8))],
 			['key' => __('frame.menu.calendar'), 'open' => -1, 'route' => self::add_lang("/calendar/2021")],
 			['key' => __('frame.menu.draw'), 'open' => 0, 'children' => []],
-			['key' => __('frame.menu.h2h'), 'open' => -1, 'route' => self::add_lang('/h2h')],
 			['key' => __('frame.menu.dc'), 'open' => 0, 'children' => [
 				['key' => "ATP " . translate_tour('Shanghai'), 'open' => -1, 'route' => self::add_lang('/dc/5014/2019/MS')],
 				['key' => "WTA " . translate_tour('Beijing'), 'open' => -1, 'route' => self::add_lang('/dc/M015/2019/WS')],

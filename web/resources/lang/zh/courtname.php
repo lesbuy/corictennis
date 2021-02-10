@@ -245,4 +245,5 @@ return [
 	'estadio' => '中心球场',
 	'mca' => '玛格丽特·考特球场',
 	'john cain arena' => '约翰·凯因球场',
+	'john caine arena' => '约翰·凯因球场',
 ];
