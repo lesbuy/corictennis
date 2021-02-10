@@ -123,7 +123,7 @@ class FrameController extends Controller
 		$ret[] = ['key' => __('frame.menu.drawList.NextWeek'), 'open' => 0, 'children' => self::get_tours($monday_next)];
 		$ret[] = ['key' => __('frame.menu.drawList.LastWeek'), 'open' => 0, 'children' => self::get_tours($monday_last)];
 
-		$menu[3][2]['children'] = $ret;
+		$menu[3]['children'][2]['children'] = $ret;
 
 		return json_encode($menu);
 	}

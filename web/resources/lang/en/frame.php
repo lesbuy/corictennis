@@ -127,6 +127,7 @@ return [
 		'tournament' => 'Tournament',
 		'player' => 'Player',
 		'game' => 'Game',
+		'ranking' => 'Ranking',
 
 		'drawList' => [
 			'LastWeek' => 'Past',

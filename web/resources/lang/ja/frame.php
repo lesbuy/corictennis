@@ -90,6 +90,10 @@ return [
 		'historyRank' => '過去のランキング',
 		'rankEvolution' => 'ランキング動画',
 		'topN' => 'Top N 週数',
+		'tournament' => '試合',
+		'player' => 'プレーヤー',
+		'game' => 'ゲーム',
+		'ranking' => '順位',
 
 		'drawList' => [
 			'LastWeek' => '先週',
