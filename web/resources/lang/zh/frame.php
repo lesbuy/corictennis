@@ -127,6 +127,7 @@ return [
 		'tournament' => '赛事',
 		'player' => '球员',
 		'game' => '游戏',
+		'ranking' => '排名',
 
 		'drawList' => [
 			'LastWeek' => '上周',

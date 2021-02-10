@@ -55,7 +55,7 @@ class FrameController extends Controller
 		$menu = [
 			['key' => __('frame.menu.home'), 'open' => -1, 'route' => self::add_lang("/home")],
 			['key' => __('frame.menu.h2h'), 'open' => -1, 'route' => self::add_lang('/h2h')],
-			['key' => __('frame.menu.rank'), 'open' => 0, 'children' => [
+			['key' => __('frame.menu.ranks'), 'open' => 0, 'children' => [
 				['key' => __('frame.menu.atp_s_year'), 'open' => -1, 'route' => self::add_lang('/rank/atp/s/year')],
 				['key' => __('frame.menu.wta_s_year'), 'open' => -1, 'route' => self::add_lang('/rank/wta/s/year')],
 				['key' => __('frame.menu.atp_d_year'), 'open' => -1, 'route' => self::add_lang('/rank/atp/d/year')],
