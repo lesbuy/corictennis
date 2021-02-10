@@ -64,46 +64,52 @@ class FrameController extends Controller
 				['key' => __('frame.menu.wta_s_race'), 'open' => -1, 'route' => self::add_lang('/rank/wta/s/race')],
 				['key' => __('frame.menu.atp_s_nextgen'), 'open' => -1, 'route' => self::add_lang('/rank/atp/s/nextgen')],
 				['key' => __('frame.menu.custom'), 'open' => -1, 'route' => self::add_lang('/rank/custom')],
-			]],
-			['key' => __('frame.menu.score'), 'open' => -1, 'route' => self::add_lang('/result/' . date('Y-m-d', time() - 3600 * 8))],
-			['key' => __('frame.menu.calendar'), 'open' => -1, 'route' => self::add_lang("/calendar/2021")],
-			['key' => __('frame.menu.draw'), 'open' => 0, 'children' => []],
-			['key' => __('frame.menu.dc'), 'open' => 0, 'children' => [
-				['key' => "ATP " . translate_tour('Shanghai'), 'open' => -1, 'route' => self::add_lang('/dc/5014/2019/MS')],
-				['key' => "WTA " . translate_tour('Beijing'), 'open' => -1, 'route' => self::add_lang('/dc/M015/2019/WS')],
-				['key' => "WTA " . translate_tour('Wuhan'), 'open' => -1, 'route' => self::add_lang('/dc/1075/2019/WS')],
-			]],
-			['key' => __('frame.menu.guess.game'), 'open' => 0, 'children' => [
-				['key' => __('frame.menu.guess.pick'), 'open' => -1, 'route' => self::add_lang('/guess')],
-				['key' => __('frame.menu.guess.schedule'), 'open' => -1, 'route' => self::add_lang('/guess/calendar/2020')],
-				['key' => __('frame.menu.guess.rule'), 'open' => -1, 'route' => self::add_lang('/guess/rule')],
-				['key' => __('frame.menu.guess.itgl.race'), 'open' => 0, 'children' => [
-					['key' => __('frame.menu.guess.itgl.year'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/year/0')],
-					['key' => __('frame.menu.guess.itgl.day'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/day')],
-					['key' => __('frame.menu.guess.itgl.week'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/week')],
-					['key' => __('frame.menu.guess.itgl.all'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/all/0')],
+				['key' => __('frame.menu.historyRank'), 'open' => 0, 'children' => [
+					['key' => __('frame.menu.officialRank'), 'open' => -1, 'route' => self::add_lang('/history/official')],
+					['key' => __('frame.menu.rankEvolution'), 'open' => -1, 'route' => self::add_lang('/history/evolv')],
 				]],
-				['key' => __('frame.menu.guess.dcpk.race'), 'open' => 0, 'children' => [
-					['key' => __('frame.menu.guess.dcpk.year'), 'open' => -1, 'route' => self::add_lang('/guess/rank/dcpk/year/0')],
-					['key' => translate_tour('London')." ".__('frame.menu.draw'), 'open' => -1, 'route' => self::add_lang('/draw/D46/2019')],
-					['key' => translate_tour('Shenzhen')." ".__('frame.menu.draw'), 'open' => -1, 'route' => self::add_lang('/draw/D44/2019')],
-					['key' => __('frame.menu.guess.dcpk.sign'), 'open' => -1, 'route' => self::add_lang('/guess/sign')],
+				['key' => __('frame.menu.topN'), 'open' => -1, 'route' => self::add_lang('/history/topn')],
+			]],
+			['key' => __('frame.menu.tournament'), 'open' => 0, 'children' => [
+				['key' => __('frame.menu.score'), 'open' => -1, 'route' => self::add_lang('/result/' . date('Y-m-d', time() - 3600 * 8))],
+				['key' => __('frame.menu.calendar'), 'open' => -1, 'route' => self::add_lang("/calendar/2021")],
+				['key' => __('frame.menu.draw'), 'open' => 0, 'children' => []],
+				['key' => __('frame.menu.entrylist'), 'open' => 0, 'children' => [
+					['key' => "ATP", 'open' => -1, 'route' => self::add_lang('/entrylist/atp')],
+					['key' => "WTA", 'open' => -1, 'route' => self::add_lang('/entrylist/wta')],
+				]],
+				['key' => __('frame.menu.tourquery'), 'open' => -1, 'route' => self::add_lang('/history/gst1')],
+			]],
+			['key' => __('frame.menu.player'), 'open' => 0, 'children' => [
+				['key' => __('frame.menu.activity'), 'open' => -1, 'route' => self::add_lang('/history/activity')],
+				['key' => __('frame.menu.profile'), 'open' => 0, 'children' => [
+					['key' => "ATP", 'open' => -1, 'route' => self::add_lang('/profile/atp')],
+					['key' => "WTA", 'open' => -1, 'route' => self::add_lang('/profile/wta')],
 				]],
 			]],
-			['key' => __('frame.menu.entrylist'), 'open' => 0, 'children' => [
-				['key' => "ATP", 'open' => -1, 'route' => self::add_lang('/entrylist/atp')],
-				['key' => "WTA", 'open' => -1, 'route' => self::add_lang('/entrylist/wta')],
-			]],
-			['key' => __('frame.menu.activity'), 'open' => -1, 'route' => self::add_lang('/history/activity')],
-			['key' => __('frame.menu.tourquery'), 'open' => -1, 'route' => self::add_lang('/history/gst1')],
-			['key' => __('frame.menu.historyRank'), 'open' => 0, 'children' => [
-				['key' => __('frame.menu.officialRank'), 'open' => -1, 'route' => self::add_lang('/history/official')],
-				['key' => __('frame.menu.rankEvolution'), 'open' => -1, 'route' => self::add_lang('/history/evolv')],
-			]],
-			['key' => __('frame.menu.topN'), 'open' => -1, 'route' => self::add_lang('/history/topn')],
-			['key' => __('frame.menu.profile'), 'open' => 0, 'children' => [
-				['key' => "ATP", 'open' => -1, 'route' => self::add_lang('/profile/atp')],
-				['key' => "WTA", 'open' => -1, 'route' => self::add_lang('/profile/wta')],
+			['key' => __('frame.menu.game'), 'open' => 0, 'children' => [
+				['key' => __('frame.menu.dc'), 'open' => 0, 'children' => [
+					['key' => "ATP " . translate_tour('Shanghai'), 'open' => -1, 'route' => self::add_lang('/dc/5014/2019/MS')],
+					['key' => "WTA " . translate_tour('Beijing'), 'open' => -1, 'route' => self::add_lang('/dc/M015/2019/WS')],
+					['key' => "WTA " . translate_tour('Wuhan'), 'open' => -1, 'route' => self::add_lang('/dc/1075/2019/WS')],
+				]],
+				['key' => __('frame.menu.guess.game'), 'open' => 0, 'children' => [
+					['key' => __('frame.menu.guess.pick'), 'open' => -1, 'route' => self::add_lang('/guess')],
+					['key' => __('frame.menu.guess.schedule'), 'open' => -1, 'route' => self::add_lang('/guess/calendar/2020')],
+					['key' => __('frame.menu.guess.rule'), 'open' => -1, 'route' => self::add_lang('/guess/rule')],
+					['key' => __('frame.menu.guess.itgl.race'), 'open' => 0, 'children' => [
+						['key' => __('frame.menu.guess.itgl.year'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/year/0')],
+						['key' => __('frame.menu.guess.itgl.day'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/day')],
+						['key' => __('frame.menu.guess.itgl.week'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/week')],
+						['key' => __('frame.menu.guess.itgl.all'), 'open' => -1, 'route' => self::add_lang('/guess/rank/itgl/all/0')],
+					]],
+					['key' => __('frame.menu.guess.dcpk.race'), 'open' => 0, 'children' => [
+						['key' => __('frame.menu.guess.dcpk.year'), 'open' => -1, 'route' => self::add_lang('/guess/rank/dcpk/year/0')],
+						['key' => translate_tour('London')." ".__('frame.menu.draw'), 'open' => -1, 'route' => self::add_lang('/draw/D46/2019')],
+						['key' => translate_tour('Shenzhen')." ".__('frame.menu.draw'), 'open' => -1, 'route' => self::add_lang('/draw/D44/2019')],
+						['key' => __('frame.menu.guess.dcpk.sign'), 'open' => -1, 'route' => self::add_lang('/guess/sign')],
+					]],
+				]],
 			]],
 		];
 
