@@ -124,6 +124,9 @@ return [
 		'rankEvolution' => 'Evolution of Ranks',
 		'topN' => 'Top N Weeks',
 		'tourquery' => 'Query for Tours',
+		'tournament' => 'Tournament',
+		'player' => 'Player',
+		'game' => 'Game',
 
 		'drawList' => [
 			'LastWeek' => 'Past',

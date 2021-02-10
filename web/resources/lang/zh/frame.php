@@ -124,6 +124,9 @@ return [
 		'rankEvolution' => '排名演变动画',
 		'topN' => 'Top N 周数',
 		'tourquery' => '赛事胜者查询',
+		'tournament' => '赛事',
+		'player' => '球员',
+		'game' => '游戏',
 
 		'drawList' => [
 			'LastWeek' => '上周',
