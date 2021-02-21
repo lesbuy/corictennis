@@ -157,7 +157,7 @@ return [
 		],
 	],
 
-	'logo' => function ($data) { return url(env('CDN') . '/images/tour_logo/' . $data . '.png'); },
+	'logo' => function ($data) { return url(env('CDN') . '/images/level_logo/' . $data . '.png'); },
 	'logosvg' => function ($data) { return url(env('CDN') . '/images/tour_logo/' . $data . '.svg'); },
 	'logostamp' => function () { return "<div class=\"logostamp\" style=\"background-image: url(" . url(env('CDN') . '/images/tips/logostamp.png') . ");\"></div>"; },
 

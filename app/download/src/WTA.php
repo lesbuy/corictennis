@@ -190,7 +190,7 @@ class Down extends DownBase {
 		foreach ($this->tourList as $t) {
 			$t->printSelf();
 
-			$url = "https://api.wtatennis.com/tennis/tournaments/$t->tourID/$t->year/matches/";
+			$url = "https://api.wtatennis.com/tennis/tournaments/$t->tourID/$t->year/matches/?from=2021-01-01";
 			$html = http($url, null, null, null);
 			if (!$html) {
 				print_line("download oop failed");

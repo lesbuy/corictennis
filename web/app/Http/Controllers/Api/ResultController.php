@@ -97,8 +97,8 @@ class ResultController extends Controller
 			'year' => $this->year,
 			'now' => $now,
 			'timestamp' => [$min_timestamp, $max_timestamp],
-			'pageTitle' => __('frame.menu.score') . " " . $date,
-			'title' => __('frame.menu.score') . " " . $date,
+			'pageTitle' => __('frame.menu.score'),
+			'title' => __('frame.menu.score'),
 			'pagetype1' => 'result',
 			'pagetype2' => $date,
 			'tic' => $tic,
@@ -333,6 +333,7 @@ class ResultController extends Controller
 								'eid' => $eid, 
 								'title' => $title, 
 								'logos' => $logos[0], 
+								'city' => $city,
 							]],
 							'city' => $city, 
 							'sfc' => strtolower($sfc), 
@@ -346,6 +347,7 @@ class ResultController extends Controller
 							'eid' => $eid, 
 							'title' => $title, 
 							'logos' => $logos[0], 
+							'city' => $city,
 						];
 						if (count($rett[$joint_eid]['courts']) == 0 && count($courts) > 0) { // 如果之前没有球场信息，现在有了，就加进去
 							$rett[$joint_eid]['courts'] = $courts;
@@ -854,20 +856,19 @@ class ResultController extends Controller
 						'l' => $kvmap["umpirelast"],
 						'i' => $kvmap["umpireioc"],
 						'name' => translate2long(null, $kvmap["umpirefirst"], $kvmap["umpirelast"], $kvmap["umpireioc"]),
+						'short' => translate2short(null, $kvmap["umpirefirst"], $kvmap["umpirelast"], $kvmap["umpireioc"]),
 					];
 				}
 
 				$result_tag = "";
 				if ($mStatus == "H" || $mStatus == "I") {
-					$result_tag = "Ret.";
+					$result_tag = "ret";
 				} else if ($mStatus == "J" || $mStatus == "K") {
-					$result_tag = "Def.";
+					$result_tag = "def";
 				} else if ($mStatus == "L" || $mStatus == "M") {
-					$result_tag = "W/O";
+					$result_tag = "wo";
 				} else if ($mStatus == "Z") {
-					$result_tag = "Abn.";
-				} else if ($mStatus == "C") {
-					$result_tag = "Interrupted";
+					$result_tag = "abn";
 				}
 
 				$matchSeq = intval(@$kvmap["matchseq"]);

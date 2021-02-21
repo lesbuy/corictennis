@@ -101,9 +101,9 @@ function get_tour_logo_by_id_type_name($id, $type, $city = "", $title = "", $yea
 	} else if ($id == "M998" || $id == "OL" || $type == "OL") {
 		return Config::get('const.logo')('ITF-OL');
 	} else if ($id == "0605") {
-		return Config::get('const.logosvg')('ATP-Final-2019');
+		return Config::get('const.logo')('ATP-Final-2019');
 	} else if ($id == "7696") {
-		return Config::get('const.logosvg')('ATP-Nextgen-2019');
+		return Config::get('const.logo')('ATP-Nextgen-2019');
 	} else if ($id == "9210") {
 		return Config::get('const.logo')('ATP-LVR');
 	} else if ($id == "8888") {
@@ -129,7 +129,7 @@ function get_tour_logo_by_id_type_name($id, $type, $city = "", $title = "", $yea
 	} else if ($type == "M25" || $type == "M15" || $type == "FU") {
 		return Config::get('const.logo')('ITF-men-2019');
 	} else {
-		if ($type == "WTA1000M") return Config::get('const.logo')('WTA-1000');
+		if ($type == "WTA1000M") return Config::get('const.logo')('WTA-1000M');
 		else if ($type == "WTA1000") return Config::get('const.logo')('WTA-1000');
 		else if ($type == "WTA500") return Config::get('const.logo')('WTA-500');
 		else if ($type == "WTA250") return Config::get('const.logo')('WTA-250');
@@ -159,7 +159,7 @@ function get_tour_logo_by_id_type_name($id, $type, $city = "", $title = "", $yea
 		else if ($type == 'ATP') return Config::get('const.logosvg')('ATP-2019'); // atp
 		else if ($type == 'WCT') return Config::get('const.logo')('WCT'); // wct
 		else if ($type == 'WT' || $type == 'YEC') return Config::get('const.logo')('WTA'); // wta
-		else if ($type == 'WTA') return Config::get('const.logo')('WTA'); // wta
+		else if ($type == 'WTA') return Config::get('const.logo')('WTA-2021'); // wta
 		else if ($type == 'GSC') return Config::get('const.logo')('ITF-GSC'); 
 		else return '';
 	}

@@ -59,7 +59,56 @@
 			"eventid2": 4,
 			"start": 0,
 			"end": 14
+		},
+		"156226": {
+			"event": "CS",
+			"draw": 8,
+			"round": 3,
+			"eventid2": 9,
+			"start": 6,
+			"end": 14
+		},
+		"156246": {
+			"event": "DS",
+			"draw": 8,
+			"round": 3,
+			"eventid2": 11,
+			"start": 6,
+			"end": 14
+		},
+		"156221": {
+			"event": "CD",
+			"draw": 4,
+			"round": 2,
+			"eventid2": 10,
+			"start": 6,
+			"end": 14
+		},
+		"156241": {
+			"event": "DD",
+			"draw": 4,
+			"round": 2,
+			"eventid2": 12,
+			"start": 6,
+			"end": 14
+		},
+		"171376": {
+			"event": "US",
+			"draw": 8,
+			"round": 3,
+			"eventid2": 13,
+			"start": 6,
+			"end": 14
+		},
+		"171371": {
+			"event": "UD",
+			"draw": 4,
+			"round": 2,
+			"eventid2": 14,
+			"start": 6,
+			"end": 14
 		}
+
 	},
 	"roundConf": {
 		"MS": {

@@ -462,7 +462,7 @@ class Event extends Base{
 
 
 				// 临时加的
-				if ($this->tour == "2028" && $round == "QF" && $event == "WS") $point = 100;
+				// if ($this->tour == "2028" && $round == "QF" && $event == "WS") $point = 100;
 				
 
 				// $round是规范化的轮次名
@@ -652,7 +652,8 @@ class Event extends Base{
 					$r1 = 1;
 					$order = $i / 2 + 1;
 
-					$match_seq = pow(2, ceil(log($event_size) / log(2))) / 2 + $i / 2;
+					// $match_seq = pow(2, ceil(log($event_size) / log(2))) / 2 + $i / 2;
+					$match_seq = $event_size / pow(2, 1) + $i / 2;
 					$ori_matchid = sprintf("%s%03d", $event_raw, $match_seq);
 
 					$group = 0; $x = $r1; $y = $order;
@@ -772,7 +773,8 @@ class Event extends Base{
 				for ($j = 1; $j <= $event_size / pow(2, $r1); ++$j) {
 					$order = $j;
 
-					$match_seq = pow(2, ceil(log($event_size) / log(2))) / pow(2, $r1) + $j - 1;
+					// $match_seq = pow(2, ceil(log($event_size) / log(2))) / pow(2, $r1) + $j - 1;
+					$match_seq = $event_size / pow(2, $r1) + $j - 1;
 					$ori_matchid = sprintf("%s%03d", $event_raw, $match_seq);
 
 					$group = 0; $x = $r1; $y = $order;
