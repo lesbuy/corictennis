@@ -33,28 +33,43 @@ class Calendar extends CalendarBase {
 		$redis = new_redis();
 
 		foreach ($html->find('.tourney-result') as $tr) {
+			/*
 			$json_content = trim($tr->find('script', 0)->innertext);
 			if (!$json_content) return [false, "no json content in tourney result"];
 			$content = json_decode($json_content, true);
 			if (!$content) return [false, "json content parsed error in tourney result"];
+			*/
 
 			$t = new TournamentInfo;
 			$t->asso = $this->asso;
-			$urlArr = explode("/", $content["organizer"]["url"]);
+			$t->level = "CH";
+
+			//$urlArr = explode("/", $content["organizer"]["url"]);
+			$urlArr = explode("/", $tr->find('.tourney-title', 0)->href);
 			$t->liveID = $urlArr[4];
 			$t->eventID = sprintf("%04d", $t->liveID);
 			$t->year = 2021;
 			$t->gender = "M";
-			$t->level = "CH";
+			
+			/*
 			$t->start = date('Y-m-d', strtotime($content['startDate']));
 			$t->end = date('Y-m-d', strtotime($content['endDate']));
+			*/
+			$dateArr = explode("-", $tr->find('.tourney-dates', 0)->innertext);
+			$t->start = date('Y-m-d', strtotime(str_replace(".", "-", trim($dateArr[0]))));
+			$t->end = date('Y-m-d', strtotime(str_replace(".", "-", trim($dateArr[1]))));
 			$t->monday = get_monday($t->start);
 			$t->monday_unix = strtotime($t->monday);
 			if (strtotime($t->end) - strtotime($t->start) > 10 * 86400) $t->weeks = 2;
-			$t->title = $content["organizer"]["name"];
-			$t->city = $content["location"]["name"];
-			if ($t->title == "ATP Cup") $t->city = $t->title;
-			$t->nation = trim(preg_replace('/^.*,/', "", $content["location"]["address"]["addressCountry"]));
+			// $t->title = $content["organizer"]["name"];
+			$t->title = $tr->find('.tourney-title', 0)->{"data-ga-label"};
+			if (strpos($t->title, "Cancel") !== false || strpos($t->title, "Postpone") !== false) continue;
+			
+			$cityArr = explode(",", $tr->find('.tourney-location', 0)->innertext);
+			$t->city = trim($cityArr[0]);
+			// $t->city = $content["location"]["name"];
+			// $t->nation = trim(preg_replace('/^.*,/', "", $content["location"]["address"]["addressCountry"]));
+			$t->nation = trim($cityArr[count($cityArr) - 1]);
 			if (preg_match('/^[A-Z]{3}$/', $t->nation)) {
 				$t->nation3 = $t->nation;
 			} else {
@@ -86,8 +101,8 @@ class Calendar extends CalendarBase {
 				$fin = "";
 			}
 			if ($t->level != "AC") { // atp cup不用修改签位
-				$t->drawMaleSingles = ceil_power($t->drawMaleSingles);
-				$t->drawMaleDoubles = ceil_power($t->drawMaleDoubles);
+				//$t->drawMaleSingles = ceil_power($t->drawMaleSingles);
+				//$t->drawMaleDoubles = ceil_power($t->drawMaleDoubles);
 			}
 			$t->inOutdoor = substr($io, 0, 1);
 			$t->surface = $sfc;
