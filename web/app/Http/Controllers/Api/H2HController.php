@@ -311,15 +311,15 @@ class H2HController extends Controller
 				if ($game != "W/O") {
 					if (in_string($game, "Ret") || in_string($game, "Def")) {
 						$game = preg_replace("/ [RrDd].*$/", "", $game);
-						$gameA = explode(" ", $game);
-						foreach ($gameA as $_set) {
-							$_setA = explode("-", $_set);
-							if (count($_setA) != 2) continue;
-							$gamesArr[] = [
-								$_setA[0],
-								$_setA[1],
-							];
-						}
+					}
+					$gameA = explode(" ", $game);
+					foreach ($gameA as $_set) {
+						$_setA = explode("-", $_set);
+						if (count($_setA) != 2) continue;
+						$gamesArr[] = [
+							$_setA[0],
+							$_setA[1],
+						];
 					}
 				}
 				
