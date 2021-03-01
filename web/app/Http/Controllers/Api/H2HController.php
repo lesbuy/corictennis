@@ -306,6 +306,23 @@ class H2HController extends Controller
 				}
 
 				if ($games == "W/O") $wintag = 0; // W/O的时候wintag为0
+				$gamesArr = [];
+				$game = $games;
+				if ($game != "W/O") {
+					if (in_string($game, "Ret") || in_string($game, "Def")) {
+						$game = preg_replace("/ [RrDd].*$/", "", $game);
+						$gameA = explode(" ", $game);
+						foreach ($gameA as $_set) {
+							$_setA = explode("-", $_set);
+							if (count($_setA) != 2) continue;
+							$gamesArr[] = [
+								$_setA[0],
+								$_setA[1],
+							];
+						}
+					}
+				}
+				
 
 				$round_num = sprintf("%02d", Config::get('const.round2id.' . $round)); // 把round转成数字，排序用
 
@@ -332,6 +349,7 @@ class H2HController extends Controller
 					'loss' => $p2,
 					'games' => $games,
 					'winside' => $wintag,
+					'gamesArr' => $gamesArr,
 				];
 			}
 		}
