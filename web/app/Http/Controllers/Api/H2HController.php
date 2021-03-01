@@ -317,14 +317,16 @@ class H2HController extends Controller
 						$_setA = explode("-", $_set);
 						if (count($_setA) != 2) continue;
 						unset($m1); unset($m2);
-						preg_match("/^(\d+)(\((\d+)\))?$/", $_setA[0], $m1);
+						preg_match("/^(\d+)$/", $_setA[0], $m1);
 						preg_match("/^(\d+)(\((\d+)\))?$/", $_setA[1], $m2);
-						$s1 = [intval($m1[1]), @$m1[3], 0];
-						$s2 = [intval($m2[1]), @$m2[3], 0];
+						$s1 = [intval($m1[1]), null, 0];
+						$s2 = [intval($m2[1]), null, 0];
 						if ($m1[1] > $m2[1]) {
 							$s1[2] = 1;
+							if (isset($m2[3])) $s2[1] = $m2[3];
 						} else if ($m1[1] < $m2[1]) {
 							$s2[2] = 1;
+							if (isset($m2[3])) $s1[1] = $m2[3];
 						}
 						$gamesArr[] = [
 							$s1,
@@ -333,7 +335,6 @@ class H2HController extends Controller
 					}
 				}
 				
-
 				$round_num = sprintf("%02d", Config::get('const.round2id.' . $round)); // 把round转成数字，排序用
 
 				$allp = array_map(function ($d) {return $d[0];}, array_merge($p1, $p2)); // 把所有选手id排个序，去重用
