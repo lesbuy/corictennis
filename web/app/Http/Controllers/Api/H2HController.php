@@ -316,9 +316,19 @@ class H2HController extends Controller
 					foreach ($gameA as $_set) {
 						$_setA = explode("-", $_set);
 						if (count($_setA) != 2) continue;
+						unset($m1); unset($m2);
+						preg_match("/^(\d+)(\((\d+)\))?$/", $_setA[0], $m1);
+						preg_match("/^(\d+)(\((\d+)\))?$/", $_setA[1], $m2);
+						$s1 = [$m1[1], @$m1[3], ""];
+						$s2 = [$m2[1], @$m2[3], ""];
+						if ($m1[1] > $m2[1]) {
+							$s1[2] = "w";
+						} else if ($m1[1] < $m2[1]) {
+							$s2[2] = "w";
+						}
 						$gamesArr[] = [
-							$_setA[0],
-							$_setA[1],
+							$s1,
+							$s2,
 						];
 					}
 				}
