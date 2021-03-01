@@ -190,18 +190,27 @@ class H2HController extends Controller
 		$conditions_a[] = '(' . join("||", $conditions_b) . ')';
 
 		// 是否为正赛，是否为决赛
-		$_md = $req->input('md', null);
-		$_final = $req->input('final', null);
-		if ($_final) {
-			$conditions_a[] = '($' . ($out_schema['matches'] + 1) . "~/!F!/" . ')';
-			$final = true;
-		} else {
-			$final = false;
-		}
-		if ($_md) {
+		$_round = $req->input('round', '');
+		$_rounds = explode(",", $_round);
+		$md = $onlyQF = $onlySF = $onlyF = false;
+		if (in_array("MD", $_rounds)) {
 			$md = true;
-		} else {
-			$md = false;
+		}
+		$conditions_b = [];
+		if (in_array("QF", $_rounds)) {
+			$conditions_b[] = '($' . ($out_schema['matches'] + 1) . "~/!QF!/" . ')';
+			$onlyQF = true;
+		} 
+		if (in_array("SF", $_rounds)) {
+			$conditions_b[] = '($' . ($out_schema['matches'] + 1) . "~/!SF!/" . ')';
+			$onlySF = true;
+		}
+		if (in_array("F", $_rounds)) {
+			$conditions_b[] = '($' . ($out_schema['matches'] + 1) . "~/!F!/" . ')';
+			$onlyF = true;
+		}
+		if (count($conditions_b) > 0) {
+			$conditions_a[] = '(' . join("||", $conditions_b) . ')';
 		}
 
 		$cmd = "awk -F\"\\t\" '" . join("&&", $conditions_a) . "' " . $files;
@@ -213,12 +222,13 @@ class H2HController extends Controller
 
 			$date = $row_arr[$out_schema['start_date']];
 			$level = $row_arr[$out_schema['level']];
-			if (in_array($level, ["WTA1000", "WATA500", "WTA250", "WTA125"])) {
+			if (in_array($level, ["WTA1000", "WTA1000M", "WTA500", "WTA250", "WTA125"])) {
 				$level = substr($level, 3);
 			}
 			$sfc = $row_arr[$out_schema['sfc']];
 			$city = $row_arr[$out_schema['city']];
 			$year = $row_arr[$out_schema['year']];
+			$eid = $row_arr[$out_schema['eid']];
 
 			$pid = $row_arr[$out_schema['pid']];
 			$prank = intval($row_arr[$out_schema['rank']]);
@@ -236,7 +246,9 @@ class H2HController extends Controller
 				$match_arr = explode("!", $match);
 				$wl = $match_arr[$in_schema['wl'] + 1];
 				$round = $match_arr[$in_schema['round'] + 1];
-				if ($final && $round != "F") continue;
+				if ($onlyF && $round != "F") continue;
+				if ($onlySF && $round != "SF") continue;
+				if ($onlyQF && $round != "QF") continue;
 				if ($md && preg_match('/^Q[0-9]/', $round)) continue;
 				$games = $match_arr[$in_schema['games'] + 1];
 				if ($games == "UNP") continue; // UNP表示没打，不计入
@@ -300,11 +312,20 @@ class H2HController extends Controller
 				$allp = array_map(function ($d) {return $d[0];}, array_merge($p1, $p2)); // 把所有选手id排个序，去重用
 				sort($allp);
 
-				$ret[join("\t", [$date, $round_num, join("/", $allp)])] = [ // 日期、轮次、所有选手排序来去重
+				if (in_string($sfc, "(I)")) {
+					$indoor = true;
+					$sfc = str_replace("(I)", "", $sfc);
+				} else {
+					$indoor = false;
+				}
+				$sfc = strtolower($sfc);
+				$ret[join("\t", [$date, $eid, $round_num, join("/", $allp)])] = [ // 日期、轮次、所有选手排序来去重
 					'date' => $date,
 					'year' => $year,
 					'level' => $level,
-					'sfc' => __('frame.ground.' . $sfc),
+					'levelIcon' => Config::get('const.levelIcon.' . $level),
+					'sfc' => $sfc,
+					'indoor' => $indoor,
 					'city' => translate_tour($city, $level),
 					'round' => $round,
 					'win' => $p1,
@@ -364,7 +385,7 @@ class H2HController extends Controller
 				$gender = 'itf';
 			}
 			$key = join('_', [$gender, 'profile', $pid]);
-			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc');
+			$res = Redis::hmget($key, 'l_' . $lang, 's_' . $lang, 'l_en', 's_en', 'first', 'last', 'ioc');
 
 			$res1 = fetch_portrait($pid, $gender);
 			$res2 = fetch_headshot($pid, $gender);
@@ -372,11 +393,14 @@ class H2HController extends Controller
 
 			$ret[$pid] = [
 				'id' => $pid,
-				'name' => $res[0],
-				'eng' => $res[1],
-				'first' => $res[2],
-				'last' => $res[3],
-				'ioc' => $res[4],
+				'pid' => $pid,
+				'name' => $res[2],
+				'shortname' => $res[3],
+				'long' => $res[0],
+				'short' => $res[1],
+				'first' => $res[4],
+				'last' => $res[5],
+				'ioc' => $res[6],
 				'pt' => $res1[1],
 				'hs' => $res2[1],
 				'has_pt' => $res1[0],

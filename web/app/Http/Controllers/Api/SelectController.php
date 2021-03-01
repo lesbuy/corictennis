@@ -34,30 +34,34 @@ class SelectController extends Controller
 		foreach ($ones as $one) {
 			$pid = $one->pid;
 			$key = join('_', [$gender, 'profile', $pid]);
-			$hs = Redis::hget($key, 'hs');
-			$pt = Redis::hget($key, 'pt');
-			$long = Redis::hget($key, 'l_' . $lang);
-			$short = Redis::hget($key, 's_' . $lang);
-			if (!$long) $long = Redis::hget($key, 'l_en');
-			if (!$short) $short = Redis::hget($key, 'l_en');
-			$has_hs = 1;
-			$has_pt = 1;
-			$rank = Redis::hget($key, 'rank_s');
-			if (!$hs) {$hs = $gender . "player.jpg"; $has_hs = 0;}
-			if (!$pt) {$pt = $gender == "atp" ? "gladiator-ghost.png" : "wtaplayer.png"; $has_pt = 0;}
-			$hs = join('/', ['images', join('_', [$gender, 'headshot']), $hs]);
-			$pt = join('/', ['images', join('_', [$gender, 'portrait']), $pt]);
+			$res = Redis::hmget($key, "hs", "pt", 'l_' . $lang, 's_' . $lang, 'l_en', 's_en', 'rank_s', 'rank_s_hi', 'first', 'last');
+			$long = $res[2];
+			$short = $res[3];
+			if (!$long) $long = $res[4];
+			if (!$short) $short = $res[5];
+			$rank = $res[6];
+			$rank_hi = $res[7];
+			$first = $res[8];
+			$last = $res[9];
+
+			$res1 = fetch_portrait($pid, $gender);
+			$res2 = fetch_headshot($pid, $gender);
+
 			$ret[] = [
 				'pid' => $pid,
 				'name' => $one->name,
+				'shortname' => $res[5],
 				'ioc' => $one->ioc,
-				'hs' => $hs,
-				'pt' => $pt,
-				'has_hs' => $has_hs,
-				'has_pt' => $has_pt,
+				'hs' => $res2[1],
+				'pt' => $res1[1],
+				'has_hs' => $res2[0],
+				'has_pt' => $res1[0],
 				'rank' => $rank,
+				'rank_highest' => $rank_hi,
 				'long' => $long,
 				'short' => $short,
+				'first' => $first,
+				'last' => $last,
 				'hl' => 0,
 			];
 		}

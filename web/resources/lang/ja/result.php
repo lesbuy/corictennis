@@ -19,9 +19,9 @@ return [
     ],
 	'selectBar' => [
 		'all' => '全部',
-		'completed' => '完成した',
+		'completed' => '試合終了',
 		'live' => '進行中',
-		'upcoming' => '開始されていない',
+		'upcoming' => '試合前',
 	],
 	'option' => [
 		'time_switch' => [

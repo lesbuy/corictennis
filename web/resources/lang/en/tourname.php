@@ -1657,4 +1657,7 @@ return [
 	'selva gardena' => 'Selva Gardena',
 	'fujairah tennis & country club' => 'Fujairah',
 	'las palmas' => 'Las Palmas',
+	'gran canaria' => 'Gran Canaria',
+	'zadar' => 'Zadar',
+	'the tennisclub at newport beach' => 'Newport Beach',
 ];

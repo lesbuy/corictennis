@@ -41,6 +41,7 @@ class Calendar extends CalendarBase {
 			if ($t->eventID == "" && $t->liveID != "") {
 				$t->eventID = sprintf("%04d", $t->liveID);
 			}
+			$t->eventID = sprintf("%04d", $t->eventID);
 			$t->year = $tour['year'];
 			if (isset($tour['tournamentGroup']['metadata']['customStatus' . $t->year]) && in_array($tour['tournamentGroup']['metadata']['customStatus' . $t->year], ["CANCELLED", "POSTPONED"])) continue;
 			$t->gender = "W";

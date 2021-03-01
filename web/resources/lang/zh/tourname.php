@@ -1657,4 +1657,7 @@ return [
 	'selva gardena' => '塞尔瓦-加尔德纳',
 	'fujairah tennis & country club' => '富查伊拉',
 	'las palmas' => '拉斯帕尔马斯',
+	'gran canaria' => '大加那利岛',
+	'zadar' => '扎达尔',
+	'the tennisclub at newport beach' => '纽波特海滩',
 ];

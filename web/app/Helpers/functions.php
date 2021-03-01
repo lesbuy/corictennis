@@ -756,3 +756,7 @@ function print_line() {
     $argv = func_get_args();
     echo join("\t", $argv) . "\n";
 }
+
+function in_string($string, $str) {
+    return strpos($string, $str) !== false;
+}

@@ -8,6 +8,10 @@ return [
 			'f' => 'Finalists',
 			's' => 'Semifinalists',
 			'q' => 'Quarterfinalists',
+			'final' => 'Final',
+			'sf' => 'SF',
+			'qf' => 'QF',
+			'md' => 'Main Draw',
 		],
 
 		'method' => [
@@ -39,7 +43,7 @@ return [
 			'rg' => 'Roland Garros',
 			'wc' => 'Wimbledon',
 			'uo' => 'US Open',
-			'yec' => 'ATP/WTA Finals',
+			'yec' => 'YEC',
 			'ol' => 'Olympics',
 			'dc' => 'Davis/Fed Cup',
 
@@ -49,7 +53,7 @@ return [
 			'is' => ['atp' => '250', 'wta' => 'IS'],
 			'fc' => ['atp' => 'DC', 'wta' => 'FC'],
 			'low' => 'CH&ITF',
-			'tour' => 'Tour',
+			'tour' => 'Circuit Tours',
 
 		],
 
@@ -112,6 +116,8 @@ return [
     'selectBarTitle' => [
 		'title' => 'Selections',
         'type' => 'H2H Type',
+		'sd' => 'S/D Type',
+		'notOnlyGS' => 'Not Only GS',
         'playerType' => 'Player Type',
         'tourType' => 'Tour Type',
         'sfcType' => 'Surface Type',
@@ -121,7 +127,7 @@ return [
 		'endDate' => 'End Date',
 		'weeks' => 'Weeks',
 		'totalWeeks' => 'Total',
-		'topnweeks' => 'Top :p1 总周数'
+		'topnweeks' => 'Top :p1 Weeks'
     ],
 
 	'age' => [

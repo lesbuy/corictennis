@@ -828,7 +828,7 @@ class ResultController extends Controller
 
 			$tours[] = [
 				$kvmap['year'],
-				$kvmap['date'],
+				$kvmap['monday'],
 				$kvmap['eid'],
 				$kvmap['city'],
 			];

@@ -400,6 +400,16 @@ class Event extends Base{
 				$ct += count($r["Match"]);
 			}
 
+			$eventSizeCeil = pow(2, ceil(log($event_size) / log(2)));
+			$mode = 'normal';  // normal表示比赛序号按完整签表算的。无论签表是32还是24，第一轮都是从16到31。unnormal表示完全按签表大小算序号，比如24签的首轮是12到23
+			if (isset($Event["Results"]["Round"][0]['Match'][0]['Id'])) {
+				$s = intval(substr($Event["Results"]["Round"][0]['Match'][0]['Id'], 2));
+				if ($s == $event_size / 2 && $s < $eventSizeCeil / 2) {
+					$mode = 'unnormal';
+				}
+			}
+			print_err($event, $mode);
+
 			$this->draws[$event] = [
 				'uuid' => $event_raw,
 				'event' => $event,
@@ -652,8 +662,11 @@ class Event extends Base{
 					$r1 = 1;
 					$order = $i / 2 + 1;
 
-					// $match_seq = pow(2, ceil(log($event_size) / log(2))) / 2 + $i / 2;
-					$match_seq = $event_size / pow(2, 1) + $i / 2;
+					if ($mode == "unnormal") {
+						$match_seq = $event_size / pow(2, 1) + $i / 2;
+					} else {
+						$match_seq = pow(2, ceil(log($event_size) / log(2))) / 2 + $i / 2;
+					}
 					$ori_matchid = sprintf("%s%03d", $event_raw, $match_seq);
 
 					$group = 0; $x = $r1; $y = $order;
@@ -773,8 +786,11 @@ class Event extends Base{
 				for ($j = 1; $j <= $event_size / pow(2, $r1); ++$j) {
 					$order = $j;
 
-					// $match_seq = pow(2, ceil(log($event_size) / log(2))) / pow(2, $r1) + $j - 1;
-					$match_seq = $event_size / pow(2, $r1) + $j - 1;
+					if ($mode == "unnormal") {
+						$match_seq = $event_size / pow(2, $r1) + $j - 1;
+					} else {
+						$match_seq = pow(2, ceil(log($event_size) / log(2))) / pow(2, $r1) + $j - 1;
+					}
 					$ori_matchid = sprintf("%s%03d", $event_raw, $match_seq);
 
 					$group = 0; $x = $r1; $y = $order;

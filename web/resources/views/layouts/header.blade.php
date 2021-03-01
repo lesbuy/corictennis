@@ -488,7 +488,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 			</li>
 -->
 		</ul>
-		@if ((isset($_COOKIE['from']) && $_COOKIE['from'] == "bd") || (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'tongji.baidu.com') !== false))
+		@if (1 || (isset($_COOKIE['from']) && $_COOKIE['from'] == "bd") || (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'tongji.baidu.com') !== false))
 			<div class="C_nobg">
 				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 				<ins class="adsbygoogle tn-ad1"
