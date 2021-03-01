@@ -319,12 +319,12 @@ class H2HController extends Controller
 						unset($m1); unset($m2);
 						preg_match("/^(\d+)(\((\d+)\))?$/", $_setA[0], $m1);
 						preg_match("/^(\d+)(\((\d+)\))?$/", $_setA[1], $m2);
-						$s1 = [$m1[1], @$m1[3], ""];
-						$s2 = [$m2[1], @$m2[3], ""];
+						$s1 = [intval($m1[1]), @$m1[3], 0];
+						$s2 = [intval($m2[1]), @$m2[3], 0];
 						if ($m1[1] > $m2[1]) {
-							$s1[2] = "w";
+							$s1[2] = 1;
 						} else if ($m1[1] < $m2[1]) {
-							$s2[2] = "w";
+							$s2[2] = 1;
 						}
 						$gamesArr[] = [
 							$s1,
