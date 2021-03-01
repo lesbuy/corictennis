@@ -658,6 +658,7 @@ class Activity {
 					$wl = "";
 				}
 				if ($line['reason_code'] == "B") $wl = "";
+				if ($line['reason_code'] == "R") $games .= " Ret.";
 
 				$oppo_seed = $line['seed_2']; if (!$oppo_seed) $oppo_seed = '';
 				$oppo_entry = $line['entry_type_2']; if (!$oppo_entry) $oppo_entry = '';
