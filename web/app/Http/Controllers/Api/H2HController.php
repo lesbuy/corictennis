@@ -291,13 +291,13 @@ class H2HController extends Controller
 					}
 				} else {
 					if (
-						(in_array($p1[0][0], $homes_arr) && in_array($p1[1][0], $homes_arr))
-						&& (in_array($p2[0][0], $aways_arr) && in_array($p2[1][0], $aways_arr))
+						(in_array($p1[0][0], $homes_arr) || in_array($p1[1][0], $homes_arr))
+						&& (in_array($p2[0][0], $aways_arr) || in_array($p2[1][0], $aways_arr))
 					) {
 						$wintag = 1;
 					} else if (
-						(in_array($p2[0][0], $homes_arr) && in_array($p2[1][0], $homes_arr))
-						&& (in_array($p1[0][0], $aways_arr) && in_array($p1[1][0], $aways_arr))
+						(in_array($p2[0][0], $homes_arr) || in_array($p2[1][0], $homes_arr))
+						&& (in_array($p1[0][0], $aways_arr) || in_array($p1[1][0], $aways_arr))
 					) {
 						$wintag = 2;
 					} else {
