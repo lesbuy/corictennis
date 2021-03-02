@@ -150,12 +150,12 @@ return [
 
 	'warning' => [
 
-		'wrongP1' => '请正确填写选手1',
-		'wrongP2' => '请正确填写选手2',
+		'wrongP1' => '请正确选择选手1',
+		'wrongP2' => '请正确选择选手2',
 		'wrongNation' => '请正确填写国家',
 		'wrongN' => '请正确填写数字',
 		'equalP1P2' => '选手1与选手2不可以相同',
-		'noDoubleMulti' => '双打不支持多对多查询',
+		'noDoubleMulti' => '双打仅支持1V1与2V2查询，不支持多人混查',
 		'noResult' => '没有交手记录',
 		'notEnd' => '未完',
 		'illegal' => '条件有误',

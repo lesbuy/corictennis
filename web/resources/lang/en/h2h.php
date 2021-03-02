@@ -155,7 +155,7 @@ return [
 		'wrongNation' => 'Wrong Nation',
 		'wrongN' => 'Wrong Number',
 		'equalP1P2' => 'No Same Players',
-		'noDoubleMulti' => 'Many VS Many not supported in Doubles',
+		'noDoubleMulti' => 'Only 1V1 or 2V2 supported in Doubles',
 		'noResult' => 'No Results',
 		'notEnd' => 'Continued',
 		'illegal' => 'Illegal Conditions!',
