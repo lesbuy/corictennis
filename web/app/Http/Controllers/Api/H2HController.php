@@ -233,13 +233,21 @@ class H2HController extends Controller
 			$pname = translate2short($pid);
 
 			if ($sd == "d") {
-				$pid2 = $row_arr[$out_schema['partner_id']];
-				if ($pid2)
+				$pid2 = $row_arr[$out_schema['partner_id']]; // 外层能拿到搭档
+				if ($pid2) {
 					$pname2 = translate2short($pid2);
+				} else {
+					$pname2 = "";
+				}
 			}
 
 			$matches = explode("@", $row_arr[$out_schema['matches']]);
 			foreach ($matches as $match) {
+				if ($sd == 'd' && !$pid2) { // 如果双打比赛外层没有拿到搭档，则记下来。搭档在后面的数据里
+					$noPid2 = true;
+				} else {
+					$noPid2 = false;
+				}
 				$match_arr = explode("!", $match);
 				$wl = $match_arr[$in_schema['wl'] + 1];
 				$round = $match_arr[$in_schema['round'] + 1];
@@ -260,9 +268,13 @@ class H2HController extends Controller
 					$oid2 = $match_arr[$in_schema['opartner_id'] + 1];
 					$oname2 = translate2short($oid2);
 
-					if (!$pid2) {
+					if ($noPid2) {
 						$pid2 = $match_arr[$in_schema['partner_id'] + 1];
-						$pname2 = translate2short($pid2);
+						if ($pid2) {
+							$pname2 = translate2short($pid2);
+						} else {
+							$pname2 = "";
+						}
 					}
 				}
 
@@ -277,9 +289,12 @@ class H2HController extends Controller
 					$p2 = [[$pid, $pname, $prank]];
 					if ($sd == "d") $p2[] = [$pid2, $pname2];
 				}
-				echo json_encode($p1) . "\n";
-				echo json_encode($p2) . "\n";
+				
+				if ($noPid2) { // 如果外层没有双打搭档，则本场p1,p2已经找好之后就清空pid2，以免影响下一场比赛
+					$pid2 = $pname2 = "";
+				}
 
+				// 筛选满足人的条件的比赛，并算得哪方获胜
 				if ($sd == "s") {
 					if (in_array($p1[0][0], $homes_arr) && in_array($p2[0][0], $aways_arr)) { // 胜者在前，败者在后
 						$wintag = 1;
