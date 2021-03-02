@@ -15,6 +15,7 @@ class H2HController extends Controller
 
 		$homes = $req->input('home', null);
 		$aways = $req->input('away', null);
+		$_round = $req->input('round', '');
 
 		if (!$homes || !$aways) {
 			return ['status' => -1, 'errmsg' => __('api.h2h.notice.lack_player')];
@@ -47,6 +48,7 @@ class H2HController extends Controller
 				} else if ($level == "MS") {
 					$filter['level'][] = '1000';
 					$filter['level'][] = 'WTA1000';
+					$filter['level'][] = 'WTA1000M';
 					$filter['level'][] = 'CSS';
 					$filter['level'][] = 'MS';
 					$filter['level'][] = 'PM';
@@ -79,23 +81,29 @@ class H2HController extends Controller
 				} else if ($level == "OL") {
 					$filter['level'][] = "OL";
 				} else if ($level == "DC") {
-					$filter['level'][] = "DC";
-					$filter['level'][] = "FC";
+					if ($_round == "" || $_round == "MD") { // 选择了QF，SF，F时，不显示团体比赛记录
+						$filter['level'][] = "DC";
+						$filter['level'][] = "FC";
+					}
 				} else if ($level == "CH") {
 					$filter['level'][] = "CH";
 					$filter['level'][] = "125K";
+					$filter['level'][] = "WTA125";
 				} else if ($level == "ITF") {
 					$filter['level'][] = "ITF";
 					$filter['level'][] = "FU";
 				} else if ($level == "tour") {
 					$filter['level'][] = "XXI";
+					$filter['level'][] = "ET";
 					$filter['level'][] = "WTA";
 					$filter['level'][] = "IN";
-					$filter['level'][] = "AC";
-					$filter['level'][] = "LC";
 					$filter['level'][] = "GSC";
 					$filter['level'][] = "ATP";
 					$filter['level'][] = "WCT";
+					if ($_round == "" || $_round == "MD") { // 选择了QF，SF，F时，不显示团体比赛记录
+						$filter['level'][] = "AC";
+						$filter['level'][] = "LC";
+					}
 				}
 			}
 			$filter['level'] = array_keys(array_flip($filter['level']));
@@ -190,7 +198,6 @@ class H2HController extends Controller
 		$conditions_a[] = '(' . join("||", $conditions_b) . ')';
 
 		// 是否为正赛，是否为决赛
-		$_round = $req->input('round', '');
 		$_rounds = explode(",", $_round);
 		$md = $onlyQF = $onlySF = $onlyF = false;
 		if (in_array("MD", $_rounds)) {
