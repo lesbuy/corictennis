@@ -27,6 +27,8 @@ return [
 		'T2' => 'WTA Tie II（1990 ~ 2008），as WTA 500',
 		'T3' => 'WTA Tie III（1990 ~ 2008），as WTA 250',
 		'T4' => 'WTA Tie IV（1990 ~ 2008），as WTA 250',
+		'T4A' => 'WTA Tie IVA（1990 ~ 2008），as WTA 250',
+		'T4B' => 'WTA Tie IVB（1990 ~ 2008），as WTA 250',
 		'T5' => 'WTA Tie V（1990 ~ 2008），as WTA 250',
 		'CH' => 'ATP Challengers',
 		'125K' => 'WTA 125K Series（2009 ~ 2020），as WTA 125',

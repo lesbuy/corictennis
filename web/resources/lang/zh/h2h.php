@@ -27,6 +27,8 @@ return [
 		'T2' => 'WTA Tie II（1990 ~ 2008），二级赛，相当于WTA500赛',
 		'T3' => 'WTA Tie III（1990 ~ 2008），三级赛，相当于WTA250赛',
 		'T4' => 'WTA Tie IV（1990 ~ 2008），四级赛，相当于WTA250赛',
+		'T4A' => 'WTA Tie IVA（1990 ~ 2008），四级赛A，相当于WTA250赛',
+		'T4B' => 'WTA Tie IVB（1990 ~ 2008），四级赛B，相当于WTA250赛',
 		'T5' => 'WTA Tie V（1990 ~ 2008），五级赛，相当于WTA250赛',
 		'CH' => 'ATP Challengers，ATP挑战赛',
 		'125K' => 'WTA 125K Series（2009 ~ 2020），125K系列赛，相当于WTA125赛',

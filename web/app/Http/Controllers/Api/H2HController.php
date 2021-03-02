@@ -290,19 +290,36 @@ class H2HController extends Controller
 						continue; // 不满足
 					}
 				} else {
-					if (
-						(in_array($p1[0][0], $homes_arr) || in_array($p1[1][0], $homes_arr))
-						&& (in_array($p2[0][0], $aways_arr) || in_array($p2[1][0], $aways_arr))
-					) {
-						$wintag = 1;
-					} else if (
-						(in_array($p2[0][0], $homes_arr) || in_array($p2[1][0], $homes_arr))
-						&& (in_array($p1[0][0], $aways_arr) || in_array($p1[1][0], $aways_arr))
-					) {
-						$wintag = 2;
-					} else {
-						continue;
+					if (count($homes_arr) == 1 && count($aways_arr) == 1) { // 1V1，一方能匹配上一个就行
+						if (
+							(in_array($p1[0][0], $homes_arr) || in_array($p1[1][0], $homes_arr))
+							&& (in_array($p2[0][0], $aways_arr) || in_array($p2[1][0], $aways_arr))
+						) {
+							$wintag = 1;
+						} else if (
+							(in_array($p2[0][0], $homes_arr) || in_array($p2[1][0], $homes_arr))
+							&& (in_array($p1[0][0], $aways_arr) || in_array($p1[1][0], $aways_arr))
+						) {
+							$wintag = 2;
+						} else {
+							continue;
+						}
+					} else if (count($homes_arr) == 2 && count($aways_arr) == 2) { // 2V2，需要双方完全匹配
+						if (
+							(in_array($p1[0][0], $homes_arr) && in_array($p1[1][0], $homes_arr))
+							&& (in_array($p2[0][0], $aways_arr) && in_array($p2[1][0], $aways_arr))
+						) {
+							$wintag = 1;
+						} else if (
+							(in_array($p2[0][0], $homes_arr) && in_array($p2[1][0], $homes_arr))
+							&& (in_array($p1[0][0], $aways_arr) && in_array($p1[1][0], $aways_arr))
+						) {
+							$wintag = 2;
+						} else {
+							continue;
+						}
 					}
+					
 				}
 
 				if ($games == "W/O") $wintag = 0; // W/O的时候wintag为0
