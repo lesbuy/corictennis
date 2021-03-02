@@ -527,7 +527,7 @@ class Activity {
 						if ($this->eid == "0808") {
 							$this->level = "YEC";
 						} else {
-							$this->level = "XXI";
+							$this->level = "ET";
 						}
 					} else if (strpos($this->city, "OLYMPICS") !== false) {
 						$this->level = "OL";

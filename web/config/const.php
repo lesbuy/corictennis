@@ -199,6 +199,7 @@ return [
 		'LC' => 'ATP',
 		'AC' => 'ATP',
 		'XXI' => 'XXI',
+		'ET' => 'ET',
 		'GP' => 'GP',
 		'WCT' => 'WCT',
 		'GSC' => 'GSC',
