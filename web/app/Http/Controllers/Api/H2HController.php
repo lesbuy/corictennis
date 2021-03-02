@@ -222,9 +222,6 @@ class H2HController extends Controller
 
 			$date = $row_arr[$out_schema['start_date']];
 			$level = $row_arr[$out_schema['level']];
-			if (in_array($level, ["WTA1000", "WTA1000M", "WTA500", "WTA250", "WTA125"])) {
-				$level = substr($level, 3);
-			}
 			$sfc = $row_arr[$out_schema['sfc']];
 			$city = $row_arr[$out_schema['city']];
 			$year = $row_arr[$out_schema['year']];
@@ -280,6 +277,8 @@ class H2HController extends Controller
 					$p2 = [[$pid, $pname, $prank]];
 					if ($sd == "d") $p2[] = [$pid2, $pname2];
 				}
+				echo json_encode($p1) . "\n";
+				echo json_encode($p2) . "\n";
 
 				if ($sd == "s") {
 					if (in_array($p1[0][0], $homes_arr) && in_array($p2[0][0], $aways_arr)) { // 胜者在前，败者在后
