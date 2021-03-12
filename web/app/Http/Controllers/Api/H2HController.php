@@ -16,6 +16,7 @@ class H2HController extends Controller
 		$homes = $req->input('home', null);
 		$aways = $req->input('away', null);
 		$_round = $req->input('round', '');
+		$_mode = $req->input('mode', 'p');
 
 		if (!$homes || !$aways) {
 			return ['status' => -1, 'errmsg' => __('api.h2h.notice.lack_player')];
@@ -167,7 +168,10 @@ class H2HController extends Controller
 			}
 		}
 
-		$files = join(' ', array_map(function ($d) use ($gender) {return join('/', [Config::get('const.root'), 'data', 'activity', $gender, $d]);}, $merge_arr));
+		$files = join(' ', array_map(function ($d) use ($gender) {
+			if (preg_match('/^([A-Z][A-Z0-9]{3}|[0-9]{5,6})$/', $d)) return join('/', [Config::get('const.root'), 'data', 'activity', $gender, $d]);
+			else return "";
+		}, $merge_arr));
 		$files .= ' ' . join('/', [Config::get('const.root'), 'data', 'calc', $gender, $sd, 'year', 'unloaded']);
 		$files .= ' ' . join('/', [Config::get('const.root'), 'data', 'calc', $gender, $sd, 'year', 'comingup']);
 
@@ -180,22 +184,32 @@ class H2HController extends Controller
 			$conditions_a[] = '(' . join("||", $conditions_b) . ')';
 		}
 
-		$conditions_b = [];
-		foreach ($homes_arr as $pid) {
-			$conditions_c = [];
-			foreach ($aways_arr as $oppo) {
-				$conditions_c[] = "$" . ($out_schema['matches'] + 1) . "~/!" . $oppo . "!/";
+		if ($_mode == 'p') { // p模式下，match列必须有对方id，首列要是己方id
+			$conditions_b = [];
+			foreach ($homes_arr as $pid) {
+				$conditions_c = [];
+				foreach ($aways_arr as $oppo) {
+					$conditions_c[] = "$" . ($out_schema['matches'] + 1) . "~/!" . $oppo . "!/";
+				}
+				$conditions_b[] = "$" . ($out_schema['pid'] + 1) . "==\"" . $pid . "\"&&(" . join("||", $conditions_c) . ")";
 			}
-			$conditions_b[] = "$" . ($out_schema['pid'] + 1) . "==\"" . $pid . "\"&&(" . join("||", $conditions_c) . ")";
-		}
-		foreach ($aways_arr as $pid) {
-			$conditions_c = [];
-			foreach ($homes_arr as $oppo) {
-				$conditions_c[] = "$" . ($out_schema['matches'] + 1) . "~/!" . $oppo . "!/";
+			foreach ($aways_arr as $pid) {
+				$conditions_c = [];
+				foreach ($homes_arr as $oppo) {
+					$conditions_c[] = "$" . ($out_schema['matches'] + 1) . "~/!" . $oppo . "!/";
+				}
+				$conditions_b[] = "$" . ($out_schema['pid'] + 1) . "==\"" . $pid . "\"&&(" . join("||", $conditions_c) . ")";
 			}
-			$conditions_b[] = "$" . ($out_schema['pid'] + 1) . "==\"" . $pid . "\"&&(" . join("||", $conditions_c) . ")";
+			$conditions_a[] = '(' . join("||", $conditions_b) . ')';
+
+		} else { // c模式和t模式下，只需要首列是己方id
+
+			$conditions_b = [];
+			foreach ($homes_arr as $pid) {
+				$conditions_b[] = "$" . ($out_schema['pid'] + 1) . "==\"" . $pid . "\"";
+			}
+			$conditions_a[] = '(' . join("||", $conditions_b) . ')';
 		}
-		$conditions_a[] = '(' . join("||", $conditions_b) . ')';
 
 		// 是否为正赛，是否为决赛
 		$_rounds = explode(",", $_round);
@@ -230,6 +244,14 @@ class H2HController extends Controller
 			$date = $row_arr[$out_schema['start_date']];
 			$level = $row_arr[$out_schema['level']];
 			$sfc = $row_arr[$out_schema['sfc']];
+			if (in_string($sfc, "(I)")) {
+				$indoor = true;
+				$sfc = str_replace("(I)", "", $sfc);
+			} else {
+				$indoor = false;
+			}
+			$sfc = strtolower($sfc);
+
 			$city = $row_arr[$out_schema['city']];
 			$year = $row_arr[$out_schema['year']];
 			$eid = $row_arr[$out_schema['eid']];
@@ -271,6 +293,16 @@ class H2HController extends Controller
 				if ($orank == 0 || $orank == 9999) $orank = null;
 				$oname = translate2short($oid);
 
+				if ($_mode == 'c') { // c模式下要求对方ioc至少有一个符合country
+					$oioc = $match_arr[$in_schema['oioc'] + 1];
+					$opartner_ioc = $match_arr[$in_schema['opartner_ioc'] + 1];
+					if (!in_array($oioc, $aways_arr) && !in_array($opartner_ioc, $aways_arr)) continue;
+				}
+				if ($_mode == 't') { // t模式下必须有排名并且<=输入
+					$orank = $match_arr[$in_schema['orank'] + 1];
+					if (!$orank || $orank > $aways_arr[0]) continue;
+				}
+
 				if ($sd == "d") {
 					$oid2 = $match_arr[$in_schema['opartner_id'] + 1];
 					$oname2 = translate2short($oid2);
@@ -301,46 +333,50 @@ class H2HController extends Controller
 					$pid2 = $pname2 = "";
 				}
 
-				// 筛选满足人的条件的比赛，并算得哪方获胜
-				if ($sd == "s") {
-					if (in_array($p1[0][0], $homes_arr) && in_array($p2[0][0], $aways_arr)) { // 胜者在前，败者在后
-						$wintag = 1;
-					} else if (in_array($p2[0][0], $homes_arr) && in_array($p1[0][0], $aways_arr)) { // 胜者在后，败者在前
-						$wintag = 2;
+				if ($_mode == 'p') { // p模式下，筛选满足人的条件的比赛，并算得哪方获胜
+					if ($sd == "s") {
+						if (in_array($p1[0][0], $homes_arr) && in_array($p2[0][0], $aways_arr)) { // 胜者在前，败者在后
+							$wintag = 1;
+						} else if (in_array($p2[0][0], $homes_arr) && in_array($p1[0][0], $aways_arr)) { // 胜者在后，败者在前
+							$wintag = 2;
+						} else {
+							continue; // 不满足
+						}
 					} else {
-						continue; // 不满足
-					}
-				} else {
-					if (count($homes_arr) == 1 && count($aways_arr) == 1) { // 1V1，一方能匹配上一个就行
-						if (
-							(in_array($p1[0][0], $homes_arr) || in_array($p1[1][0], $homes_arr))
-							&& (in_array($p2[0][0], $aways_arr) || in_array($p2[1][0], $aways_arr))
-						) {
-							$wintag = 1;
-						} else if (
-							(in_array($p2[0][0], $homes_arr) || in_array($p2[1][0], $homes_arr))
-							&& (in_array($p1[0][0], $aways_arr) || in_array($p1[1][0], $aways_arr))
-						) {
-							$wintag = 2;
-						} else {
-							continue;
-						}
-					} else if (count($homes_arr) == 2 && count($aways_arr) == 2) { // 2V2，需要双方完全匹配
-						if (
-							(in_array($p1[0][0], $homes_arr) && in_array($p1[1][0], $homes_arr))
-							&& (in_array($p2[0][0], $aways_arr) && in_array($p2[1][0], $aways_arr))
-						) {
-							$wintag = 1;
-						} else if (
-							(in_array($p2[0][0], $homes_arr) && in_array($p2[1][0], $homes_arr))
-							&& (in_array($p1[0][0], $aways_arr) && in_array($p1[1][0], $aways_arr))
-						) {
-							$wintag = 2;
-						} else {
-							continue;
+						if (count($homes_arr) == 1 && count($aways_arr) == 1) { // 1V1，一方能匹配上一个就行
+							if (
+								(in_array($p1[0][0], $homes_arr) || in_array($p1[1][0], $homes_arr))
+								&& (in_array($p2[0][0], $aways_arr) || in_array($p2[1][0], $aways_arr))
+							) {
+								$wintag = 1;
+							} else if (
+								(in_array($p2[0][0], $homes_arr) || in_array($p2[1][0], $homes_arr))
+								&& (in_array($p1[0][0], $aways_arr) || in_array($p1[1][0], $aways_arr))
+							) {
+								$wintag = 2;
+							} else {
+								continue;
+							}
+						} else if (count($homes_arr) == 2 && count($aways_arr) == 2) { // 2V2，需要双方完全匹配
+							if (
+								(in_array($p1[0][0], $homes_arr) && in_array($p1[1][0], $homes_arr))
+								&& (in_array($p2[0][0], $aways_arr) && in_array($p2[1][0], $aways_arr))
+							) {
+								$wintag = 1;
+							} else if (
+								(in_array($p2[0][0], $homes_arr) && in_array($p2[1][0], $homes_arr))
+								&& (in_array($p1[0][0], $aways_arr) && in_array($p1[1][0], $aways_arr))
+							) {
+								$wintag = 2;
+							} else {
+								continue;
+							}
 						}
 					}
-					
+				} else if ($_mode == 'c' || $_mode == 't') {
+					if ($wl == "W") $wintag = 1;
+					else if ($wl == "L") $wintag = 2;
+					else $wintag = 0;
 				}
 
 				if ($games == "W/O") $wintag = 0; // W/O的时候wintag为0
@@ -378,13 +414,6 @@ class H2HController extends Controller
 				$allp = array_map(function ($d) {return $d[0];}, array_merge($p1, $p2)); // 把所有选手id排个序，去重用
 				sort($allp);
 
-				if (in_string($sfc, "(I)")) {
-					$indoor = true;
-					$sfc = str_replace("(I)", "", $sfc);
-				} else {
-					$indoor = false;
-				}
-				$sfc = strtolower($sfc);
 				$ret[join("\t", [$date, $eid, $round_num, join("/", $allp)])] = [ // 日期、轮次、所有选手排序来去重
 					'date' => $date,
 					'year' => $year,
@@ -463,8 +492,8 @@ class H2HController extends Controller
 				'pid' => $pid,
 				'name' => $res[2],
 				'shortname' => $res[3],
-				'long' => $res[0],
-				'short' => $res[1],
+				'long' => $res[0] ? $res[0] : $res[2],
+				'short' => $res[1] ? $res[1] : $res[3],
 				'first' => $res[4],
 				'last' => $res[5],
 				'ioc' => $res[6],

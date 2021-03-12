@@ -18,6 +18,7 @@ return [
 
 		'kph' => '公制:千米/时,米',
 		'mph' => '英制:英里/时,英尺',
+		'imperial' => '英制',
 	],
 
 	'statTitle' => [

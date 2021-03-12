@@ -18,6 +18,7 @@ class StatController extends Controller
 	protected $eid;
 	protected $matchid;
 	protected $year;
+	protected $fsid;
 
 	protected $mile_convert;
 	protected $feet_convert;
@@ -42,27 +43,19 @@ class StatController extends Controller
 		$this->eid = $req->input('eid', 'M993');
 		$this->matchid = $req->input('matchid', 'MS001');
 		$this->year = $req->input('year', '2017');
+		$this->fsid = $req->input('fsid', '');
 
 		// 处理数据统计
 
 		if ($this->eid == 'DC' || $this->eid == 'FC') {
-
 			$ret = self::process_itf_event();
-
 		} else if (in_array($this->eid, ['AO'])) {
-
 			$ret = self::process_ao();
-
 		} else if (in_array($this->eid, ['RG'])) {
-
 			$ret = self::process_rg();
-
 		} else if (in_array($this->eid, ['WC', 'UO'])) {
-
 			$ret = self::process_wc();
-
 		} else if (preg_match('/^[A-Z]{2}[0-9]{3}$/', $this->matchid)){
-
 			//$ret = self::process_atp_wta_tour();
 			$e = substr($this->matchid, 0, 2);
 			if (in_array($e, ["LS", "LD", "RS", "RD"])) {
@@ -70,11 +63,17 @@ class StatController extends Controller
 			} else {
 				$ret = self::process_atp_tour();
 			}
-
 		} else {
-
 			$ret = self::process_itf_event();
+		}
 
+		// 处理pbp
+		if (in_array($this->eid, ['AO'])) {
+			$this->pbp_ao($ret);
+		} else if ($this->fsid != '') {
+			$this->pbp_flashscore($ret);
+		} else if (preg_match('/^[MW]-ITF-/', $this->eid)) {
+			$this->pbp_itf_event($ret);
 		}
 
 		// 处理头像
@@ -118,6 +117,9 @@ class StatController extends Controller
 
 		# 用时
 		$dura = date('H:i:s', strtotime('2018-1-1 +' . $json["match"]["matchData"]["durationInMinutes"] . " minutes"));
+
+		// 小分
+		$gamePoint = ["", ""]; $serving = 0;
 
 		# 统计
 		$stat = [];
@@ -262,6 +264,7 @@ class StatController extends Controller
 			'score' => $score,
 			'wl' => $wl,
 			'bestof' => $bestof,
+			'point' => [$gamePoint[0], $gamePoint[1], $serving],
 		];
 	}
 
@@ -300,6 +303,9 @@ class StatController extends Controller
 		$match = $json['matches'][0];
 		# 用时
 		$dura = date('H:i:s', strtotime('2018-1-1 ' . $match["duration"]));
+
+		// 小分
+		$gamePoint = ["", ""]; $serving = 0;
 
 		# 统计
 		$stat = [];
@@ -442,6 +448,7 @@ class StatController extends Controller
 			'score' => $score,
 			'wl' => $wl,
 			'bestof' => $bestof,
+			'point' => [$gamePoint[0], $gamePoint[1], $serving],
 		];
 	}
 
@@ -524,6 +531,9 @@ class StatController extends Controller
 		if ($winner == 1) $wl = ["winner", "loser"];
 		else if ($winner == 2) $wl = ["loser", "winner"];
 		else $wl = ["unfinished", "unfinished"];
+
+		// 小分
+		$gamePoint = ["", ""]; $serving = 0;
 
 		// 比分
 		$score = [];
@@ -613,119 +623,6 @@ class StatController extends Controller
 		}
 
 
-		/*
-		foreach ($st as $sets) {
-			$set = $sets["SetNum"];
-			if ($set == "all") $set = 0;
-			for ($i = 1; $i <= 2; ++$i) {
-				$data = $sets["Data"];
-				$p = "Player" . $i;
-
-				if (isset($data['TotPtsWon'][$p])) {
-					$tp = $data['TotPtsWon'][$p];
-				} else {
-					$tp = @$data['TotSPtsWon'][$p] + @$data['TotRetPtsWon'][$p];
-				}
-				$ace = $data['TotAces'][$p];		
-				$df = $data['DF'][$p];
-					//$wi = $data['TotWin'][$p];
-					//$ue = $data['TotUnfErr'][$p];
-				$wi = @$data['FHApprWin'][$p] + @$data['FHDropWin'][$p] + @$data['FHGndWin'][$p] + @$data['FHLobWin'][$p] + @$data['FHOvhdWin'][$p] + @$data['FHPassWin'][$p] + @$data['FHVolWin'][$p]
-					+ @$data['BHApprWin'][$p] + @$data['BHDropWin'][$p] + @$data['BHGndWin'][$p] + @$data['BHLobWin'][$p] + @$data['BHOvhdWin'][$p] + @$data['BHPassWin'][$p] + @$data['BHVolWin'][$p] + $ace;
-				$ue = @$data['FHApprUnf'][$p] + @$data['FHDropUnf'][$p] + @$data['FHGndUnf'][$p] + @$data['FHLobUnf'][$p] + @$data['FHOvhdUnf'][$p] + @$data['FHPassUnf'][$p] + @$data['FHVolUnf'][$p]
-					+ @$data['BHApprUnf'][$p] + @$data['BHDropUnf'][$p] + @$data['BHGndUnf'][$p] + @$data['BHLobUnf'][$p] + @$data['BHOvhdUnf'][$p] + @$data['BHPassUnf'][$p] + @$data['BHVolUnf'][$p] + $df;
-
-				$oppowi = @$data['FHApprWin']['Player' . (3 - $i)] + @$data['FHDropWin']['Player' . (3 - $i)] + @$data['FHGndWin']['Player' . (3 - $i)] + @$data['FHLobWin']['Player' . (3 - $i)] + @$data['FHOvhdWin']['Player' . (3 - $i)] + @$data['FHPassWin']['Player' . (3 - $i)] + @$data['FHVolWin']['Player' . (3 - $i)]
-						+ @$data['BHApprWin']['Player' . (3 - $i)] + @$data['BHDropWin']['Player' . (3 - $i)] + @$data['BHGndWin']['Player' . (3 - $i)] + @$data['BHLobWin']['Player' . (3 - $i)] + @$data['BHOvhdWin']['Player' . (3 - $i)] + @$data['BHPassWin']['Player' . (3 - $i)] + @$data['BHVolWin']['Player' . (3 - $i)] + @$data['TotAces']['Player' . (3 - $i)];
-				$fe = $data['TotPtsWon']['Player' . (3 - $i)] - $oppowi - $ue;
-
-				if (isset($data['TotSPts'][$p])) {
-					$faqiu = $data['TotSPts'][$p];
-				} else {
-					$faqiu = ceil($data['FSPts'][$p] / $data['FSPct'][$p] * 100);
-				}
-				$yifachenggong = $data['FSPts'][$p];
-				$yifadefen = $data['FSPtsWon'][$p];
-				$erfadefen = $data['SSPtsWon'][$p];
-				if (isset($data['SSPts'][$p])) {
-					$erfa = $data['SSPts'][$p];
-				} else if (isset($data['SSPtsWonPct'][$p]) && $data['SSPtsWonPct'][$p] != 0){
-					$erfa = ceil($data['SSPtsWon'][$p] / $data['SSPtsWonPct'][$p] * 100);
-				} else {
-					$erfa = 0;
-				}
-				$pofa = $data['BrkPtsWon'][$p];
-				$pofajihui = $data['BrkPts'][$p];
-				$wangqiandefen = @$data['NetPtsWon'][$p] + 0;
-				$wangqianqiu = @$data['NetPts'][$p] + 0;
-				$jiefaqiudefen = $data['TotRetPtsWon'][$p];
-
-				$s1_percent = self::add_percentage($yifachenggong . "/" . $faqiu);
-				$s1 = self::add_percentage($yifadefen . "/" . $yifachenggong);;
-				$s2 = self::add_percentage($erfadefen . "/" . $erfa);
-				$np_percent = self::add_percentage($wangqiandefen . "/" . $wangqianqiu);
-				$bp_percent = self::add_percentage($pofa . "/" . $pofajihui);
-
-				// 得分细节
-				$asp = @$data['FHApprWin'][$p] + @$data['BHApprWin'][$p]; $as = @$data['FHApprWin'][$p] + @$data['BHApprWin'][$p] + @$data['FHApprUnf'][$p] + @$data['BHApprUnf'][$p];
-				$dsp = @$data['FHDropWin'][$p] + @$data['BHDropWin'][$p]; $ds = @$data['FHDropWin'][$p] + @$data['BHDropWin'][$p] + @$data['FHDropUnf'][$p] + @$data['BHDropUnf'][$p];
-				$gsp = @$data['FHGndWin'][$p] + @$data['BHGndWin'][$p]; $gs = @$data['FHGndWin'][$p] + @$data['BHGndWin'][$p] + @$data['FHGndUnf'][$p] + @$data['BHGndUnf'][$p];
-				$lp = @$data['FHLobWin'][$p] + @$data['BHLobWin'][$p]; $l = @$data['FHLobWin'][$p] + @$data['BHLobWin'][$p] + @$data['FHLobUnf'][$p] + @$data['BHLobUnf'][$p];
-				$osp = @$data['FHOvhdWin'][$p] + @$data['BHOvhdWin'][$p]; $os = @$data['FHOvhdWin'][$p] + @$data['BHOvhdWin'][$p] + @$data['FHOvhdUnf'][$p] + @$data['BHOvhdUnf'][$p];
-				$psp = @$data['FHPassWin'][$p] + @$data['BHPassWin'][$p]; $ps = @$data['FHPassWin'][$p] + @$data['BHPassWin'][$p] + @$data['FHPassUnf'][$p] + @$data['BHPassUnf'][$p];
-				$vp = @$data['FHVolWin'][$p] + @$data['BHVolWin'][$p]; $v = @$data['FHVolWin'][$p] + @$data['BHVolWin'][$p] + @$data['FHVolUnf'][$p] + @$data['BHVolUnf'][$p];
-
-				$as_percent = self::add_percentage($asp."/".$as);
-				$ds_percent = self::add_percentage($dsp."/".$ds);
-				$gs_percent = self::add_percentage($gsp."/".$gs);
-				$l_percent = self::add_percentage($lp."/".$l);
-				$os_percent = self::add_percentage($osp."/".$os);
-				$ps_percent = self::add_percentage($psp."/".$ps);
-				$v_percent = self::add_percentage($vp."/".$v);
-
-				$f1akph = @$data['FSAvgKMH'][$p] + 0;
-				$f2akph = @$data['SSAvgKMH'][$p] + 0;
-				$f1fkph = @$data['FastKMH'][$p] + 0;
-				$f2fkph = 0;
-				$diskph = 0;
-
-				$f1fmph = self::kilo2mile($f1fkph);
-				$f1amph = self::kilo2mile($f1akph);
-				$f2fmph = self::kilo2mile($f1fkph);
-				$f2amph = self::kilo2mile($f2akph);
-				$dismph = self::meter2feet($diskph);
-				
-				$dura = "";
-				$stat[$set][] = [
-					'dura' => $dura,
-					'ace' => $ace,
-					'df' => $df,
-					's1%' => $s1_percent,
-					's1' => $s1,
-					's2' => $s2,
-					'wi' => $wi,
-					'ue' => $ue,
-					'fe' => $fe,
-					'bp%' => $bp_percent,
-					'np%' => $np_percent,
-					'tp' => $tp,
-					'dis' => [$diskph, $dismph],
-					'f1f' => [$f1fkph, $f1fmph],
-					'f1a' => [$f1akph, $f1amph],
-					'f2f' => [$f2fkph, $f2fmph],
-					'f2a' => [$f2akph, $f2amph],
-					'as' => $as_percent,
-					'ds' => $ds_percent,
-					'gs' => $gs_percent,
-					'l' => $l_percent,
-					'os' => $os_percent,
-					'ps' => $ps_percent,
-					'v' => $v_percent,
-				];
-			}
-		}
-		*/
-
 		ksort($stat);
 		$this->unset_nodata_stat_item($stat);
 		//print_r($stat);
@@ -739,6 +636,7 @@ class StatController extends Controller
 			'score' => $score,
 			'wl' => $wl,
 			'bestof' => $bestof,
+			'point' => [$gamePoint[0], $gamePoint[1], $serving],
 		];
 
 	}
@@ -765,10 +663,19 @@ class StatController extends Controller
 		else if ($winner == 2) $wl = ["loser", "winner"];
 		else $wl = ["unfinished", "unfinished"];
 
+		// 小分情况
+		$point1 = $point2 = $gamePoint = "";
+		if ($match[0]["MatchState"] != "U") {
+			$point1 = @$match[0]['PointA'];
+			$point2 = @$match[0]['PointB']; 
+			$serving = @$match[0]['Serve'] == 'A' ? 1 : (@$match[0]['Serve'] == 'B' ? 2 : 0);
+			$gamePoint = $this->revise_point($point1, $point2);
+		}
+		
 		// 每盘比分
 		$score = [];
 		for ($i = 1; $i <= 5; ++$i){
-			if ($match[0]["ScoreSet" . $i . "A"] != ""){
+			if (isset($match[0]["ScoreSet" . $i . "A"]) && $match[0]["ScoreSet" . $i . "A"] != ""){
 				$a = intval($match[0]["ScoreSet" . $i . "A"]);
 				$b = intval($match[0]["ScoreSet" . $i . "B"]);
 
@@ -795,7 +702,7 @@ class StatController extends Controller
 			}
 			$score[] = [$a, $b, $c, $d];
 		}
-		$total_dura = $match[0]["MatchTimeTotal"];
+		$total_dura = @$match[0]["MatchTimeTotal"];
 
 		$url = "https://api.wtatennis.com/tennis/tournaments/$this->eid/$this->year/matches/$this->matchid/stats";
 		$html = file_get_contents($url);
@@ -916,6 +823,7 @@ class StatController extends Controller
 			'score' => $score,
 			'wl' => $wl,
 			'bestof' => $bestof,
+			'point' => [$gamePoint[0], $gamePoint[1], $serving],
 		];
 	}
 
@@ -941,6 +849,20 @@ class StatController extends Controller
 		if ($winner == 1) $wl = ["winner", "loser"];
 		else if ($winner == 2) $wl = ["loser", "winner"];
 		else $wl = ["unfinished", "unfinished"];
+
+		// 小分情况
+		$point1 = $point2 = $gamePoint = "";
+		$point1 = @$match['PlayerTeam1']['GamePointsPlayerTeam'];
+		$point2 = @$match['PlayerTeam2']['GamePointsPlayerTeam']; 
+		$serving = 0;
+		if ($match['LastServer']) {
+			if ($match['LastServer'] == $match['PlayerTeam1']['PlayerId'] || $match['LastServer'] == $match['PlayerTeam1']['PartnerId']) {
+				$serving = 1;
+			} else if ($match['LastServer'] == $match['PlayerTeam2']['PlayerId'] || $match['LastServer'] == $match['PlayerTeam2']['PartnerId']) {
+				$serving = 2;
+			}
+		}
+		$gamePoint = $this->revise_point($point1, $point2);
 
 		// 每盘比分
 		$score = [];
@@ -1001,23 +923,6 @@ class StatController extends Controller
 					$oppo_faqiu = @$match["PlayerTeam" . $oppo]["Sets"][$set]["Stats"]["ServiceStats"]["FirstServe"]["Divisor"];
 					$baofa = $faqiuju - @$match["PlayerTeam" . $oppo]["Sets"][$set]["Stats"]["ReturnStats"]["BreakPointsConverted"]["Dividend"];
 
-					/*
-					@$all[$seq]['ace'] += $ace;
-					@$all[$seq]['df'] += $df;
-					@$all[$seq]['tp'] += $tp;
-					@$all[$seq]['faqiu'] += $faqiu;
-					@$all[$seq]['yifachenggong'] += $yifachenggong;
-					@$all[$seq]['yifadefen'] += $yifadefen;
-					@$all[$seq]['erfa'] += $erfa;
-					@$all[$seq]['erfadefen'] += $erfadefen;
-					@$all[$seq]['faqiudefen'] += $faqiudefen;
-					@$all[$seq]['pofa'] += $pofa;
-					@$all[$seq]['pofajihui'] += $pofajihui;
-					@$all[$seq]['faqiuju'] += $faqiuju;
-					@$all[$seq]['oppo_faqiudiufen'] += $oppo_faqiudiufen;
-					@$all[$seq]['oppo_faqiu'] += $oppo_faqiu;
-					@$all[$seq]['baofa'] += $baofa;
-					*/
 					$s1_percent = self::add_percentage($yifachenggong . "/" . $faqiu);
 					$s1 = self::add_percentage($yifadefen . "/" . $yifachenggong);
 					$s2 = self::add_percentage($erfadefen . "/" . $erfa);
@@ -1056,30 +961,6 @@ class StatController extends Controller
 			$stat[0][1]["dura"] = $dura;
 		}
 
-		/*
-		foreach ([1, 2] as $seq){
-			@$all[$seq]['s1_percent'] = self::add_percentage($all[$seq]['yifachenggong'] . "/" . $all[$seq]['faqiu']);
-			@$all[$seq]['s1'] = self::add_percentage($all[$seq]['yifadefen'] . "/" . $all[$seq]['yifachenggong']);
-			@$all[$seq]['s2'] = self::add_percentage($all[$seq]['erfadefen'] . "/" . $all[$seq]['erfa']);
-			@$all[$seq]['bp_percent'] = self::add_percentage($all[$seq]['pofa'] . "/" . $all[$seq]['pofajihui']);
-			@$all[$seq]['rp_percent'] = self::add_percentage($all[$seq]['oppo_faqiudiufen'] . "/" . $all[$seq]['oppo_faqiu']);
-			@$all[$seq]['sg_percent'] = self::add_percentage($all[$seq]['baofa'] . "/" . $all[$seq]['faqiuju']);
-			@$all[$seq]['dura'] = date('H:i:s', strtotime("2021-1-1 0:0:0 +" . $seconds . " seconds"));
-
-			$stat[0][] = [
-				'dura' => $all[$seq]['dura'],
-				'ace' => $all[$seq]['ace'],
-				'df' => $all[$seq]['df'],
-				's1%' => $all[$seq]['s1_percent'],
-				's1' => $all[$seq]['s1'],
-				's2' => $all[$seq]['s2'],
-				'bp%' => $all[$seq]['bp_percent'],
-				'sg%' => $all[$seq]['sg_percent'],
-				'rp%' => $all[$seq]['rp_percent'],
-				'tp' => $all[$seq]['tp'],
-			];
-		}
-		*/
 		ksort($stat);
 		$this->unset_nodata_stat_item($stat);
 			
@@ -1092,6 +973,7 @@ class StatController extends Controller
 			'score' => $score,
 			'wl' => $wl,
 			'bestof' => $bestof,
+			'point' => [$gamePoint[0], $gamePoint[1], $serving],
 		];
 
 	}
@@ -1301,6 +1183,9 @@ class StatController extends Controller
 		else if ($winner == 2) $wl = ["loser", "winner"];
 		else $wl = ["unfinished", "unfinished"];
 
+		// 小分
+		$gamePoint = ["", ""]; $serving = 0;
+
 		// 比分
 		$score = [];
 		for ($i = 1; $i <= 5; ++$i){
@@ -1440,7 +1325,801 @@ class StatController extends Controller
 			'score' => $score,
 			'wl' => $wl,
 			'bestof' => $bestof,
+			'point' => [$gamePoint[0], $gamePoint[1], $serving],
 		];
+	}
+
+	protected function pbp_ao(&$ret) {
+
+		$pbp = [];
+		$param = [];
+		$serve = [];
+
+		$url = "https://itp-ao.infosys-platforms.com/api/match-beats/data/year/" . $this->year . "/eventId/580/matchId/" . substr($this->matchid, 0, 5);
+		$html = file_get_contents($url);
+		if (!$html) return;
+
+		$json = json_decode($html, true);
+		if (!$json) return;
+
+		$server = $winner = 0;
+
+		$smallDot = 1;
+		$bigDot = 3;
+
+		foreach ($json['setData'] as $SET) {
+
+			$set = $SET['set'];
+			if ($set == 0) {
+				return;
+			}
+			
+			$game1 = $game2 = 0;
+			$point1 = $point2 = 0;
+			$x = 0; $y = 0; // x表示第几分，y增大或者减少，表示p1或者p2得分
+
+/*----------------------第一次输出pbp,param,serve---------------------*/
+//			$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
+//			$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
+//			$serve[$set] = [];
+/*---------------------------------------------------------------------*/
+
+			foreach ($SET['gameData'] as $GAME) {
+				$is_broken = false;
+				foreach ($GAME['pointData'] as $POINT) {
+					++$x;
+
+					$win_person = $POINT['scorer'];
+					$serve_person = $POINT['server']; 
+					if ($win_person == 1) { // p1得分，y自增，反之自减
+						++$y;
+					} else {
+						--$y;
+					}
+					$point1 = $POINT['tm1GameScore'];
+					$point2 = $POINT['tm2GameScore'];
+					$pointflag = $POINT['result'];
+					if ($pointflag == "N") $pointflag = "";
+					$flag1 = ''; $flag2 = '';
+					$bsm1 = []; $bsm2 = [];
+					if (in_array($pointflag, ['A', 'W'])) { // ace, winner 记在得分者头上
+						if ($pointflag == 'W') $pointflag = "👍";
+						${'flag' . $win_person} = $pointflag;
+					} else if (in_array($pointflag, ['UE', 'FE'])) {
+						if ($pointflag == 'UE') $pointflag = "👎";
+						${'flag' . (3 - $win_person)} = $pointflag;
+					} else {
+						${'flag' . $win_person} = $pointflag;
+					}
+					$shot = $POINT['tm1Rally'] + $POINT['tm2Rally'];
+					$serve_speed = $POINT['serveSpeed'];
+
+					if (isset($POINT['brkPts'])	&& $POINT['brkPts'] > 0) {
+						$bp_num = $POINT['brkPts'];
+						${'bsm' . (3 - $serve_person)}[] = ($bp_num > 1 ? $bp_num : '') . 'BP';
+					} else {
+						$bp_num = null;
+					}
+					if (isset($POINT['isBrkPt']) && $POINT['isBrkPt'] === true && ($point1 == "GAME" || $point2 == "GAME")) {
+						$is_broken = true;
+					}
+
+					if ($point1 == "GAME") {$point1 = "🎾"; $point2 = '';}
+					if ($point2 == "GAME") {$point2 = "🎾"; $point1 = '';}
+					if ($point1 == 'AD' && $point2 == '40') {$point1 = 'A'; $point2 = '';}
+					if ($point2 == 'AD' && $point1 == '40') {$point2 = 'A'; $point1 = '';}
+
+					$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+					$pbp[$set][] = [
+						'x' => $x * 2,
+						'y' => $y,
+						's' => $serve_person,
+						'w' => $win_person,
+						'p1' => $point1,
+						'p2' => $point2,
+						'b1' => $bsm1,
+						'b2' => $bsm2,
+						'f1' => $flag1,
+						'f2' => $flag2,
+						'sv' => $shot,
+						'ss' => $serve_speed,
+					];
+				}
+
+				if (!$GAME['isTieBreak']) {
+					$game_serve_person = $serve_person;
+				} else {
+					$game_serve_person = 0;
+				}
+
+				$game_win_person = $GAME['gameWinner'];
+				$game1 = $GAME['tm1SetScore'];
+				$game2 = $GAME['tm2SetScore'];
+				$param[$set][] = [
+					'x' => ($x + 0.5) * 2, // 划分一局的线,
+					'g1' => $game1,
+					'g2' => $game2,
+					's' => $GAME['isTieBreak'] ? 0 : $game_serve_person,
+					'w' => $game_win_person,
+					'tb' => $GAME['isTieBreak'],
+					'b' => $is_broken,
+				];
+					
+				
+
+/*----------------------每一局结束时输出pbp,输出markArea---------------------*/
+//					$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+//					$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];  // 表示从last_x到x这段范围的局分，以及底色
+/*--------------------------------------------------------------------*/
+
+
+/*------------------------------一局结束输出serve-------------------------------*/
+//					$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, (0.5 - $server % 2) * 2];
+/*----------------------------------------------------------------------------------*/
+			} // endforeach GAME
+
+			// 一盘结束多加两个虚拟点，用以容纳最后一条得分线
+			foreach (range(0, 1) as $r) {
+				$pbp[$set][] = ['x' => (++$x) * 2, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+			}
+
+		} // endforeach SET
+
+		$ret['pbp'] = $pbp;
+		$ret['markLines'] = $param;
+	}
+
+	protected function pbp_flashscore(&$ret) {
+
+		$pbp = [];
+		$param = [];
+		$serve = [];
+
+		$url = "http://d.livescore.in/x/feed/d_mh_".$this->fsid."_en_4";
+		$headers = [
+			'Referer: http://d.livescore.in/x/feed/proxy-local',
+			'X-Fsign: SW9D1eZo',
+		];
+		//初始化
+		$ch = curl_init();
+		//设置选项，包括URL
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		$html = curl_exec($ch);
+		$response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if ($response_code > 400) return;
+
+		//$html = file_get_contents("/home/ubuntu/web/1.php");
+		if (!$html) return; 
+		if (strlen($html) < 5000) return;
+		$DOM = str_get_html($html);
+		if (!$DOM) return;
+
+		$set_begin = false;
+		$server = $winner = 0;
+
+		$in_progress = false;
+
+		$smallDot = 1;
+		$bigDot = 3;
+
+		$set = 0;
+
+		foreach ($DOM->find('.parts-first') as $SET) {
+
+			++$set;
+
+			$game1 = $game2 = 0;
+			$point1 = $point2 = 0;
+			$x = 0; $y = 0; // x表示第几分，y增大或者减少，表示p1或者p2得分
+
+			/*----------------------第一次输出pbp,param,serve---------------------*/
+			//$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
+			//$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
+			//$serve[$set] = [];
+			/*---------------------------------------------------------------------*/
+
+			$last_x = 0;
+			$last_key = count($SET->find('tr')) - 1;
+
+			$tb_begin = false;
+			$in_progress = false;
+			foreach ($SET->find('tr') as $key => $line) {
+
+				if (strpos($line->innertext, "Point by point") !== false) {
+					$set_begin = true;
+					continue;
+				}
+
+				if (strpos($line->innertext, "Tiebreak") !== false && $set_begin) {
+					$tb_begin = true;
+					$point1 = $point2 = 0;
+					continue;
+				}
+
+				$class = $line->class;
+				if (!$class || $class == "current-game-empty-row") continue;
+				$class = str_replace("odd", "", $class);
+				$class = str_replace("even", "", $class);
+				$class = trim($class);
+
+				if ($class == "fifteens_available" || strpos($line->innertext, "Current game") !== false) { // 一局总结
+
+					$server = 0;
+					if (strpos($line->innertext, "Current game") !== false) {
+						if (strpos($line->children(0)->innertext, 'visible') !== false && strpos($line->children(2)->innertext, 'visible') === false) {
+							$server = 1;
+						} else if (strpos($line->children(2)->innertext, 'visible') !== false && strpos($line->children(0)->innertext, 'visible') === false) {
+							$server = 2;
+						}
+					} else {
+						if ($line->children(1)->innertext != "" && $line->children(3)->innertext == "") {
+							$server = 1;
+						} else if ($line->children(3)->innertext != "" && $line->children(1)->innertext == "") {
+							$server = 2;
+						}
+					}
+
+					// 当前game正在进行时，winner置0，否则置1或2
+					if (strpos($line->innertext, "Current game") !== false) {
+						$winner = 0;
+					} else if (strpos($line->innertext, "LOST SERVE") !== false) {
+						$winner = 3 - $server;
+					} else {
+						$winner = $server;
+					}
+
+					// 本局已结束时才记录game1, game2
+					if ($winner > 0) {
+						$tmp = $line->children(2)->innertext;
+						$tmp = preg_replace('/<[^>]*>/', "", $tmp);
+						$tmp_arr = explode("-", $tmp);
+						$game1 = trim($tmp_arr[0]) + 0;
+						$game2 = trim($tmp_arr[1]) + 0;
+					}
+
+					$point1 = $point2 = 0;
+
+					if (strpos($line->innertext, "Current game") !== false) {
+						$in_progress = true;
+					} else {
+						$in_progress = false;
+					}
+
+				} else if ($class == "fifteen") { // 每发球局得分
+
+					$tmp = $line->children(0)->innertext;
+					$tmp_arr = explode(",", $tmp);
+					foreach ($tmp_arr as $eachpoint) {
+						++$x;
+						$bp = $sp = $mp = false;
+						if (strpos($eachpoint, "BP") !== false) $bp = true;
+						if (strpos($eachpoint, "SP") !== false) $sp = true;
+						if (strpos($eachpoint, "MP") !== false) $mp = true;
+						$eachpoint = preg_replace('/<[^>]*>/', "", $eachpoint);
+						$eachpoint = preg_replace('/[BSM]P/', "", $eachpoint);
+						$eachpoint = str_replace("A", "50", $eachpoint);
+						if ($eachpoint == '0:0') continue;
+
+						$ep_arr = explode(":", $eachpoint);
+						$p1 = intval(trim($ep_arr[0]));
+						$p2 = intval(trim($ep_arr[1]));
+
+						$pointWinner = 0;
+						if ($p1 == $point1) {
+							if ($p2 > $point2) { // p2增大，算p2得分
+								--$y;
+								$pointWinner = 2;
+							} else { // p2减少，从ad变成40，算p1得分
+								++$y;
+								$pointWinner = 1;
+							}
+						} else if ($p2 == $point2) {
+							if ($p1 > $point1) { // p1增大，算p1得分
+								++$y;
+								$pointWinner = 1;
+							} else {
+								--$y;
+								$pointWinner = 2;
+							}
+						}
+						//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
+						//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
+
+						$dotValue = [];
+						if ($bp || $sp || $mp) {
+							$bsm_count = ceil(abs($p1 - $p2) / 15);
+							if ($bsm_count <= 1) $bsm_count = ""; 
+							if ($bp) $dotValue[] = $bsm_count . 'BP';
+							if ($sp) $dotValue[] = $bsm_count . 'SP';
+							if ($mp) $dotValue[] = $bsm_count . 'MP';
+						}
+						if ($pointWinner == 1) {
+							$bsm1 = $dotValue;
+							$bsm2 = [];
+						} else {
+							$bsm2 = $dotValue;
+							$bsm1 = [];
+						}
+
+						$point1 = $p1;
+						$point2 = $p2;
+						if ($p1 == 50 && $p2 == 40) {$p1 = 'A'; $p2 = '';}
+						else if ($p1 == 40 && $p2 == 50) {$p2 = 'A'; $p1 = '';}
+
+						/*-----------------------------每分都输出pbp----------------------------*/
+						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $pointWinner,
+							'p1' => $p1,
+							'p2' => $p2,
+							'b1' => $bsm1,
+							'b2' => $bsm2,
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
+						/*--------------------------------------------------------------------*/
+
+					} // foreach eachpoint
+
+					// winner > 0 表示本局结束，此时在局尾增加一分，并记下色块
+					if (!$in_progress) {
+
+						++$x;
+						$pointWinner = $winner;
+						$p1 = $p2 = '';
+						if ($winner == 1) {
+							++$y;
+							$p1 = '🎾';
+ 						} else if ($winner == 2) {
+							--$y;
+							$p2 = '🎾';
+						}
+						//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
+						//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
+
+						/*
+						if ($winner == 1) {
+							$color = Config::get('const.sideColor.home');
+						} else {
+							$color = Config::get('const.sideColor.away');
+						}
+						*/
+
+						/*----------------------每一局结束时输出pbp,输出markArea---------------------*/
+						//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $pointWinner,
+							'p1' => $p1,
+							'p2' => $p2,
+							'b1' => [],
+							'b2' => [],
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $color];  // 表示从last_x到x这段范围的局分，以及底色
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];  // 表示从last_x到x这段范围的局分，以及底色
+						if ($winner != $server && $winner > 0) $isBroken = true;
+						else $isBroken = false;
+						$param[$set][] = [
+							'x' => ($x + 0.5) * 2, // 划分一局的线,
+							'g1' => $game1,
+							'g2' => $game2,
+							's' => $server,
+							'w' => $winner,
+							'tb' => false,
+							'b' => $isBroken,
+						];
+						/*--------------------------------------------------------------------*/
+					}
+
+					/*
+					if ($server == 1) {
+						$color = Config::get('const.sideColor.home'); 
+						$servePerson = 'HOME' . ' ' . __('pbp.lines.toServe');
+					} else if ($server == 2) {
+						$color = Config::get('const.sideColor.away');
+						$servePerson = 'AWAY' . ' ' . __('pbp.lines.toServe');
+					}
+					*/
+
+					/*
+					if ($winner == $server && $winner > 0) $holdOrLost = __('pbp.lines.holdServe');
+					else if ($winner != $server && $winner > 0) $holdOrLost = __('pbp.lines.lostServe');
+					else $holdOrLost = __('pbp.lines.inServe');
+					*/
+
+					/*----------------------不管一局有没有结束都输出serve------------------------------*/
+					//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
+					/*----------------------------------------------------------------------------------*/
+
+					if ($winner > 0) {
+						$last_x = $x;
+					}
+
+					$in_progress =true; // 每局结束把in_progres置true，如果下面局有局分或者有抢七分，则会被重新置false。否则就认为下面一局是进行中
+
+				} else { // 抢七或抢十每分
+
+					$eachpoint = $line->innertext;
+					$bp = $sp = $mp = false;
+					if (strpos($eachpoint, "BP") !== false) $bp = true;
+					if (strpos($eachpoint, "SP") !== false) $sp = true;
+					if (strpos($eachpoint, "MP") !== false) $mp = true;
+
+					$tmp = preg_replace('/<[^>]*>/', "", $line->children(2));
+					//echo $tmp."\n";
+					$ep_arr = explode("-", $tmp);
+					$p1 = intval(trim($ep_arr[0]));
+					$p2 = intval(trim($ep_arr[1]));
+
+					// 如果出现 1-0 0-1之类，强制开启tb模式
+					if (($p1 == 1 || $p2 == 1) && $tb_begin == false) {
+						$tb_begin = true;
+						$point1 = $point2 = 0;
+					}
+
+					if (!$tb_begin) continue;
+
+					++$x;
+					$pointWinner = 0;
+					if ($p1 == $point1) {
+						if ($p2 > $point2) { // p2增大，算p2得分
+							--$y;
+							$pointWinner = 2;
+						}
+					} else if ($p2 == $point2) {
+						if ($p1 > $point1) { // p1增大，算p1得分
+							++$y;
+							$pointWinner = 1;
+						}
+					}
+					//echo trim($ep_arr[0]) . "\t" . trim($ep_arr[1]) . "\n";
+					//if ($y > $param[$set]['max']) $param[$set]['max'] = $y;
+					//else if ($y < $param[$set]['min']) $param[$set]['min'] = $y;
+
+					$point1 = $p1;
+					$point2 = $p2;
+
+					if ($line->children(1)->innertext != "" && $line->children(3)->innertext == "") {
+						$server = 1;
+					} else if ($line->children(3)->innertext != "" && $line->children(1)->innertext == "") {
+						$server = 2;
+					}   
+					if (strpos($line->innertext, "LOST SERVE") !== false) {
+						$winner = 3 - $server;
+					} else {
+						$winner = $server;
+					}
+
+					$dotValue = [];
+					if ($bp || $sp || $mp) {
+						$bsm_count = abs($p1 - $p2);
+						if ($bsm_count <= 1) $bsm_count = ""; 
+						if ($bp) $dotValue[] = $bsm_count . 'BP';
+						if ($sp) $dotValue[] = $bsm_count . 'SP';
+						if ($mp) $dotValue[] = $bsm_count . 'MP';
+					}
+					if ($pointWinner == 1) {
+						$bsm1 = $dotValue;
+						$bsm2 = [];
+					} else {
+						$bsm2 = $dotValue;
+						$bsm1 = [];
+					}
+
+					// 判断抢七或者抢十是否已经结束,结束之后in_progress置false
+					if ($game1 == 0 && $game2 == 0) { //抢十
+						$tb = 10;
+					} else {
+						$tb = 7;
+					}
+					if (abs($point1 - $point2) >= 2 && ($point1 >= $tb || $point2 >= $tb)) {
+						$in_progress = false;
+					}
+
+					if ($key == $last_key && !$in_progress) { // key == lastkay表示已经到了一盘的最后一行
+						/*----------------------抢七确认结束时输出不带具体比分的pbp--------------------*/
+						//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $pointWinner,
+							'p1' => $point1,
+							'p2' => $point2,
+							'b1' => $bsm1,
+							'b2' => $bsm2,
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
+						/*------------------------------------------------------------------*/
+
+						if ($winner == 1) ++$game1;
+						else if ($winner == 2) ++$game2;
+
+						/*
+						if ($winner == 1) {
+							$color = Config::get('const.sideColor.home');
+						} else {
+							$color = Config::get('const.sideColor.away');
+						}
+						*/	
+
+						/*----------------------抢七确认结束时输出markArea------------------*/
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $color];
+						//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];
+						$param[$set][] = [
+							'x' => ($x + 0.5) * 2, // 划分一局的线,
+							'g1' => $game1,
+							'g2' => $game2,
+							's' => 0,
+							'w' => $winner,
+							'tb' => true,
+							'b' => false,
+						];
+						/*------------------------------------------------------------------*/
+					} else {
+						/*----------------------抢七每分输出pbp-----------------------------*/
+						//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, $point1.'-'.$point2];
+						$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						$pbp[$set][] = [
+							'x' => $x * 2,
+							'y' => $y,
+							's' => $server,
+							'w' => $pointWinner,
+							'p1' => $point1,
+							'p2' => $point2,
+							'b1' => $bsm1,
+							'b2' => $bsm2,
+							'f1' => "",
+							'f2' => "",
+							'sv' => 0,
+							'ss' => 0,
+						];
+						/*------------------------------------------------------------------*/
+					}
+				} // if fifteens_available
+			} //foreach line
+
+			//$m = max(abs($param[$set]['min']), abs($param[$set]['max'])) + 2;
+			//if ($m < 10) $m = 10;
+			//$param[$set]['min'] = -$m;
+			//$param[$set]['max'] = $m;
+
+			// 一盘结束多加两个虚拟点，用以容纳最后一条得分线
+			foreach (range(0, 1) as $r) {
+				$pbp[$set][] = ['x' => (++$x) * 2, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+			}
+		} //foreach SET
+
+		$ret['pbp'] = $pbp;
+		$ret['markLines'] = $param;
+	}
+
+	protected function pbp_itf_event(&$ret) {
+
+		$pbp = [];
+		$param = [];
+
+		$json = file_get_contents("https://ls.fn.sportradar.com/itf/en/Europe:Berlin/gismo/match_timeline/" . $this->matchid);
+		if (!$json) return;
+
+		$json = json_decode($json, true);
+		if (!$json) return;
+
+		$set_begin = false;
+		$tb_begin = false;
+		$server = $winner = 0;
+
+		$in_progress = false;
+
+		$set = 1;
+		$x = $y = 0;
+		$last_x = 0;
+		$game1 = $game2 = 0;
+
+		/*----------------------第一次输出pbp,param,serve---------------------*/
+		//$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
+		//$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
+		//$serve[$set] = [];
+		/*---------------------------------------------------------------------*/
+
+		foreach ($json["doc"][0]["data"]["events"] as $ep) {
+			$pointtype = $ep["type"];
+			$team = @$ep["team"];
+
+			if ($pointtype == "first_server") {
+
+				if ($team == 'home') $server= 1;
+				else if ($team == 'away') $server= 2;
+				else continue;
+
+			} else if ($pointtype == "score_change_tennis") {
+
+				++$x;
+				
+				$winner = $ep["team"] == 'home' ? 1 : 2;
+				if ($winner == 1) {
+					++$y;
+				} else if ($winner == 2) {
+					--$y;
+				}
+
+				$ptrans = $ep["pointflagtranslation"];
+				$point1 = intval($ep["game_points"]['home']);
+				$point2 = intval($ep["game_points"]['away']);
+
+				if ($ptrans == "Game won" || $ptrans == "Break won" || $ptrans == "Set won" || $ptrans == "Match won") { // 一局结束
+					$p1 = $p2 = '';
+					if ($winner == 1) {
+						//$color = Config::get('const.sideColor.home');
+						++$game1;
+						if ($tb_begin) {
+							$p1 = $last_point1 + 1;
+							$p2 = $last_point2;
+						} else {
+							$p1 = '🎾';
+						}
+					} else {
+						//$color = Config::get('const.sideColor.away');
+						++$game2;
+						if ($tb_begin) {
+							$p2 = $last_point2 + 1;
+							$p1 = $last_point1;
+						} else {
+							$p2 = '🎾';
+						}
+					}
+
+					$in_progress = false; // 表示一局已结束
+					$tb_begin = false;
+
+					/*----------------------每一局结束时输出pbp,输出markArea---------------------*/
+					//$pbp[$set][] = [$x, $y, $smallDot, [], ''];
+					//$param[$set]['markLines'][] = [$last_x, $x, $game1 . '-' . $game2, $winner];  // 表示从last_x到x这段范围的局分，以及底色
+					$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+					$pbp[$set][] = [
+						'x' => $x * 2,
+						'y' => $y,
+						's' => $server,
+						'w' => $winner,
+						'p1' => $p1,
+						'p2' => $p2,
+						'b1' => [],
+						'b2' => [],
+						'f1' => "",
+						'f2' => "",
+						'sv' => 0,
+						'ss' => 0,
+					];
+					if ($winner != $server && $winner > 0) $isBroken = true;
+					else $isBroken = false;
+					$param[$set][] = [
+						'x' => ($x + 0.5) * 2, // 划分一局的线,
+						'g1' => $game1,
+						'g2' => $game2,
+						's' => $server,
+						'w' => $winner,
+						'tb' => $tb_begin ? true : false,
+						'b' => $isBroken,
+					];
+					/*--------------------------------------------------------------------*/
+
+					/*------------------------------一局结束输出serve-------------------------------*/
+					//$serve[$set][] = [floor(($last_x + $x) / 2), $server, $servePerson, $holdOrLost, ($server - 1.5) * 2];
+					/*----------------------------------------------------------------------------------*/
+
+					// 新开始一盘
+					if ($ptrans == "Set won" || $ptrans == "Match won") {
+
+						// 一盘结束多加两个虚拟点，用以容纳最后一条得分线
+						foreach (range(0, 1) as $r) {
+							$pbp[$set][] = ['x' => (++$x) * 2, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+						}
+
+						$game1 = $game2 = 0;
+
+						if ($ptrans != "Match won") {
+							++$set;
+
+							$x = $y = 0;
+							/*----------------------盘初输出pbp,param,serve---------------------*/
+							//$pbp[$set][] = [$x, $y, $smallDot, [], '0-0'];
+							//$param[$set] = ["min" => 0, "max" => 0, "markLines" => []]; // 记录每盘最大值最小值，每局结束的x值以及对应的局数
+							//$serve[$set] = [];
+							/*---------------------------------------------------------------------*/
+
+						}
+
+					}
+
+					$last_x = $x;
+
+				} else { // 一局没有结束
+
+					$in_progress = true;
+
+					if ($point1 == 1 || $point2 == 1) $tb_begin = true;
+
+					if (!$tb_begin) {
+						$server = $ep['service'];
+					} else {
+						$server = 0;
+					}
+
+					$bp = false; if ($ptrans == "break point") $bp = true;
+					$sp = false; if ($ptrans == "set point") $sp = true;
+					$mp = false; if ($ptrans == "match point") $mp = true;
+
+					$dotValue = [];
+					$bsm1 = $bsm2 = [];
+					if ($bp || $sp || $mp) {
+						if (!$tb_begin) {
+							$bsm_count = ceil(abs($point1 - $point2) / 15);
+						} else {
+							$bsm_count = abs($point1 - $point2);
+						}
+						
+						if ($bsm_count <= 1) $bsm_count = ""; 
+						if ($bp) $dotValue[] = $bsm_count . 'BP';
+						if ($sp) $dotValue[] = $bsm_count . 'SP';
+						if ($mp) $dotValue[] = $bsm_count . 'MP';
+						if ($point1 > $point2) {
+							$bsm1 = $dotValue;
+						} else if ($point1 < $point2) {
+							$bsm2 = $dotValue;
+						}
+					}
+					$p1 = $point1; $p2 = $point2;
+					if ($p1 == 50 && $p2 == 40) {$p1 = "A"; $p2 = '';}
+					if ($p1 == 40 && $p2 == 50) {$p2 = "A"; $p1 = '';}
+					$last_point1 = $point1;
+					$last_point2 = $point2; // 用于抢七结束前最后一分的计算
+					
+					/*-----------------------------每分都输出pbp----------------------------*/
+					//$pbp[$set][] = [$x, $y, $dotSize, $dotValue, str_replace("50", "AD", $point1).'-'.str_replace("50", "AD", $point2)];
+					$pbp[$set][] = ['x' => $x * 2 - 1, 'y' => 10000, 's' => 0, 'w' => 0, 'p1' => '', 'p2' => '', 'b1' => [], 'b2' => [], 'f1' => '', 'f2' => '', 'sv' => 0, 'ss' => 0];
+					$pbp[$set][] = [
+						'x' => $x * 2,
+						'y' => $y,
+						's' => $server,
+						'w' => $winner,
+						'p1' => $p1,
+						'p2' => $p2,
+						'b1' => $bsm1,
+						'b2' => $bsm2,
+						'f1' => "",
+						'f2' => "",
+						'sv' => 0,
+						'ss' => 0,
+					];
+					/*--------------------------------------------------------------------*/
+
+				}
+
+			}
+		}
+
+		$ret['pbp'] = $pbp;
+		$ret['markLines'] = $param;
 	}
 
 	protected function convertToRatio($stat) {
@@ -1602,7 +2281,7 @@ class StatController extends Controller
 				$gender = 'itf';
 			}
 			$key = join('_', [$gender, 'profile', $pid]);
-			$res = Redis::hmget($key, 'l_' . $lang, 'l_en', 'first', 'last', 'ioc');
+			$res = Redis::hmget($key, 'l_' . $lang, 's_' . $lang, 'l_en', 's_en', 'first', 'last', 'ioc');
 
 			$res1 = fetch_portrait($pid, $gender);
 			$res2 = fetch_headshot($pid, $gender);
@@ -1610,11 +2289,14 @@ class StatController extends Controller
 
 			$ret[$pid] = [
 				'id' => $pid,
-				'name' => $res[0],
-				'eng' => $res[1],
-				'first' => $res[2],
-				'last' => $res[3],
-				'ioc' => $res[4],
+				'pid' => $pid,
+				'name' => $res[2],
+				'shortname' => $res[3],
+				'long' => $res[0] ? $res[0] : $res[2],
+				'short' => $res[1] ? $res[1] : $res[3],
+				'first' => $res[4],
+				'last' => $res[5],
+				'ioc' => $res[6],
 				'pt' => $res1[1],
 				'hs' => $res2[1],
 				'has_pt' => $res1[0],
@@ -1649,5 +2331,21 @@ class StatController extends Controller
 				}
 			}
 		}
+	}
+
+	private function revise_point($p1, $p2) {
+		if (($p1 == 50 || $p1 == "A" || $p1 == "AD" || $p1 == "Ad") && $p2 == 40) {
+			$p1 = "A";
+			$p2 = "";
+		} else if (($p2 == 50 || $p2 == "A" || $p2 == "AD" || $p2 == "Ad") && $p1 == 40) {
+			$p2 = "A";
+			$p1 = "";
+		}
+		return [$p1, $p2];
+	}
+
+	private function merge_pbp_markLines($pbp, &$markLines) {
+
+
 	}
 }

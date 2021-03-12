@@ -408,7 +408,6 @@ class Event extends Base{
 					$mode = 'unnormal';
 				}
 			}
-			print_err($event, $mode);
 
 			$this->draws[$event] = [
 				'uuid' => $event_raw,

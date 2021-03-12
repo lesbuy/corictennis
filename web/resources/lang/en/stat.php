@@ -18,6 +18,7 @@ return [
 
 		'kph' => 'Metric',
 		'mph' => 'Imperial',
+		'imperial' => 'Imperial',
 	],
 
 	'statTitle' => [

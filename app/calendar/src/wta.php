@@ -10,6 +10,10 @@ class Calendar extends CalendarBase {
 		"Premier" => "WTA500",
 		"Premier 5" => "WTA1000",
 		"Premier Mandatory" => "WTA1000M",
+		"WTA 1000" => "WTA1000",
+		"WTA 500" => "WTA500",
+		"WTA 250" => "WTA250",
+		"WTA 125" => "WTA125",
 	];
 
 	protected function preProcessSelf() {
@@ -35,13 +39,16 @@ class Calendar extends CalendarBase {
 		foreach ($json["content"] as $tour) {
 			$t = new TournamentInfo;
 			$t->asso = $this->asso;
-			$t->level = $this->mapLevel[$tour['tournamentGroup']['level']];
 			$t->eventID = $tour['liveScoringId'];
 			$t->liveID = $tour['tournamentGroup']['id'];
 			if ($t->eventID == "" && $t->liveID != "") {
 				$t->eventID = sprintf("%04d", $t->liveID);
 			}
 			$t->eventID = sprintf("%04d", $t->eventID);
+			$t->level = $this->mapLevel[$tour['tournamentGroup']['level']];
+			if ($t->level == "WTA1000" && in_array($t->eventID, ["0902", "1038", "0609", "1020"])) {
+				$t->level = "WTA1000M";
+			}
 			$t->year = $tour['year'];
 			if (isset($tour['tournamentGroup']['metadata']['customStatus' . $t->year]) && in_array($tour['tournamentGroup']['metadata']['customStatus' . $t->year], ["CANCELLED", "POSTPONED"])) continue;
 			$t->gender = "W";

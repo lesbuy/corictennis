@@ -98,7 +98,7 @@ class CalendarController extends Controller
             }
 
             // 只要大于40k的都放到CH里，包括了挑战赛，125k，以及大于50k的女子itf赛
-            if ($prize > 40000) $category = "CH";
+            if ($prize > 30000) $category = "CH";
             else if ($level == "ITF" || substr($level, 0, 1) == "M" || substr($level, 0, 1) == "W") $category = "ITF";
             else $category = "J";
 

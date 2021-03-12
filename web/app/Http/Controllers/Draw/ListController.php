@@ -127,7 +127,7 @@ class ListController extends Controller
 					$ioc = $arr[10];
 
 					// 只要大于40k的都放到CH里，包括了挑战赛，125k，以及大于50k的女子itf赛
-					if ($prize > 40000) $level = "CH";
+					if ($prize > 30000) $level = "CH";
 					else if ($arr[0] == "ITF" || substr($arr[0], 0, 1) == "M" || substr($arr[0], 0, 1) == "W") $level = "ITF";
 					else $level = "J";
 

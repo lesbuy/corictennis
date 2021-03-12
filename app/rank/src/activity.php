@@ -495,10 +495,10 @@ class Activity {
 				if ($this->level == "") {
 					$this->eid = sprintf('%04d', intval($line['tourn_nbr']));
 					$this->year = intval($line['tourn_year']);
-					if (isset($line['tournament']['liveScoringId'])) {
+					if (isset($line['tournament']['liveScoringId']) && trim($line['tournament']['liveScoringId'])) {
 						$this->join_eid = $line['tournament']['liveScoringId'];
 					} else {
-						$this->join_eid = "";
+						$this->join_eid = $this->eid;
 					}
 
 					$this->loc = strtoupper($line['Country']);
@@ -614,7 +614,7 @@ class Activity {
 					*/
 
 					$this->point = $line['points_1'];
-					if ($line['points_bonus_1']) {
+					if (isset($line['points_bonus_1']) && $line['points_bonus_1'] !== null) {
 						$this->award_point = $line['points_bonus_1'];
 					}
 					$this->prize = intval($line['PrizeWon']);

@@ -598,22 +598,6 @@ class ResultController extends Controller
 
 				$join_id = explode('/', join('/', [$id1, $id2]));
 
-				$className = join(" ", array_map('self::addPlayerSelect', $join_id));
-
-				if ($sextype) {
-					$h2hLink = 'open_h2h("' . $true_eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '", "' . $sd . '")';
-				} else {
-					$h2hLink = '';
-				}
-
-				$statLink = 'open_stat("' . $true_eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '")';
-
-				if ($has_detail) {
-					$detailLink = 'open_detail("' . @$kvmap['fsid'] . '", "' . $true_eid . '", "' . $sextype . '", "' . $matchId . '", "' . $this->year . '", "' . $id1 . '", "' . $id2 . '", "' . join('/', $p1) . '", "' . join('/', $p2) . '")';
-				} else {
-					$detailLink = "";
-				}
-
 				$hlLink = "";
 				if (isset($exist_hl[$matchId])) $hlLink = $exist_hl[$matchId];
 				$wholeLink = "";

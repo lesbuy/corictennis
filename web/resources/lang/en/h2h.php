@@ -157,6 +157,7 @@ return [
 		'wrongN' => 'Wrong Number',
 		'equalP1P2' => 'No Same Players',
 		'noDoubleMulti' => 'Only 1V1 or 2V2 supported in Doubles',
+		'noDoubleTopN' => 'VS Top N not supported in Doubles',
 		'noResult' => 'No Results',
 		'notEnd' => 'Continued',
 		'illegal' => 'Illegal Conditions!',
